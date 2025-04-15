@@ -1,0 +1,278 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/contexts/AuthContext'
+import { useRentals } from '@/lib/contexts/RentalsContext'
+import { useGames } from '@/lib/contexts/GamesContext'
+
+export default function RentalsPage() {
+  const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
+  const { rentals, addRental, updateRental, deleteRental, returnGame, loading: rentalsLoading } = useRentals()
+  const { games, loading: gamesLoading } = useGames()
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/login')
+    }
+  }, [user, authLoading, router])
+
+  if (authLoading || rentalsLoading || gamesLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return null
+  }
+
+  if (!user.isAdmin) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-100 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">Увага!</strong>
+          <span className="block sm:inline"> У вас немає прав для доступу до цієї сторінки.</span>
+        </div>
+      </div>
+    )
+  }
+
+  const handleAddRental = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsProcessing(true)
+    setError(null)
+    setSuccess(null)
+
+    try {
+      const form = e.currentTarget
+      if (!form) return
+
+      const formData = new FormData(form)
+      const personId = formData.get('personId') as string
+      const gameId = formData.get('gameId') as string
+
+      const game = games.find(g => g.id === gameId)
+      if (!game) {
+        throw new Error('Гра не знайдена')
+      }
+
+      const activeRentalsCount = rentals.filter(r => 
+        r.gameId === gameId && !r.returnedAt
+      ).length
+
+      if (activeRentalsCount >= game.quantity) {
+        throw new Error('Гра недоступна для оренди - всі екземпляри вже орендовані')
+      }
+
+      await addRental({
+        personId,
+        gameId
+      })
+
+      form.reset()
+      setSuccess('Оренду успішно додано')
+    } catch (error) {
+      console.error('Помилка при додаванні оренди:', error)
+      setError(error instanceof Error ? error.message : 'Помилка при додаванні оренди')
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  const handleUpdateRental = async (id: string, e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsProcessing(true)
+    setError(null)
+    setSuccess(null)
+
+    try {
+      const form = e.currentTarget
+      if (!form) return
+
+      const formData = new FormData(form)
+      const personId = formData.get('personId') as string
+      const gameId = formData.get('gameId') as string
+
+      await updateRental(id, {
+        personId,
+        gameId
+      })
+      setSuccess('Оренду успішно оновлено')
+    } catch (error) {
+      console.error('Помилка при оновленні оренди:', error)
+      setError(error instanceof Error ? error.message : 'Помилка при оновленні оренди')
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  const handleDeleteRental = async (id: string) => {
+    setIsProcessing(true)
+    setError(null)
+    setSuccess(null)
+
+    try {
+      await deleteRental(id)
+      setSuccess('Оренду успішно видалено')
+    } catch (error) {
+      console.error('Помилка при видаленні оренди:', error)
+      setError(error instanceof Error ? error.message : 'Помилка при видаленні оренди')
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  const handleReturnGame = async (id: string) => {
+    setIsProcessing(true)
+    setError(null)
+    setSuccess(null)
+
+    try {
+      await returnGame(id)
+      setSuccess('Гру успішно повернуто')
+    } catch (error) {
+      console.error('Помилка при поверненні гри:', error)
+      setError(error instanceof Error ? error.message : 'Помилка при поверненні гри')
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Управління орендами</h1>
+
+      {error && (
+        <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-100 px-4 py-3 rounded relative mb-4" role="alert">
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
+
+      {success && (
+        <div className="bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-100 px-4 py-3 rounded relative mb-4" role="alert">
+          <span className="block sm:inline">{success}</span>
+        </div>
+      )}
+
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+        <h2 className="text-xl font-semibold mb-4">Додати нову оренду</h2>
+        <form onSubmit={handleAddRental} className="space-y-4">
+          <div>
+            <label htmlFor="personId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              ID особи
+            </label>
+            <input
+              type="text"
+              id="personId"
+              name="personId"
+              required
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            />
+          </div>
+          <div>
+            <label htmlFor="gameId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              ID гри
+            </label>
+            <select
+              id="gameId"
+              name="gameId"
+              required
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            >
+              <option value="">Виберіть гру</option>
+              {games.map(game => {
+                const activeRentalsCount = rentals.filter(r => 
+                  r.gameId === game.id && !r.returnedAt
+                ).length
+                const availableQuantity = game.quantity - activeRentalsCount
+                return (
+                  <option 
+                    key={game.id} 
+                    value={game.id}
+                    disabled={availableQuantity <= 0}
+                  >
+                    {game.title} {availableQuantity <= 0 ? '(Недоступна)' : `(Доступно: ${availableQuantity} шт.)`}
+                  </option>
+                )
+              })}
+            </select>
+          </div>
+          <button
+            type="submit"
+            disabled={isProcessing}
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          >
+            {isProcessing ? 'Додавання...' : 'Додати оренду'}
+          </button>
+        </form>
+      </div>
+
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-700">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                ID особи
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Гра
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Дата оренди
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Дата повернення
+              </th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Дії
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            {rentals.map(rental => (
+              <tr key={rental.id}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  {rental.personId}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  {games.find(g => g.id === rental.gameId)?.title || 'Невідома гра'}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  {new Date(rental.rentedAt).toLocaleDateString()}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  {rental.returnedAt ? new Date(rental.returnedAt).toLocaleDateString() : '-'}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  {!rental.returnedAt && (
+                    <button
+                      onClick={() => handleReturnGame(rental.id)}
+                      disabled={isProcessing}
+                      className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-4 disabled:opacity-50"
+                    >
+                      Повернути
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleDeleteRental(rental.id)}
+                    disabled={isProcessing}
+                    className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50"
+                  >
+                    Видалити
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+} 
