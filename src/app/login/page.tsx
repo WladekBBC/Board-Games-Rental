@@ -48,7 +48,7 @@ export default function LoginPage() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-            Вхід до системи
+            {language.LoginToService}
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -106,7 +106,7 @@ export default function LoginPage() {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400">
-                  Або
+                  {language.or}
                 </span>
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function LoginPage() {
                   />
                 </svg>
               </span>
-              Увійти через Google
+              {language.loginWithGoogle}
             </button>
           </div>
         </form>

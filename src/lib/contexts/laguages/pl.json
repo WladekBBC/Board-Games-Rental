@@ -1,4 +1,7 @@
 {
+    "LoginToService": "Logowanie do serwisu",
     "login": "Zaloguj",
-    "password": "Hasło"
+    "password": "Hasło",
+    "or": "Lub",
+    "loginWithGoogle": "Zaloguj przez Google"
 }

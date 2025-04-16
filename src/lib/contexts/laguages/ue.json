@@ -1,5 +1,7 @@
 {
+    "LoginToService": "Вхід до системи",
     "login": "Увійти",
-    "password": "Пароль"
-
+    "password": "Пароль",
+    "or": "Або",
+    "loginWithGoogle": "Увійти через Google"
 }
