@@ -4,10 +4,13 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/contexts/AuthContext'
 import { useTheme } from '@/lib/contexts/ThemeContext'
+import { useLang } from '@/lib/contexts/LanguageContext'
 
 export function Navbar() {
   const { user, signOut } = useAuth()
   const { theme, toggleTheme } = useTheme()
+  const { lang, language, toggleLanguage } = useLang()
+
   const pathname = usePathname()
 
   const isActive = (path: string) => pathname === path
@@ -60,6 +63,12 @@ export function Navbar() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            <button
+                onClick={toggleLanguage}
+                className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                {lang === 'ue' ? 'PL' : 'UE'}
+            </button>
             <button
               onClick={toggleTheme}
               className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"

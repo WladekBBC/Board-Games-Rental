@@ -18,21 +18,19 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const [lang, setLang] = useState<Language>('pl');
     const [language, setLanguage] = useState<{}>(pl);
 
-    console.log(language)
-
     useEffect(() => {
-      // Завантажуємо збережену тему
       const savedLanguage = localStorage.getItem('lang') as Language
       if (savedLanguage) {
         setLang(savedLanguage)
         setLanguage(lang == 'pl' ? pl : ue)
       }
-    }, [])
+    })
   
     const toggleLanguage = () => {
-      setLang(lang === 'pl' ? 'ue' : 'pl');
-      setLanguage(lang == 'pl' ? pl : ue);
-      localStorage.setItem('lang', lang)
+      const newLang = lang === 'pl' ? 'ue' : 'pl'
+      setLang(newLang);
+      setLanguage(newLang === 'pl' ? pl : ue);
+      localStorage.setItem('lang', newLang)
     }
   
     return (

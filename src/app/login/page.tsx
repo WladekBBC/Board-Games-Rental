@@ -23,7 +23,7 @@ export default function LoginPage() {
       await signIn(email, password)
       router.push('/')
     } catch (error) {
-      setError('Невірний email або пароль')
+      setError(language.loginError)
     } finally {
       setIsLoading(false)
     }
@@ -37,7 +37,7 @@ export default function LoginPage() {
       await signInWithGoogle()
       router.push('/')
     } catch (error) {
-      setError('Помилка при вході через Google')
+      setError(language.loginGoogleError)
     } finally {
       setIsLoading(false)
     }
@@ -97,7 +97,7 @@ export default function LoginPage() {
               disabled={isLoading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             >
-              {isLoading ? 'Вхід...' : language.login}
+              {isLoading ? language.loginLoading : language.login}
             </button>
 
             <div className="relative">

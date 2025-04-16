@@ -3,5 +3,59 @@
     "login": "Увійти",
     "password": "Пароль",
     "or": "Або",
-    "loginWithGoogle": "Увійти через Google"
+    "loginError": "Невірний email або пароль",
+    "loginWithGoogle": "Увійти через Google",
+    "loginGoogleError": "Помилка при вході через Google",
+    "loginLoading": "Вхід...",
+
+    "addGameError": "Помилка при додаванні гри",
+    "editGameError": "Помилка при оновленні гри",
+    "deleteGameError": "Помилка при видаленні гри",
+    "rentGameError": "Помилка при додаванні оренди",
+    "rerentGameError": "Помилка при оновленні оренди",
+    "deleteGameRentError": "Помилка при видаленні оренди",
+    "returnGameError": "Помилка при поверненні гри",
+
+    "manageGame": "Управління іграми",
+    "manageRent": "Управління орендами",
+    "addNewGame": "Додати нову гру",
+    "gameList": "Список ігор",
+
+    "gameAvailable": "Доступна",
+    "gameUnvailable": "Недоступна",
+    "piece": "шт",
+
+    "gameTitle": "Назва",
+    "gameDesc": "Опис",
+    "gameImageUrl": "URL зображення",
+    "gameCategory": "Категорія",
+    "gameNumber": "Кількість штук",
+    "addGame": "Додати гру",
+    "gameAdding": "Додавання...",
+
+    "addRent": "Додати нову оренду",
+    "indexNumber": "ID особи",
+    "gameId": "ID гри",
+    "selectGame": "Виберіть гру",
+    "renting": "Додати оренду",
+
+    "game": "Гра",
+    "rentDate": "Дата оренди",
+    "returnDate": "Дата повернення",
+    "actions": "Дії",
+    "return": "Повернути",
+    "delete": "Видалити",
+
+    "editGame": "Редагувати",
+    "deleteGame": "Видалити",
+    "gameNotFound": "Гра не знайдена",
+    "gameUnavailableMessage": "Гра недоступна для оренди - всі екземпляри вже орендовані",
+
+    "warning": "Увага",
+    "permissionDenied": "У вас немає прав для доступу до цієї сторінки",
+
+    "gameRented": "Оренду успішно додано",
+    "gameRerented": "Оренду успішно оновлено",
+    "gameDeletedRent": "Оренду успішно видалено",
+    "gameReturned": "Гру успішно повернуто"
 }
