@@ -13,13 +13,14 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  isAdmin: boolean;
   error: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Список email-адрес адміністраторів
 const ADMIN_EMAILS = ['kurwbober@gmail.com', 'admin@example.com']
@@ -51,6 +52,7 @@ const getUserFromStorage = (): User | null => {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => getUserFromStorage());
   const [loading, setLoading] = useState(false);
+  const [isAdmin, setAdmin] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
@@ -140,6 +142,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const contextValue = {
     user,
     loading,
+    isAdmin,
     error,
     signIn,
     signInWithGoogle,
@@ -153,7 +156,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useAuth() {
+export function useAuth() :AuthContextType {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');

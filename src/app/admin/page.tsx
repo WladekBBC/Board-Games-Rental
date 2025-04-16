@@ -6,6 +6,7 @@ import { AddGameForm } from '@/components/AddGameForm'
 import { EditGameForm } from '@/components/EditGameForm'
 import { Header } from '@/components/Header'
 import { useGames, Game } from '@/lib/contexts/GamesContext'
+import Image from 'next/image'
 
 export default function AdminPage() {
   const { games, updateGame } = useGames()
@@ -38,7 +39,7 @@ export default function AdminPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {games.map(game => (
                 <div key={game.id} className="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md overflow-hidden">
-                  <img src={game.imageUrl} alt={game.title} className="w-full h-48 object-cover" />
+                  <Image src={game.imageUrl} alt={game.title} className="w-full h-48 object-cover" />
                   <div className="p-4">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{game.title}</h3>
                     <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{game.description}</p>

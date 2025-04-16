@@ -7,12 +7,14 @@ import Link from 'next/link'
 import { useGames } from '@/lib/contexts/GamesContext'
 import { useRentals } from '@/lib/contexts/RentalsContext'
 import Image from 'next/image'
+import { useLang } from '@/lib/contexts/LanguageContext'
 
 export default function Home() {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
   const { games } = useGames()
   const { rentals } = useRentals()
+  const { language } = useLang()
 
   useEffect(() => {
     if (!authLoading && !user) {
