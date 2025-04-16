@@ -1,0 +1,61 @@
+{
+    "LoginToService": "Logowanie do serwisu",
+    "login": "Zaloguj",
+    "password": "Hasło",
+    "or": "Lub",
+    "loginError": "Nieprawidłowy email lub hasło",
+    "loginWithGoogle": "Zaloguj przez Google",
+    "loginGoogleError": "Nie udało się zalogować rpzez google",
+    "loginLoading": "Wychodzenie...",
+
+    "addGameError": "Błąd w czasie dodawania gry",
+    "editGameError": "Błąd w czasie edycji gry",
+    "deleteGameError": "Błąd w czasie usuwania gry",
+    "rentGameError": "Błąd w czasie wypożyczania gry",
+    "rerentGameError": "Błąd w czasie odnowienia wypożyczenia gry",
+    "deleteGameRentError": "Błąd w czasie usuwania wypożyczenia gry",
+    "returnGameError": "Błąd w czasie zwracania gry",
+
+    "manageGame": "Zarządzanie grami",
+    "manageRent": "Zarządzanie wypożyczeniem",
+    "addNewGame": "Dodaj grę",
+    "gameList": "Lista gier",
+
+    "gameAvailable": "Dostępna",
+    "gameUnvailable": "Niedostępna",
+    "piece": "szt",
+
+    "gameTitle": "Nazwa",
+    "gameDesc": "Opis",
+    "gameImageUrl": "Adres URL obrazu",
+    "gameCategory": "Kategoria",
+    "gameNumber": "Liczba sztuk",
+    "addGame": "Dodaj grę",
+    "gameAdding": "Dodawanie...",
+
+    "addRent": "Wypożycz",
+    "indexNumber": "Index osoby",
+    "gameId": "ID gry",
+    "selectGame": "Wybierz grę",
+    "renting": "Dodaj wypożyczenie",
+
+    "game": "Gra",
+    "rentDate": "Data wypożyczenia",
+    "returnDate": "Data zwrotu",
+    "actions": "Akcje",
+    "return": "Zwróć",
+    "delete": "Usuń",
+    
+    "editGame": "Edytuj",
+    "deleteGame": "Usuń",
+    "gameNotFound": "Nie znaleziono gry",
+    "gameUnavailableMessage": "Gra nie jest dostępna do wypożyczenia - wszystkie kopie zostały wypożyczone",
+
+    "warning": "Uwaga",
+    "permissionDenied": "Nie posiadasz uprawnień do tej strony",
+
+    "gameRented": "Pomyślnie wypożyczono grę",
+    "gameRerented": "Pomyślnie odnowiono wynajem gry",
+    "gameDeletedRent": "Pomyślnie usunięto wypożyczenie gry",
+    "gameReturned": "Pomyślnie zwrócono grę"
+}

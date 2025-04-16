@@ -2,22 +2,22 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
-import { BoardGame, useGames } from '@/lib/contexts/GamesContext'
+import { Game, useGames } from '@/lib/contexts/GamesContext'
 import { useAuth } from '@/lib/contexts/AuthContext'
 import { EditGameForm } from './EditGameForm'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface BoardGameListProps {
-  games: BoardGame[]
+  games: Game[]
 }
 
 export function BoardGameList({ games }: BoardGameListProps) {
   const { isAdmin } = useAuth()
   const { deleteGame } = useGames()
-  const [editingGame, setEditingGame] = useState<BoardGame | null>(null)
-  const [deletingGame, setDeletingGame] = useState<BoardGame | null>(null)
+  const [editingGame, setEditingGame] = useState<Game | null>(null)
+  const [deletingGame, setDeletingGame] = useState<Game | null>(null)
 
-  const handleDelete = (game: BoardGame) => {
+  const handleDelete = (game: Game) => {
     setDeletingGame(game)
   }
 
@@ -61,11 +61,11 @@ export function BoardGameList({ games }: BoardGameListProps) {
                   В наявності: {game.quantity} шт.
                 </span>
                 <span className={`px-3 py-1 rounded-full text-sm ${
-                  game.available 
+                  game.isAvailable 
                     ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
                     : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                 }`}>
-                  {game.available ? 'Доступно' : 'Недоступно'}
+                  {game.isAvailable ? 'Доступно' : 'Недоступно'}
                 </span>
               </div>
               {isAdmin && (
@@ -127,7 +127,7 @@ export function BoardGameList({ games }: BoardGameListProps) {
             >
               <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Підтвердження видалення</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
-                Ви впевнені, що хочете видалити гру "{deletingGame.title}"?
+                Ви впевнені, що хочете видалити гру {deletingGame.title}?
               </p>
               <div className="flex space-x-4">
                 <button

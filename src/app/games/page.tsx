@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/contexts/AuthContext'
 import { useGames, Game } from '@/lib/contexts/GamesContext'
 import { EditGameForm } from '@/components/EditGameForm'
+import Image from 'next/image'
+import { useLang } from '@/lib/contexts/LanguageContext'
 
 export default function GamesPage() {
   const router = useRouter()
@@ -12,6 +14,7 @@ export default function GamesPage() {
   const { games, addGame, updateGame, deleteGame, loading: gamesLoading } = useGames()
   const [isProcessing, setIsProcessing] = useState(false)
   const [editingGame, setEditingGame] = useState<Game | null>(null)
+  const { language } = useLang()
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -54,7 +57,7 @@ export default function GamesPage() {
 
       e.currentTarget.reset()
     } catch (error) {
-      console.error('Помилка при додаванні гри:', error)
+      console.error(`${language.addGameError}: `, error)
     } finally {
       setIsProcessing(false)
     }
@@ -80,7 +83,7 @@ export default function GamesPage() {
         isAvailable
       })
     } catch (error) {
-      console.error('Помилка при оновленні гри:', error)
+      console.error(`${language.editGameError}: `, error)
     } finally {
       setIsProcessing(false)
     }
@@ -92,7 +95,7 @@ export default function GamesPage() {
     try {
       await deleteGame(id)
     } catch (error) {
-      console.error('Помилка при видаленні гри:', error)
+      console.error(`${language.deleteGameError}: `, error)
     } finally {
       setIsProcessing(false)
     }
@@ -100,14 +103,14 @@ export default function GamesPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Управління іграми</h1>
+      <h1 className="text-3xl font-bold mb-8">{language.manageGame}</h1>
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Додати нову гру</h2>
+        <h2 className="text-xl font-semibold mb-4">{language.addNewGame}</h2>
         <form onSubmit={handleAddGame} className="space-y-4">
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Назва
+              {language.gameTitle}
             </label>
             <input
               type="text"
@@ -119,7 +122,7 @@ export default function GamesPage() {
           </div>
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Опис
+              {language.gameDesc}
             </label>
             <textarea
               id="description"
@@ -131,7 +134,7 @@ export default function GamesPage() {
           </div>
           <div>
             <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              URL зображення
+              {language.gameImageUrl}
             </label>
             <input
               type="url"
@@ -143,7 +146,7 @@ export default function GamesPage() {
           </div>
           <div>
             <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Категорія
+              {language.gameCategory}
             </label>
             <input
               type="text"
@@ -155,7 +158,7 @@ export default function GamesPage() {
           </div>
           <div>
             <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Кількість штук
+              {language.gameNumber}
             </label>
             <input
               type="number"
@@ -172,7 +175,7 @@ export default function GamesPage() {
             disabled={isProcessing}
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
           >
-            {isProcessing ? 'Додавання...' : 'Додати гру'}
+            {isProcessing ? language.gameAdding : language.addGame}
           </button>
         </form>
       </div>
@@ -180,7 +183,7 @@ export default function GamesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {games.map(game => (
           <div key={game.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <img src={game.imageUrl} alt={game.title} className="w-full h-48 object-cover" />
+            <Image src={game.imageUrl} alt={game.title} className="w-full h-48 object-cover" />
             <div className="p-4">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{game.title}</h3>
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{game.description}</p>
@@ -191,21 +194,21 @@ export default function GamesPage() {
                 </span>
               </div>
               <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                Кількість штук: {game.quantity}
+                {language.gameNumber}: {game.quantity}
               </div>
               <div className="mt-4 flex justify-end space-x-2">
                 <button
                   onClick={() => setEditingGame(game)}
                   className="px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800"
                 >
-                  Редагувати
+                  {language.editGame}
                 </button>
                 <button
                   onClick={() => handleDeleteGame(game.id)}
                   disabled={isProcessing}
                   className="px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800 disabled:opacity-50"
                 >
-                  Видалити
+                  {language.deleteGame}
                 </button>
               </div>
             </div>
