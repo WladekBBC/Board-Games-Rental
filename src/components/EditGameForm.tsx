@@ -231,6 +231,12 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
             </div>
           )}
 
+          {isValidating && (
+            <p className="text-blue-500">
+              {language.validating}
+            </p>
+          )}
+
           <div className="flex space-x-4">
             <button
               type="submit"

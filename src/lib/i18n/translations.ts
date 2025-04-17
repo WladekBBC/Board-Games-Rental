@@ -1,4 +1,4 @@
-export type Language = 'pl' | 'ua'
+export type Language = 'pl' | 'ua' | 'en'
 
 export const translations = {
   pl: {
@@ -8,12 +8,23 @@ export const translations = {
     addNewGame: 'Dodaj Nową Grę',
     gameList: 'Lista Gier',
     
+    // Logowanie
+    LoginToService: 'Logowanie do serwisu',
+    login: 'Zaloguj',
+    password: 'Hasło',
+    or: 'Lub',
+    loginError: 'Nieprawidłowy email lub hasło',
+    loginWithGoogle: 'Zaloguj przez Google',
+    loginGoogleError: 'Nie udało się zalogować przez google',
+    loginLoading: 'Logowanie...',
+    
     // Formularze
     gameTitle: 'Tytuł Gry',
     gameDesc: 'Opis',
     gameImageUrl: 'Link do Obrazka',
     gameCategory: 'Kategoria',
     gameNumber: 'Ilość Sztuk',
+    validating: 'Sprawdzanie...',
     
     // Przyciski
     addGame: 'Dodaj Grę',
@@ -65,7 +76,6 @@ export const translations = {
     availableCopies: 'Dostępnych Kopii',
     activeRentals: 'Aktywne Wypożyczenia',
     yourActiveRentals: 'Twoje Aktywne Wypożyczenia',
-    validating: 'Sprawdzanie...',
 
     // Wypożyczenia
     manageRent: 'Zarządzanie Wypożyczeniami',
@@ -87,12 +97,23 @@ export const translations = {
     addNewGame: 'Додати Нову Гру',
     gameList: 'Список Ігор',
     
+    // Вхід
+    LoginToService: 'Вхід до сервісу',
+    login: 'Увійти',
+    password: 'Пароль',
+    or: 'Або',
+    loginError: 'Неправильний email або пароль',
+    loginWithGoogle: 'Увійти через Google',
+    loginGoogleError: 'Не вдалося увійти через google',
+    loginLoading: 'Вхід...',
+    
     // Форми
     gameTitle: 'Назва Гри',
     gameDesc: 'Опис',
     gameImageUrl: 'Посилання на Зображення',
     gameCategory: 'Категорія',
     gameNumber: 'Кількість',
+    validating: 'Перевірка...',
     
     // Кнопки
     addGame: 'Додати Гру',
@@ -144,7 +165,6 @@ export const translations = {
     availableCopies: 'Доступних Копій',
     activeRentals: 'Активні Оренди',
     yourActiveRentals: 'Ваші Активні Оренди',
-    validating: 'Перевірка...',
 
     // Оренда
     manageRent: 'Управління Орендою',
@@ -159,4 +179,4 @@ export const translations = {
     actions: 'Дії',
     return: 'Повернути'
   }
-} 
+} as const; 
