@@ -9,8 +9,7 @@ import { useLang } from '@/lib/contexts/LanguageContext'
 export function Navbar() {
   const { user, signOut } = useAuth()
   const { theme, toggleTheme } = useTheme()
-  const { lang, language, toggleLanguage } = useLang()
-
+  const { currentLang, setLanguage, language } = useLang()
   const pathname = usePathname()
 
   const isActive = (path: string) => pathname === path
@@ -36,7 +35,7 @@ export function Navbar() {
                     : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
                 }`}
               >
-                Головна
+                {language.home}
               </Link>
               <Link
                 href="/games"
@@ -46,7 +45,7 @@ export function Navbar() {
                     : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
                 }`}
               >
-                Ігри
+                {language.games}
               </Link>
               {user.isAdmin && (
                 <Link
@@ -57,17 +56,17 @@ export function Navbar() {
                       : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
                   }`}
                 >
-                  Оренди
+                  {language.rentals}
                 </Link>
               )}
             </div>
           </div>
           <div className="flex items-center space-x-4">
             <button
-                onClick={toggleLanguage}
-                className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                {lang === 'ue' ? 'PL' : 'UE'}
+              onClick={() => setLanguage(currentLang === 'pl' ? 'ua' : 'pl')}
+              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              {currentLang === 'pl' ? 'UA' : 'PL'}
             </button>
             <button
               onClick={toggleTheme}
@@ -83,7 +82,7 @@ export function Navbar() {
                 onClick={() => signOut()}
                 className="text-sm text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
               >
-                Вийти
+                {language.logout}
               </button>
             </div>
           </div>

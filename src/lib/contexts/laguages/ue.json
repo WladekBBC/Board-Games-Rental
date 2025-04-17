@@ -1,24 +1,24 @@
 {
-    "LoginToService": "Вхід до системи",
+    "LoginToService": "Вхід до сервісу",
     "login": "Увійти",
     "password": "Пароль",
     "or": "Або",
-    "loginError": "Невірний email або пароль",
+    "loginError": "Неправильний email або пароль",
     "loginWithGoogle": "Увійти через Google",
-    "loginGoogleError": "Помилка при вході через Google",
-    "loginLoading": "Вхід...",
+    "loginGoogleError": "Не вдалося увійти через google",
+    "loginLoading": "Виходимо...",
 
-    "addGameError": "Помилка при додаванні гри",
-    "editGameError": "Помилка при оновленні гри",
-    "deleteGameError": "Помилка при видаленні гри",
-    "rentGameError": "Помилка при додаванні оренди",
-    "rerentGameError": "Помилка при оновленні оренди",
-    "deleteGameRentError": "Помилка при видаленні оренди",
-    "returnGameError": "Помилка при поверненні гри",
+    "addGameError": "Помилка під час додавання гри",
+    "editGameError": "Помилка під час редагування гри",
+    "deleteGameError": "Помилка під час видалення гри",
+    "rentGameError": "Помилка під час оренди гри",
+    "rerentGameError": "Помилка під час поновлення оренди гри",
+    "deleteGameRentError": "Помилка під час видалення оренди гри",
+    "returnGameError": "Помилка під час повернення гри",
 
     "manageGame": "Управління іграми",
-    "manageRent": "Управління орендами",
-    "addNewGame": "Додати нову гру",
+    "manageRent": "Управління орендою",
+    "addNewGame": "Додати гру",
     "gameList": "Список ігор",
 
     "gameAvailable": "Доступна",
@@ -32,9 +32,10 @@
     "gameNumber": "Кількість штук",
     "addGame": "Додати гру",
     "gameAdding": "Додавання...",
+    "validating": "Перевірка...",
 
-    "addRent": "Додати нову оренду",
-    "indexNumber": "ID особи",
+    "addRent": "Орендувати",
+    "indexNumber": "Індекс особи",
     "gameId": "ID гри",
     "selectGame": "Виберіть гру",
     "renting": "Додати оренду",
@@ -45,17 +46,17 @@
     "actions": "Дії",
     "return": "Повернути",
     "delete": "Видалити",
-
+    
     "editGame": "Редагувати",
     "deleteGame": "Видалити",
-    "gameNotFound": "Гра не знайдена",
-    "gameUnavailableMessage": "Гра недоступна для оренди - всі екземпляри вже орендовані",
+    "gameNotFound": "Гру не знайдено",
+    "gameUnavailableMessage": "Гра недоступна для оренди - всі копії орендовані",
 
     "warning": "Увага",
-    "permissionDenied": "У вас немає прав для доступу до цієї сторінки",
+    "permissionDenied": "У вас немає прав доступу до цієї сторінки",
 
-    "gameRented": "Оренду успішно додано",
-    "gameRerented": "Оренду успішно оновлено",
-    "gameDeletedRent": "Оренду успішно видалено",
-    "gameReturned": "Гру успішно повернуто"
+    "gameRented": "Гру успішно орендовано",
+    "gameRerented": "Оренду гри успішно поновлено",
+    "gameDeletedRent": "Оренду гри успішно видалено",
+    "gameReturned": "Гру успішно повернено"
 }

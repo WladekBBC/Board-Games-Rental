@@ -200,7 +200,7 @@ export default function GamesPage() {
               <div className="mt-4 flex items-center justify-between">
                 <span className="text-sm text-gray-500 dark:text-gray-400">{game.category}</span>
                 <span className={`text-sm ${game.isAvailable ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                  {game.isAvailable ? 'Доступна' : 'Недоступна'}
+                  {game.isAvailable ? language.gameAvailable : language.gameUnavailable}
                 </span>
               </div>
               <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
