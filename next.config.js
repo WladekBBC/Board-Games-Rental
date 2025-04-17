@@ -26,6 +26,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'plus.unsplash.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'cdn-s-thewitcher.cdprojektred.com',
         pathname: '/**',
       },

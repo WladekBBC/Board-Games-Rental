@@ -1,6 +1,6 @@
 'use client'
 
-import Image from 'next/image'
+import Image, { ImageLoaderProps } from 'next/image'
 import { useState } from 'react'
 import { Game, useGames } from '@/lib/contexts/GamesContext'
 import { useAuth } from '@/lib/contexts/AuthContext'
@@ -9,6 +9,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 interface BoardGameListProps {
   games: Game[]
+}
+
+const imageLoader = ({ src, width, quality = 75 }: ImageLoaderProps): string => {
+  return `${src}?w=${width}&q=${quality}`
 }
 
 export function BoardGameList({ games }: BoardGameListProps) {
@@ -46,11 +50,12 @@ export function BoardGameList({ games }: BoardGameListProps) {
           >
             <div className="relative h-48">
               <Image
+                loader={imageLoader}
                 src={game.imageUrl}
                 alt={game.title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                width={800}
+                height={400}
+                className="object-cover w-full h-full"
               />
             </div>
             <div className="p-4">

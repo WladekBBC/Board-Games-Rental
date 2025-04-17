@@ -24,10 +24,9 @@ export function AddGameForm() {
 
   const validateImageUrl = async (url: string): Promise<boolean> => {
     return new Promise((resolve) => {
-      const img = new Image()
+      const img = document.createElement('img')
       img.onload = async () => {
         try {
-          // Перевіряємо розмір зображення
           const response = await fetch(url)
           const blob = await response.blob()
           if (blob.size > MAX_IMAGE_SIZE) {

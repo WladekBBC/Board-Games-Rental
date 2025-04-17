@@ -8,6 +8,7 @@ import { useGames } from '@/lib/contexts/GamesContext'
 import { useRentals } from '@/lib/contexts/RentalsContext'
 import Image from 'next/image'
 import { useLang } from '@/lib/contexts/LanguageContext'
+import { imageLoader } from '@/lib/utils/imageLoader'
 
 export default function Home() {
   const router = useRouter()
@@ -97,10 +98,12 @@ export default function Home() {
           <div key={game.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
             <div className="relative h-48">
               <Image
+                loader={imageLoader}
                 src={game.imageUrl}
                 alt={game.title}
-                fill
-                className="object-cover"
+                width={800}
+                height={400}
+                className="object-cover w-full h-full"
               />
             </div>
             <div className="p-4">

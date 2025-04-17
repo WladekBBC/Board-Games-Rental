@@ -7,6 +7,7 @@ import { useGames, Game } from '@/lib/contexts/GamesContext'
 import { EditGameForm } from '@/components/EditGameForm'
 import Image from 'next/image'
 import { useLang } from '@/lib/contexts/LanguageContext'
+import { imageLoader } from '@/lib/utils/imageLoader'
 
 export default function GamesPage() {
   const router = useRouter()
@@ -183,7 +184,16 @@ export default function GamesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {games.map(game => (
           <div key={game.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <Image src={game.imageUrl} alt={game.title} className="w-full h-48 object-cover" />
+            <div className="relative h-48">
+              <Image
+                loader={imageLoader}
+                src={game.imageUrl}
+                alt={game.title}
+                width={800}
+                height={400}
+                className="object-cover w-full h-full"
+              />
+            </div>
             <div className="p-4">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{game.title}</h3>
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{game.description}</p>

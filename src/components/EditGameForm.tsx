@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { useGames, Game } from '@/lib/contexts/GamesContext'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
+import { imageLoader } from '@/lib/utils/imageLoader'
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
 
@@ -27,10 +29,9 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
 
   const validateImageUrl = async (url: string): Promise<boolean> => {
     return new Promise((resolve) => {
-      const img = new Image()
+      const img = document.createElement('img')
       img.onload = async () => {
         try {
-          // Перевіряємо розмір зображення
           const response = await fetch(url)
           const blob = await response.blob()
           if (blob.size > MAX_IMAGE_SIZE) {
@@ -108,7 +109,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Редагувати гру</h2>
           <button
@@ -176,6 +177,18 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
               <p className="mt-1 text-sm text-red-600">
                 Неправильне посилання на зображення або розмір перевищує 5MB
               </p>
+            )}
+            {formData.imageUrl && isImageValid && (
+              <div className="mt-2 relative h-48 w-full">
+                <Image
+                  loader={imageLoader}
+                  src={formData.imageUrl}
+                  alt="Podgląd obrazu"
+                  width={800}
+                  height={400}
+                  className="object-cover w-full h-full rounded-md"
+                />
+              </div>
             )}
           </div>
 
