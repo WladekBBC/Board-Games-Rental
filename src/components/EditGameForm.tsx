@@ -5,6 +5,7 @@ import { useGames, Game } from '@/lib/contexts/GamesContext'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { imageLoader } from '@/lib/utils/imageLoader'
+import { useLang } from '@/lib/contexts/LanguageContext'
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
 
@@ -15,6 +16,7 @@ interface EditGameFormProps {
 
 export function EditGameForm({ game, onClose }: EditGameFormProps) {
   const { updateGame } = useGames()
+  const { language } = useLang()
   const [formData, setFormData] = useState({
     title: game.title,
     description: game.description,
@@ -36,7 +38,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
           const blob = await response.blob()
           if (blob.size > MAX_IMAGE_SIZE) {
             resolve(false)
-            setError('Розмір зображення не повинен перевищувати 5MB')
+            setError(language.invalidImageUrl)
             return
           }
           resolve(true)
@@ -54,17 +56,17 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
     setError(null)
 
     if (!formData.title.trim()) {
-      setError('Будь ласка, введіть назву гри')
+      setError(language.enterTitle)
       return
     }
 
     if (!formData.description.trim()) {
-      setError('Будь ласка, введіть опис гри')
+      setError(language.enterDesc)
       return
     }
 
     if (!formData.imageUrl.trim()) {
-      setError('Будь ласка, додайте посилання на зображення')
+      setError(language.enterImageUrl)
       return
     }
 
@@ -73,13 +75,13 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
     setIsValidating(false)
     
     if (!isValid) {
-      setError('Неправильне посилання на зображення або розмір перевищує 5MB')
+      setError(language.invalidImageUrl)
       setIsImageValid(false)
       return
     }
 
     if (formData.quantity < 0) {
-      setError('Кількість не може бути від\'ємною')
+      setError(language.invalidQuantity)
       return
     }
 
@@ -90,7 +92,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
       })
       onClose()
     } catch (error) {
-      setError('Помилка при оновленні гри')
+      setError(language.editGameError)
     }
   }
 
@@ -111,7 +113,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Редагувати гру</h2>
+          <h2 className="text-xl font-semibold">{language.editGame}</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
@@ -123,7 +125,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-              Назва гри
+              {language.gameTitle}
             </label>
             <input
               type="text"
@@ -136,7 +138,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
 
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-              Опис
+              {language.gameDesc}
             </label>
             <textarea
               id="description"
@@ -149,7 +151,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
 
           <div>
             <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">
-              Посилання на зображення
+              {language.gameImageUrl}
             </label>
             <div className="relative">
               <input
@@ -175,7 +177,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
             </div>
             {!isImageValid && (
               <p className="mt-1 text-sm text-red-600">
-                Неправильне посилання на зображення або розмір перевищує 5MB
+                {language.invalidImageUrl}
               </p>
             )}
             {formData.imageUrl && isImageValid && (
@@ -194,7 +196,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
 
           <div>
             <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-              Категорія
+              {language.gameCategory}
             </label>
             <input
               type="text"
@@ -207,7 +209,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
 
           <div>
             <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
-              Кількість штук
+              {language.gameNumber}
             </label>
             <input
               type="number"
@@ -237,14 +239,14 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
                 isValidating ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
-              {isValidating ? 'Перевірка...' : 'Зберегти зміни'}
+              {language.save}
             </button>
             <button
               type="button"
               onClick={onClose}
               className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
             >
-              Скасувати
+              {language.cancel}
             </button>
           </div>
         </form>

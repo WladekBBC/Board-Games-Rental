@@ -166,8 +166,8 @@ export default function RentalsPage() {
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">{language.addRent}</h2>
         <form onSubmit={handleAddRental} className="space-y-4">
-          <div>
-            <label htmlFor="personId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <div className="w-full">
+            <label htmlFor="personId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               {language.indexNumber}
             </label>
             <input
@@ -175,18 +175,19 @@ export default function RentalsPage() {
               id="personId"
               name="personId"
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-4 py-2"
+              placeholder={language.indexNumber}
             />
           </div>
-          <div>
-            <label htmlFor="gameId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <div className="w-full">
+            <label htmlFor="gameId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               {language.gameId}
             </label>
             <select
               id="gameId"
               name="gameId"
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-4 py-2"
             >
               <option value="">{language.selectGame}</option>
               {games.map(game => {

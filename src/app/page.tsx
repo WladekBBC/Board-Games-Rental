@@ -47,43 +47,38 @@ export default function Home() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Ласкаво просимо до системи оренди настільних ігор</h1>
+      <h1 className="text-3xl font-bold mb-8">{language.appTitle}</h1>
       
       {/* Інформаційні картки */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         <Link href="/games" className="block">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">Ігри</h2>
+            <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">{language.games}</h2>
             <div className="text-gray-600 dark:text-gray-300">
-              Доступно {availableGames.length} унікальних ігор
+              {language.totalGames}: {availableGames.length}
               <br />
-              Всього {totalAvailableCopies} вільних екземплярів
+              {language.availableCopies}: {totalAvailableCopies}
             </div>
           </div>
         </Link>
         <Link href={user.isAdmin ? "/rentals" : "/my-rentals"} className="block">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <h2 className="text-xl font-semibold mb-4">Оренда</h2>
+            <h2 className="text-xl font-semibold mb-4">{language.rentals}</h2>
             <div className="text-gray-600 dark:text-gray-300 mb-2">
               {user.isAdmin
-                ? 'Управління орендами та перегляд історії.'
-                : 'Перегляньте свої поточні оренди та історію.'}
+                ? language.activeRentals
+                : language.yourActiveRentals}
             </div>
             <div className="text-sm text-blue-600 dark:text-blue-400">
               {user.isAdmin 
-                ? `Активних оренд: ${activeRentals.length}`
-                : `Ваших активних оренд: ${userActiveRentals.length}`}
+                ? `${activeRentals.length}`
+                : `${userActiveRentals.length}`}
             </div>
           </div>
         </Link>
         <Link href="/profile" className="block">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <h2 className="text-xl font-semibold mb-4">Профіль</h2>
-            <div className="text-gray-600 dark:text-gray-300 mb-2">
-              {user.isAdmin
-                ? 'Управління системою та налаштування.'
-                : 'Ваші налаштування та персональна інформація.'}
-            </div>
+            <h2 className="text-xl font-semibold mb-4">{language.profile}</h2>
             <div className="text-sm text-blue-600 dark:text-blue-400">
               {user.email}
             </div>
@@ -92,7 +87,7 @@ export default function Home() {
       </div>
 
       {/* Список доступних ігор */}
-      <h2 className="text-2xl font-bold mb-6">Доступні ігри</h2>
+      <h2 className="text-2xl font-bold mb-6">{language.gameList}</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {gamesWithAvailability.map(game => (
           <div key={game.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
@@ -113,10 +108,10 @@ export default function Home() {
                 <span className="text-sm text-gray-500 dark:text-gray-400">{game.category}</span>
                 <div className="flex flex-col items-end">
                   <span className={`text-sm ${game.availableQuantity > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                    {game.availableQuantity > 0 ? 'Доступна' : 'Недоступна'}
+                    {game.availableQuantity > 0 ? language.gameAvailable : language.gameUnavailable}
                   </span>
                   <span className="text-xs text-gray-500 dark:text-gray-400">
-                    Available: {game.availableQuantity} з {game.quantity} шт.
+                    {language.available}: {game.availableQuantity} / {game.quantity}
                   </span>
                 </div>
               </div>

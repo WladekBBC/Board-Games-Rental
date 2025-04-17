@@ -1,49 +1,48 @@
 'use client'
 
-import { createContext, ReactNode, useContext, useEffect, useState } from "react"
-import pl from './laguages/pl.json';
-import ue from './laguages/ue.json';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { translations, Language } from '../i18n/translations'
 
-type Language = 'pl' | 'ue'
-
-interface LanguageContextType {
-    lang: Language
-    language: {[x:string]: string},
-    toggleLanguage: () => void
+type LanguageContextType = {
+  language: typeof translations.pl
+  currentLang: Language
+  setLanguage: (lang: Language) => void
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-    const [lang, setLang] = useState<Language>('pl');
-    const [language, setLanguage] = useState<{}>(pl);
+  const [currentLang, setCurrentLang] = useState<Language>('ua')
 
-    useEffect(() => {
-      const savedLanguage = localStorage.getItem('lang') as Language
-      if (savedLanguage) {
-        setLang(savedLanguage)
-        setLanguage(lang == 'pl' ? pl : ue)
-      }
-    })
-  
-    const toggleLanguage = () => {
-      const newLang = lang === 'pl' ? 'ue' : 'pl'
-      setLang(newLang);
-      setLanguage(newLang === 'pl' ? pl : ue);
-      localStorage.setItem('lang', newLang)
+  useEffect(() => {
+    const savedLang = localStorage.getItem('language') as Language
+    if (savedLang && (savedLang === 'pl' || savedLang === 'ua')) {
+      setCurrentLang(savedLang)
     }
-  
-    return (
-      <LanguageContext.Provider value={{ lang, language, toggleLanguage }}>
-        {children}
-      </LanguageContext.Provider>
-    )
+  }, [])
+
+  const setLanguage = (lang: Language) => {
+    setCurrentLang(lang)
+    localStorage.setItem('language', lang)
   }
-  
-  export function useLang() {
-    const context = useContext(LanguageContext)
-    if (context === undefined) {
-      throw new Error('useLang must be used within a LanguageProvider')
-    }
-    return context
-  } 
+
+  return (
+    <LanguageContext.Provider 
+      value={{
+        language: translations[currentLang],
+        currentLang,
+        setLanguage
+      }}
+    >
+      {children}
+    </LanguageContext.Provider>
+  )
+}
+
+export function useLang() {
+  const context = useContext(LanguageContext)
+  if (context === undefined) {
+    throw new Error('useLang must be used within a LanguageProvider')
+  }
+  return context
+} 
