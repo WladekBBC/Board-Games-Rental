@@ -26,7 +26,7 @@ export default function RentalsPage() {
    */
   useEffect(() => {
     if (!authLoading && !user) {
-      router.replace('/login')
+      router.replace('/')
     }
   }, [user, authLoading, router])
 

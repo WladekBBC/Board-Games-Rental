@@ -7,7 +7,7 @@ import { GamesProvider } from "@/lib/contexts/GamesContext"
 import { RentalsProvider } from "@/lib/contexts/RentalsContext"
 import { LanguageProvider } from "@/lib/contexts/LanguageContext"
 import { ThemeProvider } from "@/lib/contexts/ThemeContext"
-import { Navbar } from '@/components/Navbar'
+import { Navbar } from '@/components/Navbar/Navbar'
 
 const inter = Inter({ subsets: ['latin'] })
 
