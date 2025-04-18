@@ -50,7 +50,7 @@
     "editGame": "Редагувати",
     "deleteGame": "Видалити",
     "gameNotFound": "Гру не знайдено",
-    "gameUnavailableMessage": "Гра недоступна для оренди - всі копії орендовані",
+    "gameUnavailableMessage": "Гра недоступна - всі екземпляри орендовані",
 
     "warning": "Увага",
     "permissionDenied": "У вас немає прав доступу до цієї сторінки",
@@ -58,5 +58,8 @@
     "gameRented": "Гру успішно орендовано",
     "gameRerented": "Оренду гри успішно поновлено",
     "gameDeletedRent": "Оренду гри успішно видалено",
-    "gameReturned": "Гру успішно повернено"
+    "gameReturned": "Гру успішно повернено",
+
+    "gameDescription": "Опис Гри",
+    "saveChanges": "Зберегти Зміни"
 }

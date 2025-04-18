@@ -6,6 +6,12 @@ interface ImageUploadProps {
   onImageChange: (file: File | null) => void;
 }
 
+/**
+ * Image upload component
+ * @param {Object} props - Component props
+ * @param {(file: File | null) => void} props.onImageChange - Function called when image changes
+ * @returns {JSX.Element} Image upload component
+ */
 export default function ImageUpload({ onImageChange }: ImageUploadProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);

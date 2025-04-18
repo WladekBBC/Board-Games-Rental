@@ -6,23 +6,50 @@ import { Game, useGames } from '@/lib/contexts/GamesContext'
 import { useAuth } from '@/lib/contexts/AuthContext'
 import { EditGameForm } from './EditGameForm'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLang } from '@/lib/contexts/LanguageContext'
+
 
 interface BoardGameListProps {
   games: Game[]
+  isAdmin: boolean
+  onEdit: (game: Game) => void
+  onDelete: (id: string) => void
 }
 
 const imageLoader = ({ src, width, quality = 75 }: ImageLoaderProps): string => {
   return `${src}?w=${width}&q=${quality}`
 }
 
-export function BoardGameList({ games }: BoardGameListProps) {
-  const { isAdmin } = useAuth()
+/**
+ * BoardGameList component
+ * @param {Object} props - Component props
+ * @param {Game[]} props.games - Array of games to display
+ * @param {boolean} props.isAdmin - Whether the user is an admin
+ * @param {(game: Game) => void} props.onEdit - Function to handle game edit
+ * @param {(id: string) => void} props.onDelete - Function to handle game deletion
+ */
+export function BoardGameList({ games, isAdmin, onEdit, onDelete }: BoardGameListProps) {
+  const { language } = useLang()
   const { deleteGame } = useGames()
   const [editingGame, setEditingGame] = useState<Game | null>(null)
   const [deletingGame, setDeletingGame] = useState<Game | null>(null)
 
-  const handleDelete = (game: Game) => {
-    setDeletingGame(game)
+  /**
+   * Handles game edit click
+   * @param {Game} game - Game to edit
+   */
+  const handleEdit = (game: Game) => {
+    setEditingGame(game)
+  }
+
+  /**
+   * Handles game deletion click
+   * @param {string} id - ID game to delete
+   */
+  const handleDelete = (id: string) => {
+    if (window.confirm(language.confirmDelete)) {
+      onDelete(id)
+    }
   }
 
   const confirmDelete = async () => {
@@ -70,22 +97,22 @@ export function BoardGameList({ games }: BoardGameListProps) {
                     ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
                     : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                 }`}>
-                  {game.isAvailable ? 'Доступно' : 'Недоступно'}
+                  {game.isAvailable ? language.gameAvailable : language.gameUnavailable}
                 </span>
               </div>
               {isAdmin && (
                 <div className="mt-4 flex space-x-2">
                   <button
-                    onClick={() => setEditingGame(game)}
-                    className="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 py-2 px-4 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                    onClick={() => handleEdit(game)}
+                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                   >
-                    Редагувати
+                    {language.editGame}
                   </button>
                   <button
-                    onClick={() => handleDelete(game)}
-                    className="flex-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 py-2 px-4 rounded-md hover:bg-red-200 dark:hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                    onClick={() => handleDelete(game.id)}
+                    className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
                   >
-                    Видалити
+                    {language.deleteGame}
                   </button>
                 </div>
               )}

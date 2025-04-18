@@ -1,8 +1,11 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { signInWithGoogle as firebaseSignInWithGoogle, logoutUser } from '@/lib/firebase/firebaseUtils'
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { auth } from '@/lib/firebase/firebase'
+import { googleProvider } from '@/lib/firebase/firebase'
 
 export interface User {
   email: string | null;
@@ -22,10 +25,8 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Список email-адрес адміністраторів
 const ADMIN_EMAILS = ['kurwbober@gmail.com', 'admin@example.com']
 
-// Функції для роботи з localStorage
 const saveUserToStorage = (user: User | null) => {
   if (typeof window === 'undefined') return;
   try {
@@ -50,11 +51,18 @@ const getUserFromStorage = (): User | null => {
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => getUserFromStorage());
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
   const [isAdmin, setAdmin] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  
+  useEffect(() => {
+    const savedUser = getUserFromStorage();
+    setUser(savedUser);
+    setLoading(false);
+  }, []);
 
   const handleAuthSuccess = async (userData: User) => {
     setUser(userData);
@@ -69,6 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     throw err;
   };
 
+  
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
@@ -78,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error('Email та пароль обов\'язкові');
       }
 
-      // Тестова логіка для демонстрації
+      // TEST LOGIC FOR DEMO
       if (email === 'admin@example.com' && password === 'admin123') {
         await handleAuthSuccess({
           email,

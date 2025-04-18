@@ -50,7 +50,7 @@
     "editGame": "Edytuj",
     "deleteGame": "Usuń",
     "gameNotFound": "Nie znaleziono gry",
-    "gameUnavailableMessage": "Gra nie jest dostępna do wypożyczenia - wszystkie kopie zostały wypożyczone",
+    "gameUnavailableMessage": "Gra niedostępna - wszystkie egzemplarze wypożyczone",
 
     "warning": "Uwaga",
     "permissionDenied": "Nie posiadasz uprawnień do tej strony",
@@ -58,5 +58,8 @@
     "gameRented": "Pomyślnie wypożyczono grę",
     "gameRerented": "Pomyślnie odnowiono wynajem gry",
     "gameDeletedRent": "Pomyślnie usunięto wypożyczenie gry",
-    "gameReturned": "Pomyślnie zwrócono grę"
+    "gameReturned": "Pomyślnie zwrócono grę",
+
+    "gameDescription": "Opis Gry",
+    "saveChanges": "Zapisz Zmiany"
 }

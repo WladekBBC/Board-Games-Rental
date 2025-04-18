@@ -11,6 +11,12 @@ import { Navbar } from '@/components/Navbar'
 
 const inter = Inter({ subsets: ['latin'] })
 
+/**
+ * Client-side layout component that provides context providers
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components to be rendered
+ * @returns {JSX.Element} The client layout with all necessary providers
+ */
 export default function RootLayoutClient({
   children,
 }: {

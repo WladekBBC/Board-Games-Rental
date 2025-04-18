@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   description: 'Aplikacja do wypożyczania gier planszowych',
 }
 
+/**
+ * Root layout component that wraps the entire application
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components to be rendered
+ * @returns {JSX.Element} The root layout with language provider
+ */
 export default function RootLayout({
   children,
 }: {

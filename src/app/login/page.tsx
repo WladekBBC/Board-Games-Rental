@@ -5,6 +5,10 @@ import { useAuth } from '@/lib/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useLang } from '@/lib/contexts/LanguageContext'
 
+/**
+ * LoginPage component that handles user authentication
+ * @returns {JSX.Element} The login page with email/password and Google sign-in options
+ */
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -14,6 +18,11 @@ export default function LoginPage() {
   const router = useRouter()
   const { language } = useLang()
 
+  /**
+   * Handles the form submission for email/password login
+   * @param {React.FormEvent} e - The form submission event
+   * @returns {Promise<void>}
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
@@ -29,6 +38,10 @@ export default function LoginPage() {
     }
   }
 
+  /**
+   * Handles Google authentication
+   * @returns {Promise<void>}
+   */
   const handleGoogleSignIn = async () => {
     setError(null)
     setIsLoading(true)

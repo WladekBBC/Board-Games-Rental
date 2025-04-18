@@ -34,7 +34,7 @@ export default function AdminPage() {
           
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
             <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">{language.addNewGame}</h2>
-            <AddGameForm />
+            <AddGameForm onClose={() => {}} />
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
@@ -58,7 +58,7 @@ export default function AdminPage() {
                     <div className="mt-4 flex items-center justify-between">
                       <span className="text-sm text-gray-500 dark:text-gray-400">{game.category}</span>
                       <span className={`text-sm ${game.isAvailable ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                        {game.isAvailable ? language.gameAvailable : language.gameUnvailable}
+                        {game.isAvailable ? language.gameAvailable : language.gameUnavailable}
                       </span>
                     </div>
                     <div className="mt-4 flex items-center space-x-4">

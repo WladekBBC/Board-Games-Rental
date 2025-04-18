@@ -1,4 +1,4 @@
-export type Language = 'pl' | 'ua' | 'en'
+export type Language = 'pl' | 'ua' 
 
 export const translations = {
   pl: {
@@ -88,7 +88,9 @@ export const translations = {
     rentDate: 'Data Wypożyczenia',
     returnDate: 'Data Zwrotu',
     actions: 'Akcje',
-    return: 'Zwróć'
+    return: 'Zwróć',
+    gameDescription: 'Opis Gry',
+    saveChanges: 'Zapisz Zmiany'
   },
   ua: {
     // Заголовки
@@ -177,6 +179,8 @@ export const translations = {
     rentDate: 'Дата Оренди',
     returnDate: 'Дата Повернення',
     actions: 'Дії',
-    return: 'Повернути'
+    return: 'Повернути',
+    gameDescription: 'Опис Гри',
+    saveChanges: 'Зберегти Зміни'
   }
 } as const; 
