@@ -14,6 +14,13 @@ interface EditGameFormProps {
   onClose: () => void
 }
 
+/**
+ * Formularz edycji istniejącej gry
+ * @param {Object} props - Właściwości komponentu
+ * @param {Game} props.game - Gra do edycji
+ * @param {() => void} props.onClose - Funkcja zamykająca formularz
+ * @returns {JSX.Element} Komponent formularza
+ */
 export function EditGameForm({ game, onClose }: EditGameFormProps) {
   const { updateGame } = useGames()
   const { language } = useLang()
@@ -29,6 +36,11 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
   const [isImageValid, setIsImageValid] = useState(true)
   const [isValidating, setIsValidating] = useState(false)
 
+  /**
+   * Image size and URL validation
+   * @param {string} url - URL img to validate
+   * @returns {Promise<boolean>} Whether the image is valid
+   */
   const validateImageUrl = async (url: string): Promise<boolean> => {
     return new Promise((resolve) => {
       const img = document.createElement('img')
@@ -51,6 +63,10 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
     })
   }
 
+  /**
+   * Handles form submission
+   * @param {React.FormEvent} e - Event form
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
@@ -96,6 +112,10 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
     }
   }
 
+  /**
+   * Handles img URL change
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Event input
+   */
   const handleImageUrlChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value
     setFormData(prev => ({ ...prev, imageUrl: url }))

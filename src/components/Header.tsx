@@ -3,10 +3,14 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/contexts/AuthContext'
-import ThemeToggle from './ThemeToggle'
-import LanguageToggle from './LanguageToggle'
+import { ThemeToggle} from './ThemeToggle'
+import { LanguageToggle } from './LanguageToggle'
 import { useLang } from '@/lib/contexts/LanguageContext'
 
+/**
+ * Header component
+ * @returns {React.ReactNode}
+ */
 export function Header() {
   const pathname = usePathname()
   const { user, signOut, loading, isAdmin } = useAuth()

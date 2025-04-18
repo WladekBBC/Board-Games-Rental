@@ -2,14 +2,18 @@
 
 import { useTheme } from '@/lib/contexts/ThemeContext'
 
-export default function ThemeToggle() {
+/**
+ * Component for toggling between light and dark themes
+ * @returns {JSX.Element} A button that toggles the application theme
+ */
+export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme()
 
   return (
     <button
       onClick={toggleTheme}
       className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-      aria-label="Перемкнути тему"
+      aria-label="Toggle theme"
     >
       {theme === 'light' ? (
         <svg

@@ -7,6 +7,10 @@ import { useRentals } from '@/lib/contexts/RentalsContext'
 import { useGames } from '@/lib/contexts/GamesContext'
 import { useLang } from '@/lib/contexts/LanguageContext'
 
+/**
+ * Rentals page
+ * @returns {React.ReactNode}
+ */
 export default function RentalsPage() {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
@@ -17,12 +21,19 @@ export default function RentalsPage() {
   const [success, setSuccess] = useState<string | null>(null)
   const { language } = useLang()
 
+  /**
+   * Redirect to login page if user is not authenticated
+   */
   useEffect(() => {
     if (!authLoading && !user) {
       router.replace('/login')
     }
   }, [user, authLoading, router])
 
+  /**
+   * Render loading state if data is still loading
+   * @returns {React.ReactNode}
+   */
   if (authLoading || rentalsLoading || gamesLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -35,6 +46,10 @@ export default function RentalsPage() {
     return null
   }
 
+  /**
+   * Render permission denied message if user is not an admin
+   * @returns {React.ReactNode}
+   */
   if (!user.isAdmin) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -46,6 +61,10 @@ export default function RentalsPage() {
     )
   }
 
+  /**
+   * Handle adding a new rental
+   * @param {React.FormEvent<HTMLFormElement>} e - Form event
+   */
   const handleAddRental = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsProcessing(true)
@@ -88,6 +107,11 @@ export default function RentalsPage() {
     }
   }
 
+  /**
+   * Handle updating a rental
+   * @param {string} id - Rental ID
+   * @param {React.FormEvent<HTMLFormElement>} e - Form event
+   */
   const handleUpdateRental = async (id: string, e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsProcessing(true)
@@ -115,6 +139,10 @@ export default function RentalsPage() {
     }
   }
 
+  /**
+   * Handle deleting a rental
+   * @param {string} id - Rental ID
+   */
   const handleDeleteRental = async (id: string) => {
     setIsProcessing(true)
     setError(null)
@@ -131,6 +159,10 @@ export default function RentalsPage() {
     }
   }
 
+  /**
+   * Handle returning a game
+   * @param {string} id - Rental ID
+   */
   const handleReturnGame = async (id: string) => {
     setIsProcessing(true)
     setError(null)
@@ -201,7 +233,7 @@ export default function RentalsPage() {
                     value={game.id}
                     disabled={availableQuantity <= 0}
                   >
-                    {game.title} {availableQuantity <= 0 ? language.gameUnvailable : `(${language.gameAvailable}: ${availableQuantity} ${language.piece}.)`}
+                    {game.title} {availableQuantity <= 0 ? language.gameUnavailable : `(${language.gameAvailable}: ${availableQuantity} ${language.piece}.)`}
                   </option>
                 )
               })}
@@ -225,7 +257,7 @@ export default function RentalsPage() {
                 {language.indexNumber}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                {language.game}
+                {language.gameTitle}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 {language.rentDate}
@@ -268,7 +300,7 @@ export default function RentalsPage() {
                     disabled={isProcessing}
                     className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50"
                   >
-                    {language.delete}
+                    {language.deleteGame}
                   </button>
                 </td>
               </tr>

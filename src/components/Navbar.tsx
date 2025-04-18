@@ -5,7 +5,13 @@ import { usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/contexts/AuthContext'
 import { useTheme } from '@/lib/contexts/ThemeContext'
 import { useLang } from '@/lib/contexts/LanguageContext'
+import { LanguageToggle } from './LanguageToggle'
+import { ThemeToggle } from './ThemeToggle'
 
+/**
+ * Navigation bar component that displays the main navigation links and user controls
+ * @returns {JSX.Element} The navigation bar with links and controls
+ */
 export function Navbar() {
   const { user, signOut } = useAuth()
   const { theme, toggleTheme } = useTheme()
@@ -13,6 +19,18 @@ export function Navbar() {
   const pathname = usePathname()
 
   const isActive = (path: string) => pathname === path
+
+  /**
+   * Handles user logout
+   * @returns {Promise<void>}
+   */
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
+  }
 
   if (!user) return null
 
@@ -79,7 +97,7 @@ export function Navbar() {
                 {user.email}
               </span>
               <button
-                onClick={() => signOut()}
+                onClick={handleSignOut}
                 className="text-sm text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
               >
                 {language.logout}

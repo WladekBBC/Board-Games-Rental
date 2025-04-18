@@ -1,8 +1,13 @@
 'use client'
 
 import { useLang } from '@/lib/contexts/LanguageContext'
+import { Language } from '@/lib/i18n/translations'
 
-export default function LanguageToggle() {
+/**
+ * Component for toggling between different languages
+ * @returns {JSX.Element} A button that toggles the application language
+ */
+export function LanguageToggle() {
   const { currentLang, setLanguage } = useLang()
 
   return (

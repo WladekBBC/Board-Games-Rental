@@ -15,6 +15,12 @@ type FormData = Omit<Game, 'id'>
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
 
+/**
+ * Adding new game form
+ * @param {Object} props - Component props
+ * @param {() => void} props.onClose - Closing form function
+ * @returns {JSX.Element} Form component
+ */
 export function AddGameForm({ onClose }: AddGameFormProps) {
   const { addGame } = useGames()
   const { language } = useLang()
@@ -30,6 +36,11 @@ export function AddGameForm({ onClose }: AddGameFormProps) {
   const [isImageValid, setIsImageValid] = useState(true)
   const [isValidating, setIsValidating] = useState(false)
 
+  /**
+   * Image size and URL validation
+   * @param {string} url - URL image to validate
+   * @returns {Promise<boolean>} Whether the image is valid
+   */
   const validateImageUrl = async (url: string): Promise<boolean> => {
     return new Promise((resolve) => {
       const img = document.createElement('img')
@@ -52,6 +63,10 @@ export function AddGameForm({ onClose }: AddGameFormProps) {
     })
   }
 
+  /**
+   * Handles form submission
+   * @param {React.FormEvent} e - Event form
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
@@ -97,6 +112,10 @@ export function AddGameForm({ onClose }: AddGameFormProps) {
     }
   }
 
+  /**
+   * Handles image URL change
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Event input
+   */
   const handleImageUrlChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value
     setFormData(prev => ({ ...prev, imageUrl: url }))
