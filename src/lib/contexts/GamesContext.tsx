@@ -1,5 +1,6 @@
 'use client'
 
+import { Content } from 'next/font/google'
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 
 export interface Game {
@@ -42,20 +43,16 @@ export function GamesProvider({ children }: { children: ReactNode }) {
    * Ładuje gry z localStorage przy inicjalizacji
    */
   useEffect(() => {
-    const loadGames = () => {
-      try {
-        const savedGames = localStorage.getItem('games')
-        if (savedGames) {
-          setGames(JSON.parse(savedGames))
-        }
-      } catch (error) {
-        console.error('Помилка при завантаженні ігор:', error)
-      } finally {
-        setLoading(false)
+    try {
+      const savedGames = localStorage.getItem('games')
+      if (savedGames) {
+        setGames(JSON.parse(savedGames))
       }
+    } catch (error) {
+      console.error('Помилка при завантаженні ігор:', error)
+    } finally {
+      setLoading(false)
     }
-
-    loadGames()
   }, [])
 
   /**

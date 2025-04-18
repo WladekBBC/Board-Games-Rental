@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '@/lib/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useLang } from '@/lib/contexts/LanguageContext'
@@ -17,6 +17,16 @@ export default function LoginPage() {
   const { signIn, signInWithGoogle } = useAuth()
   const router = useRouter()
   const { language } = useLang()
+  const { user, loading: authLoading } = useAuth()
+
+  /**
+   * Redirect to home page if user is logged
+   */
+    useEffect(() => {
+      if (user) {
+        router.replace('/')
+      }
+    }, [user])
 
   /**
    * Handles the form submission for email/password login
