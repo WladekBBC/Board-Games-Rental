@@ -1,7 +1,11 @@
 import { ImageLoaderProps } from 'next/image'
-
-export const imageLoader = ({ src, width, quality = 75 }: ImageLoaderProps): string => {
-  // Jeśli URL już zawiera parametry, dodaj nowe parametry
+/**
+ * Image loader for Next.js
+ * @param {ImageLoaderProps} props - Image loader props
+ * @returns {string} Image URL with width and quality parameters
+ */
+export const imageLoader = ({ src, width, quality = 80 }: ImageLoaderProps): string => {
+  // If URL already contains parameters, add new parameters
   const separator = src.includes('?') ? '&' : '?'
   return `${src}${separator}w=${width}&q=${quality}`
 } 

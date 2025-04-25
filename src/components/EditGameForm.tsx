@@ -195,11 +195,12 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
                 </motion.div>
               )}
             </div>
-            {!isImageValid && (
+            {/* TODO: error - crashing editing game that rented */}
+            {/* {!isImageValid && (
               <p className="mt-1 text-sm text-red-600">
                 {language.invalidImageUrl}
               </p>
-            )}
+            )} */}
             {formData.imageUrl && isImageValid && (
               <div className="mt-2 relative h-48 w-full">
                 <Image

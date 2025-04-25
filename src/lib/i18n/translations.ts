@@ -7,6 +7,8 @@ export const translations = {
     manageGame: 'Zarządzaj Grami',
     addNewGame: 'Dodaj Nową Grę',
     gameList: 'Lista Gier',
+    areYouSure: 'Czy na pewno chcesz usunąć tę grę ',
+    
     
     // Logowanie
     LoginToService: 'Logowanie do serwisu',
@@ -35,9 +37,11 @@ export const translations = {
     gameAdding: 'Dodawanie...',
     
     // Status
+    notDefined: 'Nie określono',
     gameAvailable: 'Dostępna',
     gameUnavailable: 'Niedostępna',
     available: 'Dostępne',
+    qt: 'szt.',
     
     // Komunikaty
     confirmDelete: 'Czy na pewno chcesz usunąć tę grę?',
@@ -98,6 +102,7 @@ export const translations = {
     manageGame: 'Управління Іграми',
     addNewGame: 'Додати Нову Гру',
     gameList: 'Список Ігор',
+    areYouSure: 'Ви впевнені, що хочете видалити цю гру ',
     
     // Вхід
     LoginToService: 'Вхід до сервісу',
@@ -126,9 +131,11 @@ export const translations = {
     gameAdding: 'Додавання...',
     
     // Статус
+    notDefined: 'Не визначено',
     gameAvailable: 'Доступна',
     gameUnavailable: 'Недоступна',
     available: 'Доступно',
+    qt: 'шт.',
     
     // Повідомлення
     confirmDelete: 'Ви впевнені, що хочете видалити цю гру?',

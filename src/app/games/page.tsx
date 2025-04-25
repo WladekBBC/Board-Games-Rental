@@ -5,9 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/contexts/AuthContext'
 import { useGames, Game } from '@/lib/contexts/GamesContext'
 import { EditGameForm } from '@/components/EditGameForm'
-import Image from 'next/image'
 import { useLang } from '@/lib/contexts/LanguageContext'
-import { imageLoader } from '@/lib/utils/imageLoader'
+import { BoardGameList } from '@/components/BoardGameList'
 
 export default function GamesPage() {
   const router = useRouter()
@@ -181,49 +180,14 @@ export default function GamesPage() {
         </form>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {games.map(game => (
-          <div key={game.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <div className="relative h-48">
-              <Image
-                loader={imageLoader}
-                src={game.imageUrl}
-                alt={game.title}
-                width={800}
-                height={400}
-                className="object-cover w-full h-full"
-              />
-            </div>
-            <div className="p-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{game.title}</h3>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{game.description}</p>
-              <div className="mt-4 flex items-center justify-between">
-                <span className="text-sm text-gray-500 dark:text-gray-400">{game.category}</span>
-                <span className={`text-sm ${game.isAvailable ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                  {game.isAvailable ? language.gameAvailable : language.gameUnavailable}
-                </span>
-              </div>
-              <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                {language.gameNumber}: {game.quantity}
-              </div>
-              <div className="mt-4 flex justify-end space-x-2">
-                <button
-                  onClick={() => setEditingGame(game)}
-                  className="px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800"
-                >
-                  {language.editGame}
-                </button>
-                <button
-                  onClick={() => handleDeleteGame(game.id)}
-                  disabled={isProcessing}
-                  className="px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800 disabled:opacity-50"
-                >
-                  {language.deleteGame}
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">{language.gameList}</h2>
+        <BoardGameList
+          games={games}
+          isAdmin={user.isAdmin}
+          onEdit={setEditingGame}
+          onDelete={handleDeleteGame}
+        />
       </div>
 
       {editingGame && (

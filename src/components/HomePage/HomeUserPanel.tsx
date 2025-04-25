@@ -55,9 +55,9 @@ export default function HomeUserPanel(){
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow h-full flex flex-col">
                     <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">{language.games}</h2>
                     <div className="text-gray-600 dark:text-gray-300 flex-grow">
-                        {language.totalGames}: {availableGames.length}
+                        {language.totalGames}: {availableGames.length} {language.qt}
                         <br />
-                        {language.availableCopies}: {totalAvailableCopies}
+                        {language.availableCopies}: {totalAvailableCopies} {language.qt}
                     </div>
                     </div>
                 </Link>
@@ -76,14 +76,15 @@ export default function HomeUserPanel(){
                     </div>
                     </div>
                 </Link>
-                <Link href="/profile" className="block h-full">
+                {/* Previos profile link pointing to nowhere<Link href="/profile" className="block h-full"> */}
+                <div className="block h-full">
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow h-full flex flex-col">
                     <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">{language.profile}</h2>
                     <div className="text-gray-600 dark:text-gray-300 flex-grow">
                         {user!.email}
                     </div>
                     </div>
-                </Link>
+                </div>
             </div>
         </>
     )

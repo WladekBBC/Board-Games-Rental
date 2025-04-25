@@ -31,7 +31,8 @@ export default function GameList(){
     })
 
     return (
-        <><h2 className="text-2xl font-bold mb-6">{language.gameList}</h2><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <><h2 className="text-2xl font-bold mb-6">{language.gameList}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {gamesWithAvailability.map(game => (
                 <div key={game.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
                     <div className="relative h-48">
@@ -50,16 +51,17 @@ export default function GameList(){
                             <span className="text-sm text-gray-500 dark:text-gray-400">{game.category}</span>
                             <div className="flex flex-col items-end">
                                 <span className={`text-sm ${game.availableQuantity > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                                    {game.availableQuantity > 0 ? language.gameAvailable : language.gameUnavailable}
+                                    {game.availableQuantity > 0 ? language.gameAvailable : language.gameUnavailable} 
                                 </span>
-                                <span className="text-xs text-gray-500 dark:text-gray-400">
-                                    {language.available}: {game.availableQuantity} / {game.quantity}
+                                <span className="text-sm text-gray-500 dark:text-gray-400">
+                                    {language.available}: {game.availableQuantity} / {game.quantity} {language.qt}
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
             ))}
-        </div></>
+        </div>
+        </>
     )
 }
