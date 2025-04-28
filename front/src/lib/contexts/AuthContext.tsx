@@ -3,20 +3,26 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { signInWithGoogle as firebaseSignInWithGoogle, logoutUser } from '@/lib/firebase/firebaseUtils'
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
-import { auth } from '@/lib/firebase/firebase'
-import { googleProvider } from '@/lib/firebase/firebase'
+import { jwtDecode } from "jwt-decode";
+
+export enum Perms{
+  A = "Admin",
+  R = "RWSS", 
+  U = "User"
+}
 
 export interface User {
-  email: string | null;
-  isAdmin: boolean;
-  uid?: string;
+  id: number,
+  email: string
+  password ?: string,
+  permissions ?: Perms
 }
 
 interface AuthContextType {
   user: User | null;
+  JWT: string | null;
+  permissions: string | null;
   loading: boolean;
-  isAdmin: boolean;
   error: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
@@ -25,52 +31,28 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const ADMIN_EMAILS = ['kurwbober@gmail.com', 'admin@example.com']
-
-const saveUserToStorage = (user: User | null) => {
-  if (typeof window === 'undefined') return;
-  try {
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
-    }
-  } catch (error) {
-    console.error('Помилка при збереженні користувача:', error);
-  }
-};
-
-const getUserFromStorage = (): User | null => {
-  if (typeof window === 'undefined') return null;
-  try {
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  } catch {
-    return null;
-  }
-};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [JWT, setJWT] = useState<string | null>(null);
+  const [permissions, setPermissions] = useState<Perms | null>(null);
+
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setAdmin] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   
   useEffect(() => {
-    const savedUser = getUserFromStorage();
-    setUser(savedUser);
     setLoading(false);
   }, []);
 
   const handleAuthSuccess = async (userData: User) => {
     setUser(userData);
-    saveUserToStorage(userData);
     await router.replace('/');
   };
 
   const handleAuthError = (err: unknown) => {
+    
     const errorMessage = err instanceof Error ? err.message : 'Помилка аутентифікації';
     setError(errorMessage);
     console.error('Помилка аутентифікації:', err);
@@ -79,35 +61,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   
   const signIn = async (email: string, password: string) => {
-    try {
-      setLoading(true);
-      setError(null);
+    setLoading(true);
+    setError(null);
 
-      if (!email || !password) {
-        throw new Error('Email та пароль обов\'язкові');
-      }
+    let data = {email: email, password: password}
 
-      // TEST LOGIC FOR DEMO
-      if (email === 'admin@example.com' && password === 'admin123') {
-        await handleAuthSuccess({
-          email,
-          isAdmin: true,
-          uid: 'admin-uid'
-        });
-      } else if (email === 'user@example.com' && password === 'user123') {
-        await handleAuthSuccess({
-          email,
-          isAdmin: false,
-          uid: 'user-uid'
-        });
-      } else {
-        throw new Error('Невірний email або пароль');
-      }
-    } catch (err) {
-      handleAuthError(err);
-    } finally {
-      setLoading(false);
-    }
+    fetch('http://localhost:3001/auth/login', {method: "POST", headers: {"Content-Type": "application/json"} , body: JSON.stringify(data), mode:'cors'}).then((res: Response)=>{
+      if(res.ok)
+        return res.json();
+    }).then((data)=>{
+      setJWT(data.token);
+      setPermissions(data.permissions);
+      const logged:User = jwtDecode(data.token);
+      setUser(logged)
+    }).catch((error)=>{
+      handleAuthError(error)
+    })
+
+    setLoading(false);
+
   };
 
   const signInWithGoogle = async () => {
@@ -121,11 +93,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error('Не вдалося отримати email від Google');
       }
 
-      await handleAuthSuccess({
-        email: result.email,
-        isAdmin: ADMIN_EMAILS.includes(result.email),
-        uid: result.uid
-      });
     } catch (err) {
       handleAuthError(err);
     } finally {
@@ -139,7 +106,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError(null);
       await logoutUser();
       setUser(null);
-      saveUserToStorage(null);
       await router.replace('/login');
     } catch (err) {
       handleAuthError(err);
@@ -151,8 +117,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const contextValue = {
     user,
     loading,
-    isAdmin,
     error,
+    JWT,
+    permissions,
     signIn,
     signInWithGoogle,
     signOut

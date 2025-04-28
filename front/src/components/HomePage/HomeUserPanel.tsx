@@ -12,7 +12,7 @@ import Link from 'next/link'
  */
 export default function HomeUserPanel(){
 
-    const { user, loading: authLoading } = useAuth()
+    const { permissions, user, loading: authLoading } = useAuth()
     const { games } = useGames()
     const { rentals } = useRentals()
     const { language } = useLang()
@@ -61,16 +61,16 @@ export default function HomeUserPanel(){
                     </div>
                     </div>
                 </Link>
-                <Link href={user!.isAdmin ? "/rentals" : "/my-rentals"} className="block h-full">
+                <Link href={permissions == "Admin" ? "/rentals" : "/my-rentals"} className="block h-full">
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow h-full flex flex-col">
                     <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">{language.rentals}</h2>
                     <div className="text-gray-600 dark:text-gray-300 flex-grow">
-                        {user!.isAdmin
+                        {permissions == "Admin"
                         ? language.activeRentals
                         : language.yourActiveRentals}
                     </div>
                     <div className="text-sm text-blue-600 dark:text-blue-400">
-                        {user!.isAdmin 
+                        {permissions == "Admin" 
                         ? `${activeRentals.length}`
                         : `${userActiveRentals.length}`}
                     </div>

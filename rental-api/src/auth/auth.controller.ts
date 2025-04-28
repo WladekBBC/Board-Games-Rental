@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Get, Param, Delete, Patch, Headers } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
 import { AuthGuard } from '../guards/auth.guard';
@@ -19,6 +19,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Body() signInDto: LoginDto) {
+    console.log(signInDto)
     return this.authService.signIn(signInDto);
   }
 
@@ -38,30 +39,43 @@ export class AuthController {
    * @returns User list
    */
   @UseGuards(AuthGuard)
-  @Permission(Perms.A || Perms.R)
+  @Permission([Perms.A, Perms.R])
   @Get('users')
   getUsers() {
     return this.userService.findAll();
   }
 
+  /**
+   * User getter
+   * @param id - id number of user
+   * @returns user
+   */
   @UseGuards(AuthGuard)
-  // @Permission(Perms.A)
   @Get('user/:id')
-  getUser(@Param() id:number) {
-    return this.userService.findOneById(id);
+  getUser(@Param() id:number, @Headers() headers: Record <string, string> ) {
+    return this.userService.findOneById(id, headers.permissions);
   }
 
+  /**
+   * Edit User
+   * @param id - id of edited user
+   * @param updateUser - updated data
+   * @returns state of edit
+   */
   @UseGuards(AuthGuard)
-  @Permission(Perms.A)
-  @Get('update/:id')
-  editUser(@Param() id:number, @Body() updateUser: UpdateUserDto ) {
-    return this.userService.update(id, updateUser);
+  @Patch('update/:id')
+  editUser(@Param() id:number, @Headers() headers: Record <string, string>, @Body() updateUser: UpdateUserDto ) {
+    return this.userService.update(id, headers.permissions, updateUser);
   }
 
+  /**
+   * Deleting user
+   * @param id - id of deleted user
+   * @returns state of delete
+   */
   @UseGuards(AuthGuard)
-  @Permission(Perms.A)
-  @Get('delete/:id')
-  deleteUser(@Param() id:number ) {
-    return this.userService.remove(id);
+  @Delete('delete/:id')
+  deleteUser(@Param() id:number, @Headers() headers: Record <string, string> ) {
+    return this.userService.remove(id, headers.permissions);
   }
 }

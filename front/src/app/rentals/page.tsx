@@ -13,7 +13,7 @@ import { useLang } from '@/lib/contexts/LanguageContext'
  */
 export default function RentalsPage() {
   const router = useRouter()
-  const { user, loading: authLoading } = useAuth()
+  const { permissions, user, loading: authLoading } = useAuth()
   const { rentals, addRental, updateRental, deleteRental, returnGame, loading: rentalsLoading } = useRentals()
   const { games, loading: gamesLoading } = useGames()
   const [isProcessing, setIsProcessing] = useState(false)
@@ -50,7 +50,7 @@ export default function RentalsPage() {
    * Render permission denied message if user is not an admin
    * @returns {React.ReactNode}
    */
-  if (!user.isAdmin) {
+  if (permissions == "Admin") {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-100 px-4 py-3 rounded relative" role="alert">

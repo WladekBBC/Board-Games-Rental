@@ -13,7 +13,7 @@ import { useLang } from '@/lib/contexts/LanguageContext'
  */
 export function Header() {
   const pathname = usePathname()
-  const { user, signOut, loading, isAdmin } = useAuth()
+  const { user, signOut, loading, permissions } = useAuth()
   const { language } = useLang()
 
   const isActive = (path: string) => pathname === path
@@ -43,7 +43,7 @@ export function Header() {
                       {language.games}
                     </Link>
                     <Link
-                      href={isAdmin ? "/rentals" : "/my-rentals"}
+                      href={permissions == "Admin" ? "/rentals" : "/my-rentals"}
                       className={`text-sm ${
                         isActive('/rentals') || isActive('/my-rentals')
                           ? 'text-blue-600 dark:text-blue-400'

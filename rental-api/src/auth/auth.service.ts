@@ -23,7 +23,7 @@ export class AuthService {
     if(!user || !await bcrypt.compare(loginData.password, user.password))
       throw new BadRequestException;
     
-    const payload = { sub: user.id, email: user.email };
+    const payload = { id: user.id, email: user.email };
     return {
       permissions:  user.permissions,
       token: await this.jwtService.signAsync(payload),
@@ -45,7 +45,7 @@ export class AuthService {
         permissions: Perms.U
       })
 
-    const payload = { sub: user.id, email: user.email };
+    const payload = { id: user.id, email: user.email };
     return {
       permissions: user.permissions,
       token: await this.jwtService.signAsync(payload)

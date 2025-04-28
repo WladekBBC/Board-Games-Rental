@@ -11,15 +11,15 @@ import { useEffect } from 'react'
  * @returns {JSX.Element} The admin protected component
  */
 export function AdminProtected({ children }: { children: React.ReactNode }) {
-  const { user, loading, isAdmin } = useAuth()
+  const { user, loading, permissions } = useAuth()
   const router = useRouter()
 
 
   useEffect(() => {
-    if (!loading && (!user || !isAdmin)) {
+    if (!loading && (!user || permissions != "Admin")) {
       router.push('/login')
     }
-  }, [loading, user, isAdmin, router])
+  }, [loading, user, permissions, router])
 
   if (loading) {
     return (
@@ -29,7 +29,7 @@ export function AdminProtected({ children }: { children: React.ReactNode }) {
     )
   }
 
-  if (!user || !isAdmin) {
+  if (!user || permissions != "Admin") {
     return null
   }
 

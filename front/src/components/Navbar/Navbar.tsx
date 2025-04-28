@@ -12,7 +12,7 @@ import { UserButton } from './UserButton'
  * @returns {JSX.Element} The navigation bar with links and controls
  */
 export function Navbar() {
-  const { user } = useAuth()
+  const { user, permissions } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const { currentLang, setLanguage, language } = useLang()
 
@@ -31,7 +31,7 @@ export function Navbar() {
               <>
                 <RouterLink link='/' text={language.home} />
                 <RouterLink link='/games' text={language.games} />
-                {user.isAdmin && <RouterLink link='/rentals' text={language.rentals}/>}
+                {permissions == "Admin" && <RouterLink link='/rentals' text={language.rentals}/>}
               </>
               }
             </div>

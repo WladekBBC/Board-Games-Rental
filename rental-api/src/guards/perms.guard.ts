@@ -13,12 +13,12 @@ export class PermsGuard implements CanActivate {
       context.getClass(),
     ]);
 
-    console.log(requiredPerms)
-
     if (!requiredPerms) {
       return true;
     }
-    const { user } = context.switchToHttp().getRequest();
-    return requiredPerms.some((perm) => user.perm?.includes(perm));
+
+    const request = context.switchToHttp().getRequest();
+
+    return requiredPerms.some((perm) => request.headers.permissions?.includes(perm));
   }
 }
