@@ -1,5 +1,5 @@
+import { Perms } from "src/enums/permissions.enum";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { PermsDto } from "../dto/user.dto";
 
 @Entity()
 export class User {
@@ -13,5 +13,5 @@ export class User {
     password: string;
 
     @Column()
-    permissions: PermsDto
+    permissions: Perms
 }
