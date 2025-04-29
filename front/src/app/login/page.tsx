@@ -12,9 +12,8 @@ import { useLang } from '@/lib/contexts/LanguageContext'
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const { signIn, signInWithGoogle } = useAuth()
+  const { error, signIn, signInWithGoogle } = useAuth()
   const router = useRouter()
   const { language } = useLang()
   const { user, loading: authLoading } = useAuth()
@@ -35,17 +34,14 @@ export default function LoginPage() {
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError(null)
     setIsLoading(true)
 
-    try {
-      await signIn(email, password)
-      router.push('/')
-    } catch (error) {
-      setError(language.loginError)
-    } finally {
+    signIn(email, password)
+    .finally(()=>{
       setIsLoading(false)
-    }
+      if(!error)
+        router.push('/')
+    })
   }
 
   /**
@@ -53,14 +49,12 @@ export default function LoginPage() {
    * @returns {Promise<void>}
    */
   const handleGoogleSignIn = async () => {
-    setError(null)
     setIsLoading(true)
 
     try {
       await signInWithGoogle()
       router.push('/')
     } catch (error) {
-      setError(language.loginGoogleError)
     } finally {
       setIsLoading(false)
     }
