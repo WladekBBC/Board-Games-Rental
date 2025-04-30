@@ -30,7 +30,7 @@ export function Navbar() {
               {user && 
               <>
                 <RouterLink link='/' text={language.home} />
-                <RouterLink link='/games' text={language.games} />
+                {(permissions == "Admin" || permissions == "RWSS") && <RouterLink link='/games' text={language.games} />}
                 {permissions == "Admin" && <RouterLink link='/rentals' text={language.rentals}/>}
               </>
               }

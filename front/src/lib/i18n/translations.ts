@@ -17,6 +17,7 @@ export const translations = {
     loginWithGoogle: 'Zaloguj przez Google',
     loginGoogleError: 'Nie udało się zalogować przez google',
     loginLoading: 'Logowanie...',
+    serverError: "Błąd serwera, proszę spróbować później",
     
     // Formularze
     gameTitle: 'Tytuł Gry',
@@ -108,6 +109,7 @@ export const translations = {
     loginWithGoogle: 'Увійти через Google',
     loginGoogleError: 'Не вдалося увійти через google',
     loginLoading: 'Вхід...',
+    serverError: "TODO",
     
     // Форми
     gameTitle: 'Назва Гри',

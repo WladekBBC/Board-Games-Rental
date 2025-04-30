@@ -4,6 +4,7 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 import { useRouter } from 'next/navigation'
 import { signInWithGoogle as firebaseSignInWithGoogle, logoutUser } from '@/lib/firebase/firebaseUtils'
 import { jwtDecode } from "jwt-decode";
+import { useLang } from './LanguageContext';
 
 export enum Perms{
   A = "Admin",
@@ -11,7 +12,7 @@ export enum Perms{
   U = "User"
 }
 
-export const transferToPerms = (perm: string): Perms =>{
+export const toPerms = (perm: string): Perms =>{
   if(perm == Perms.A)
     return Perms.A
   else if(perm == Perms.R)
@@ -27,8 +28,9 @@ export interface User {
   permissions ?: Perms
 }
 
-export interface ApiData extends User{
+export interface ApiData{
   token: string,
+  permissions: string,
 }
 
 interface AuthContextType {
@@ -53,47 +55,54 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { language } = useLang()
 
-  
   useEffect(() => {
     getLocalUser()
     setLoading(false);
   }, []);
 
   const getLocalUser = () =>{
-    if(localStorage.getItem('user')){
-      let jwt = localStorage.getItem('user')+''
-      let user:User = {...JSON.parse(localStorage.getItem('user')+"")}
-      let perms:Perms = transferToPerms(localStorage.getItem('user')+"");
-
-      handleAuthSuccess({...user, token: jwt, permissions: perms})
+    if(localStorage.getItem('JWT')){
+      let jwt = localStorage.getItem('JWT')+''
+      let perms:Perms = toPerms(localStorage.getItem('perms')+"");
+      handleAuthSuccess({token: jwt, permissions: perms})
     }
   }
 
   const saveLocalUser = (data: ApiData) =>{
     if(data){
-      localStorage.setItem('user', JSON.stringify({id: data.id, email: data.email}))
       localStorage.setItem('JWT', data.token)
       localStorage.setItem('perms', data.permissions ? data.permissions : Perms.U)
     }
   }
 
   const clearLocalUser = () =>{
-    localStorage.removeItem('user')
     localStorage.removeItem('JWT')
     localStorage.removeItem('perms')
   }
 
   const handleAuthSuccess = async (data: ApiData) => {
-    setUser({id: data.id, email: data.email});
-    setJWT(data.token);
-    setPermissions(data.permissions ? data.permissions : Perms.U);
-    saveLocalUser(data)
-    await router.replace('/');
+    if(data){
+      const loggedUser = jwtDecode<User>(data.token)
+      setUser(loggedUser);
+      setJWT(data.token);
+      setPermissions(toPerms(data.permissions));
+      saveLocalUser(data)
+      router.push('/')
+    }
   };
 
-  const handleAuthError = (err: unknown) => {
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+  const handleAuthError = (err: Error|any) => {
+    let errorMessage = 'Unknown error'
+    if(err instanceof Error)
+      switch(err.cause){
+        case (400): 
+          errorMessage = language.loginError
+          break;
+        case (500):
+          errorMessage = language.serverError
+      }
     setError(errorMessage);
     throw err;
   };
@@ -105,9 +114,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     let data = {email: email, password: password}
 
-    fetch('http://localhost:3001/auth/login', {method: "POST", headers: {"Content-Type": "application/json"} , body: JSON.stringify(data), mode:'cors'}).then((res: Response)=>{
+    fetch('http://localhost:3001/auth/login', {method: "POST", headers: {"Content-Type": "application/json"} , body: JSON.stringify(data), mode:'cors'})
+    .then((res: Response)=>{
       if(res.ok)
         return res.json();
+      return Promise.reject(new Error(res.statusText, {cause: res.status}))
     }).then((data: ApiData)=>{
       handleAuthSuccess(data)
     }).catch((error)=>{
