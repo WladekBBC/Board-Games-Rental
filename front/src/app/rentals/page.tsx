@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/lib/contexts/AuthContext'
+import { Perms, useAuth } from '@/lib/contexts/AuthContext'
 import { useRentals } from '@/lib/contexts/RentalsContext'
 import { useGames } from '@/lib/contexts/GamesContext'
 import { useLang } from '@/lib/contexts/LanguageContext'
+import ErrorField from '@/components/Messages/ErrorField'
+import SuccessField from '@/components/Messages/SuccessField'
+import { Spinner } from '@/components/Messages/Spinner'
 
 /**
  * Rentals page
@@ -36,29 +39,15 @@ export default function RentalsPage() {
    */
   if (authLoading || rentalsLoading || gamesLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
+      <Spinner/>
     )
-  }
-
-  if (!user) {
-    return null
   }
 
   /**
-   * Render permission denied message if user is not an admin
-   * @returns {React.ReactNode}
+   * If user isnt logged, and doesn't have permissions, 
    */
-  if (permissions == "Admin") {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-100 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">{language.warning}!</strong>
-          <span className="block sm:inline"> {language.permissionDenied}.</span>
-        </div>
-      </div>
-    )
+  if (!user || ![Perms.A, Perms.R].includes(permissions)) {
+    return null
   }
 
   /**
@@ -183,17 +172,9 @@ export default function RentalsPage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">{language.manageRent}</h1>
 
-      {error && (
-        <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-100 px-4 py-3 rounded relative mb-4" role="alert">
-          <span className="block sm:inline">{error}</span>
-        </div>
-      )}
+      <ErrorField error={error}/>
 
-      {success && (
-        <div className="bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-100 px-4 py-3 rounded relative mb-4" role="alert">
-          <span className="block sm:inline">{success}</span>
-        </div>
-      )}
+      <SuccessField success={success}/>
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">{language.addRent}</h2>

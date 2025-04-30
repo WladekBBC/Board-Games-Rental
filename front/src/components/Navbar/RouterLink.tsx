@@ -7,7 +7,6 @@ type RouterLinkProps = {
 };
 
 export const RouterLink = (children: RouterLinkProps)=>{
-
     const pathname = usePathname()
 
     /**

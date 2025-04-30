@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/lib/contexts/AuthContext'
 import { redirect } from 'next/navigation'
 import { useLang } from '@/lib/contexts/LanguageContext'
+import ErrorField from '@/components/Messages/ErrorField'
+import { Spinner } from '@/components/Messages/Spinner'
 /**
  * LoginPage component that handles user authentication
  * @returns {JSX.Element} The login page with email/password and Google sign-in options
@@ -48,6 +50,9 @@ export default function LoginPage() {
         </div>
       </div>
     )
+  return (
+    <Spinner/>
+  )
 } 
 
 /**
@@ -106,7 +111,7 @@ function SignInForm(){
         </div>
       </div>
 
-      <Error error={error}/>
+      <ErrorField error={error}/>
 
       <div className="space-y-4">
         <button
@@ -155,26 +160,5 @@ function SignInWithGoogle(){
       </svg>
       {language.loginWithGoogle}
     </button>
-  )
-}
-
-/**
- * Error prop
- * @param {string|null} error - error message
- */
-type ErrorProp = {error: string|null}
-/**
- * Error message area
- * @returns {JSX.Element} error message if there is any
- */
-function Error({error}:ErrorProp){
-  return (
-    <>
-      {error && (
-        <div className="text-red-600 dark:text-red-400 text-sm text-center bg-red-50 dark:bg-red-900/30 p-2 rounded">
-          {error}
-        </div>
-      )}
-    </>
   )
 }

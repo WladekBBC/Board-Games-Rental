@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import { signInWithGoogle as firebaseSignInWithGoogle, logoutUser } from '@/lib/firebase/firebaseUtils'
 import { jwtDecode } from "jwt-decode";
 import { useLang } from './LanguageContext';
@@ -36,7 +36,7 @@ export interface ApiData{
 interface AuthContextType {
   user: User | null;
   JWT: string | null;
-  permissions: string | null;
+  permissions: Perms;
   loading: boolean;
   error: string | null;
   signIn: (email: string, password: string) => Promise<void>;
@@ -50,7 +50,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [JWT, setJWT] = useState<string | null>(null);
-  const [permissions, setPermissions] = useState<Perms | null>(null);
+  const [permissions, setPermissions] = useState<Perms>(Perms.U);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -65,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const getLocalUser = () =>{
     if(localStorage.getItem('JWT')){
       let jwt = localStorage.getItem('JWT')+''
-      let perms:Perms = toPerms(localStorage.getItem('perms')+"");
+      let perms:Perms = toPerms(`${localStorage.getItem('perms')}`);
       handleAuthSuccess({token: jwt, permissions: perms})
     }
   }
@@ -153,7 +153,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError(null);
       await logoutUser();
       setUser(null);
-      await router.replace('/login');
+      router.push('/')
     } catch (err) {
       handleAuthError(err);
     } finally {

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useAuth } from '@/lib/contexts/AuthContext'
+import { Perms, useAuth } from '@/lib/contexts/AuthContext'
 import { useTheme } from '@/lib/contexts/ThemeContext'
 import { useLang } from '@/lib/contexts/LanguageContext'
 import { RouterLink } from './RouterLink'
@@ -30,8 +30,8 @@ export function Navbar() {
               {user && 
               <>
                 <RouterLink link='/' text={language.home} />
-                {(permissions == "Admin" || permissions == "RWSS") && <RouterLink link='/games' text={language.games} />}
-                {permissions == "Admin" && <RouterLink link='/rentals' text={language.rentals}/>}
+                {[Perms.R, Perms.A].includes(permissions) && <RouterLink link='/rentals' text={language.rentals}/>}
+                {permissions == Perms.A && <RouterLink link='/games' text={language.games} />}
               </>
               }
             </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from '@/lib/contexts/AuthContext'
-import { useRouter } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import { useEffect } from 'react'
 
 /**
@@ -12,14 +12,12 @@ import { useEffect } from 'react'
  */
 export function AdminProtected({ children }: { children: React.ReactNode }) {
   const { user, loading, permissions } = useAuth()
-  const router = useRouter()
-
 
   useEffect(() => {
     if (!loading && (!user || permissions != "Admin")) {
-      router.push('/login')
+      redirect('/')
     }
-  }, [loading, user, permissions, router])
+  }, [loading, user, permissions])
 
   if (loading) {
     return (
