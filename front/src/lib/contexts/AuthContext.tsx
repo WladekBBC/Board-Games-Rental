@@ -7,15 +7,15 @@ import { jwtDecode } from "jwt-decode";
 import { useLang } from './LanguageContext';
 
 export enum Perms{
-  A = "Admin",
-  R = "RWSS", 
-  U = "User"
+  A = "A",
+  R = "R", 
+  U = "U"
 }
 
 export const toPerms = (perm: string): Perms =>{
-  if(perm == Perms.A)
+  if(perm === "A")
     return Perms.A
-  else if(perm == Perms.R)
+  else if(perm === "R")
     return Perms.R
   else
     return Perms.U
@@ -65,15 +65,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const getLocalUser = () =>{
     if(localStorage.getItem('JWT')){
       let jwt = localStorage.getItem('JWT')+''
-      let perms:Perms = toPerms(`${localStorage.getItem('perms')}`);
-      handleAuthSuccess({token: jwt, permissions: perms})
+      let perms = localStorage.getItem('perms')
+      if (perms) {
+        handleAuthSuccess({token: jwt, permissions: perms})
+      }
     }
   }
 
   const saveLocalUser = (data: ApiData) =>{
     if(data){
       localStorage.setItem('JWT', data.token)
-      localStorage.setItem('perms', data.permissions ? data.permissions : Perms.U)
+      localStorage.setItem('perms', data.permissions)
     }
   }
 
@@ -84,10 +86,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const handleAuthSuccess = async (data: ApiData) => {
     if(data){
+      console.log('Auth success data:', data);
       const loggedUser = jwtDecode<User>(data.token)
+      console.log('Decoded user:', loggedUser);
       setUser(loggedUser);
       setJWT(data.token);
-      setPermissions(toPerms(data.permissions));
+      const perms = toPerms(data.permissions);
+      console.log('Converted permissions:', perms);
+      setPermissions(perms);
       saveLocalUser(data)
       router.push('/')
     }

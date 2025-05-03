@@ -32,6 +32,7 @@ export function Navbar() {
                 <RouterLink link='/' text={language.home} />
                 {[Perms.R, Perms.A].includes(permissions) && <RouterLink link='/rentals' text={language.rentals}/>}
                 {permissions == Perms.A && <RouterLink link='/games' text={language.games} />}
+                {permissions == Perms.A && <RouterLink link='/users' text={language.users} />}
               </>
               }
             </div>

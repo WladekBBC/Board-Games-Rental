@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from '@/lib/contexts/AuthContext'
+import { useAuth, Perms } from '@/lib/contexts/AuthContext'
 import { redirect } from 'next/navigation'
 import { useEffect } from 'react'
 
@@ -14,7 +14,7 @@ export function AdminProtected({ children }: { children: React.ReactNode }) {
   const { user, loading, permissions } = useAuth()
 
   useEffect(() => {
-    if (!loading && (!user || permissions != "Admin")) {
+    if (!loading && (!user || permissions !== Perms.A)) {
       redirect('/')
     }
   }, [loading, user, permissions])
@@ -27,7 +27,7 @@ export function AdminProtected({ children }: { children: React.ReactNode }) {
     )
   }
 
-  if (!user || permissions != "Admin") {
+  if (!user || permissions !== Perms.A) {
     return null
   }
 

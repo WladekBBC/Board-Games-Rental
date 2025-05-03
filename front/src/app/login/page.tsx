@@ -1,87 +1,73 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useAuth } from '@/lib/contexts/AuthContext'
-import { redirect } from 'next/navigation'
-import { useLang } from '@/lib/contexts/LanguageContext'
-import ErrorField from '@/components/Messages/ErrorField'
-import { Spinner } from '@/components/Messages/Spinner'
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/contexts/AuthContext';
+import { useLang } from '@/lib/contexts/LanguageContext';
+import ErrorField from '@/components/Messages/ErrorField';
+import { Spinner } from '@/components/Messages/Spinner';
+
 /**
  * LoginPage component that handles user authentication
- * @returns {JSX.Element} The login page with email/password and Google sign-in options
  */
 export default function LoginPage() {
-  const { user, loading: authLoading } = useAuth()
-  const { language } = useLang()
+  const { user, loading: authLoading } = useAuth();
+  const { language } = useLang();
+  const router = useRouter();
 
-  /**
-   * Redirect to home page if user is logged
-   */
   useEffect(() => {
-    if (user)
-      redirect('/')
-  }, [user])
+    if (user) {
+      router.push('/');
+    }
+  }, [user, router]);
 
-  if(!authLoading)
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
-          <div>
-            <h2 className="mt-2 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-              {language.LoginToService}
-            </h2>
-          </div>
-          <SignInForm/>
+  if (authLoading) return <Spinner />;
 
-          {/* <div>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-                  {language.or}
-                </span>
-              </div>
-            </div>
-            <SignInWithGoogle/>
-          </div> */}
-
-        </div>
-      </div>
-    )
   return (
-    <Spinner/>
-  )
-} 
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+        <h2 className="text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+          {language.LoginToService}
+        </h2>
+        <SignInForm />
+        {/* Można odkomentować poniżej, jeśli chcesz logowanie przez Google */}
+        {/* <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+              {language.or}
+            </span>
+          </div>
+        </div>
+        <SignInWithGoogle /> */}
+      </div>
+    </div>
+  );
+}
 
 /**
  * Login form
- * @returns {JSX.Element} Login form
  */
-function SignInForm(){
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const { signIn, error, loading: authLoading } = useAuth()
-  const { language } = useLang()
+function SignInForm() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { signIn, error, loading: authLoading } = useAuth();
+  const { language } = useLang();
 
-  /**
-   * Handles the form submission for email/password login
-   * @param {React.FormEvent} e - The form submission event
-   * @returns {Promise<void>}
-   */
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
+    await signIn(email, password);
+  };
 
-    signIn(email, password)
-  }
-  
-  return(
-    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+  return (
+    <form onSubmit={handleSubmit} className="mt-8 space-y-6">
       <div className="space-y-4">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Email
+            {language.email}
           </label>
           <input
             id="email"
@@ -91,7 +77,7 @@ function SignInForm(){
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
-            placeholder="Email"
+            placeholder={language.email}
           />
         </div>
         <div>
@@ -111,7 +97,7 @@ function SignInForm(){
         </div>
       </div>
 
-      <ErrorField error={error}/>
+      <ErrorField error={error} />
 
       <div className="space-y-4">
         <button
@@ -122,36 +108,36 @@ function SignInForm(){
           {authLoading ? language.loginLoading : language.login}
         </button>
       </div>
+
+      <div className="flex items-center justify-between">
+        <Link href="/register" className="text-blue-500 hover:text-blue-700">
+          {language.register}
+        </Link>
+      </div>
     </form>
-  )
+  );
 }
 
 /**
- * Button for signing with Google
- * @returns {JSX.Element} Google button
+ * Google sign-in button (optional)
  */
-function SignInWithGoogle(){
+function SignInWithGoogle() {
+  const { signInWithGoogle, loading } = useAuth();
+  const { language } = useLang();
+  const router = useRouter();
 
-  const { signInWithGoogle, loading } = useAuth()
-  const { language } = useLang()
-
-  /**
-   * Handles Google authentication
-   * @returns {Promise<void>}
-   */
   const handleGoogleSignIn = async () => {
-    signInWithGoogle().then(()=>{
-      redirect('/')
-    })
-  }
+    await signInWithGoogle();
+    router.push('/');
+  };
 
   return (
-      <button
-        type="button"
-        onClick={handleGoogleSignIn}
-        disabled={loading}
-        className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 dark:focus:ring-offset-gray-800"
-      >
+    <button
+      type="button"
+      onClick={handleGoogleSignIn}
+      disabled={loading}
+      className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 dark:focus:ring-offset-gray-800"
+    >
       <svg className="h-5 w-5 text-gray-700 dark:text-gray-300 mr-2" viewBox="0 0 24 24">
         <path
           fill="currentColor"
@@ -160,5 +146,5 @@ function SignInWithGoogle(){
       </svg>
       {language.loginWithGoogle}
     </button>
-  )
+  );
 }

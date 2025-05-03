@@ -1,3 +1,5 @@
+import { m } from "framer-motion";
+
 export type Language = 'pl' | 'ua' 
 
 export const translations = {
@@ -18,6 +20,12 @@ export const translations = {
     loginGoogleError: 'Nie udało się zalogować przez google',
     loginLoading: 'Logowanie...',
     serverError: "Błąd serwera, proszę spróbować później",
+    invalidEmail: "Niepoprawna forma email", 
+    passwordTooShort: "Hasło powinno zawierać co najmniej 6 znaków",
+    userAlreadyExists: "Uytkownik z tym email już istnieje",
+    registrationFailed: "Rejestracja się nie powiodła",
+    register: "Rejestracja",
+    email: "Email",
     
     // Formularze
     gameTitle: 'Tytuł Gry',
@@ -26,7 +34,13 @@ export const translations = {
     gameCategory: 'Kategoria',
     gameNumber: 'Ilość Sztuk',
     validating: 'Sprawdzanie...',
-    
+    fetchError: 'Błąd podczas pobierania użytkowników',
+    updateSuccess: 'Uprawnienia zostały zaktualizowane',
+    updateError: 'Błąd podczas aktualizacji uprawnień',
+    accessDenied: 'Brak dostępu',
+    usersManagement: 'Zarządzanie Użytkownikami',
+    permissions: 'Uprawnienia',
+    loginFailed: 'Nie udało się zalogować',
     // Przyciski
     addGame: 'Dodaj Grę',
     editGame: 'Edytuj',
@@ -91,7 +105,10 @@ export const translations = {
     actions: 'Akcje',
     return: 'Zwróć',
     gameDescription: 'Opis Gry',
-    saveChanges: 'Zapisz Zmiany'
+    saveChanges: 'Zapisz Zmiany',
+    deleteUser: 'Usuń',
+    confirmDeleteUser: 'Czy na pewno chcesz usunąć tego użytkownika?',
+    users: 'Użytkownicy'
   },
   ua: {
     // Заголовки
@@ -110,6 +127,19 @@ export const translations = {
     loginGoogleError: 'Не вдалося увійти через google',
     loginLoading: 'Вхід...',
     serverError: "TODO",
+    passwordTooShort: "Пароль закороткий",
+    invalidEmail: "Не правильно введений email",
+    userAlreadyExists: "Користувач з цією поштою вже існує",
+    registrationFailed: "Реєстрація не вдалась",
+    register: "Реєстрація",
+    email: "Email",
+    fetchError: 'Помилка при отриманні користувачів',
+    updateSuccess: 'Права доступу оновлено',
+    updateError: 'Помилка при оновленні прав доступу',
+    accessDenied: 'Доступ заборонено',
+    usersManagement: 'Управління Користувачами',
+    permissions: 'Права доступу',
+    loginFailed: 'Не вдалося увійти',
     
     // Форми
     gameTitle: 'Назва Гри',
@@ -183,6 +213,9 @@ export const translations = {
     actions: 'Дії',
     return: 'Повернути',
     gameDescription: 'Опис Гри',
-    saveChanges: 'Зберегти Зміни'
+    saveChanges: 'Зберегти Зміни',
+    deleteUser: 'Видалити',
+    confirmDeleteUser: 'Ви впевнені, що хочете видалити цього користувача?',
+    users: 'Користувачі'
   }
 } as const; 
