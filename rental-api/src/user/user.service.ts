@@ -99,7 +99,7 @@ export class UserService {
       await this.create({
         email: adminEmail,
         password: hashedPassword,
-        permissions: Perms.A
+        permissions: convertPerms(Perms.A)
       });
     }
   }
