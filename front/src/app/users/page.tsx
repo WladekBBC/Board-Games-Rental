@@ -49,10 +49,10 @@ export default function UsersPage() {
     try {
       const newPermissions = editing[id];
       const response = await fetch(`http://localhost:3001/users/${id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
-          Authorization: `Bearer ${JWT}`,
-          'Content-Type': 'application/json',
+          token: JWT ?? "",
+          permissions: newPermissions,
         },
         body: JSON.stringify({ permissions: newPermissions }),
       });
