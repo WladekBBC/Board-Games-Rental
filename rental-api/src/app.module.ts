@@ -24,10 +24,5 @@ import { UserService } from './user/user.service';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements OnModuleInit {
-  constructor(private readonly userService: UserService) {}
 
-  async onModuleInit() {
-    await this.userService.createAdminIfNotExists();
-  }
-}
+export class AppModule{};
