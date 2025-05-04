@@ -40,3 +40,5 @@ front/.env
 #api
 rental-api/node_modules
 rental-api/dist
+front/package-lock.json
+rental-api/package-lock.json

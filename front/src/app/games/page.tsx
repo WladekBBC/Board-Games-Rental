@@ -60,6 +60,13 @@ export default function GamesPage() {
     }
   }
 
+  /**
+   * @function handleUpdateGame
+   * @description This function updates a game in the database.
+   * @param {string} id - The ID of the game to update.
+   * @param {React.FormEvent<HTMLFormElement>} e - The form event.
+   * @returns {void}
+   */
   const handleUpdateGame = async (id: string, e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsProcessing(true)
@@ -86,6 +93,12 @@ export default function GamesPage() {
     }
   }
 
+  /**
+   * @function handleDeleteGame
+   * @description This function deletes a game from the database.
+   * @param {string} id - The ID of the game to delete.
+   * @returns {void}
+   */
   const handleDeleteGame = async (id: string) => {
     setIsProcessing(true)
 

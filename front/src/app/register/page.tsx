@@ -42,7 +42,6 @@ const RegisterPage = () => {
         return;
       }
 
-      // 🔹 Automatyczne logowanie po rejestracji
       const loginResponse = await fetch('http://localhost:3001/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -59,7 +58,7 @@ const RegisterPage = () => {
       
       localStorage.setItem('token', loginData.token);
 
-      router.push('/'); 
+      router.push('/login'); 
     } catch (err) {
       console.error('Error:', err);
       setError(language.registrationFailed);

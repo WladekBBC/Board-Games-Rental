@@ -41,6 +41,8 @@ export const translations = {
     usersManagement: 'Zarządzanie Użytkownikami',
     permissions: 'Uprawnienia',
     loginFailed: 'Nie udało się zalogować',
+    userPermissionsUpdatedSuccessfully: 'Uprawnienia zostały zaktualizowane',
+    invalidAlbumNumberFormat: 'Nieprawidłowy format numeru albumu',
     // Przyciski
     addGame: 'Dodaj Grę',
     editGame: 'Edytuj',
@@ -148,6 +150,8 @@ export const translations = {
     gameCategory: 'Категорія',
     gameNumber: 'Кількість',
     validating: 'Перевірка...',
+    userPermissionsUpdatedSuccessfully: 'Права доступу оновлено успішно',
+    invalidAlbumNumberFormat: 'Неправильний формат номера альбому',
     
     // Кнопки
     addGame: 'Додати Гру',

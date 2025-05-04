@@ -6,34 +6,59 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import { useLang } from '@/lib/contexts/LanguageContext';
 import { AdminProtected } from '@/components/AdminProtected';
 
+/**
+ * @interface User
+ * @property {number} id - The user's ID.
+ * @property {string} email - The user's email.
+ * @property {string} permissions - The user's permissions.
+ */
 interface User {
   id: number;
   email: string;
   permissions: string;
 }
-
+/**
+ * @function UsersPage
+ * @description This is the main component for the users page.
+ * @returns {JSX.Element} The users page.
+ */
 export default function UsersPage() {
-  const { JWT } = useAuth();
+  const { JWT, permissions } = useAuth();
   const { language } = useLang();
   const [users, setUsers] = useState<User[]>([]);
   const [editing, setEditing] = useState<{ [key: number]: string }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
+  /**
+   * @function fetchUsers
+   * @description This function fetches the users from the server.
+   * @returns {void}
+   */
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('http://localhost:3001/users', {
+        // Server-side logging
+        // console.error('=== FETCH USERS DEBUG ===');
+        // console.error('JWT Token length:', JWT?.length);
+        // console.error('Permissions:', permissions);
+        // console.error('=================');
+
+        const response: Response = await fetch('http://localhost:3001/auth/users', {
+          method: "GET",
           headers: {
-            Authorization: `Bearer ${JWT}`,
+            "Content-Type": "application/json",
+            "token": JWT ?? "",
+            "permissions": permissions === "A" ? "Admin" : permissions
           },
+          mode: 'cors'
         });
 
         if (!response.ok) throw new Error(`Failed to fetch users: ${response.status} ${response.statusText}`);
 
-
-        const data = await response.json();
+        const data: User[] = await response.json();
         setUsers(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error');
@@ -45,19 +70,68 @@ export default function UsersPage() {
     if (JWT) fetchUsers();
   }, [JWT]);
 
+  /**
+   * @function handleUpdateUser
+   * @description This function updates the user's permissions.
+   * @param {number} id - The user's ID.
+   * @returns {void}
+   */ 
   const handleUpdateUser = async (id: number) => {
     try {
       const newPermissions = editing[id];
-      const response = await fetch(`http://localhost:3001/users/${id}`, {
+      const user = users.find(u => u.id === id);
+      if (!user) return;
+
+      // Check if we have a valid token
+      if (!JWT) {
+        console.error('No JWT token found!');
+        setError('No authentication token found. Please log in again.');
+        return;
+      }
+
+      // // Server-side logging
+      // console.error('=== SERVER DEBUG INFO ===');
+      // console.error('JWT Token length:', JWT.length);
+      // console.error('JWT Token first 20 chars:', JWT.substring(0, 20));
+      // console.error('Current Permissions:', permissions);
+      // console.error('New Permissions:', newPermissions);
+      // console.error('User ID:', id);
+      // console.error('Request URL:', `http://localhost:3001/auth/update/${id}`);
+      // console.error('Request Headers:', {
+      //   "Content-Type": "application/json",
+      //   "Authorization": `Bearer ${JWT}`,
+      //   "permissions": permissions
+      // });
+      // console.error('Request Body:', {
+      //   email: user.email,
+      //   permissions: newPermissions
+      // });
+      // console.error('=================');
+
+      const response = await fetch(`http://localhost:3001/auth/update/${id}`, {
         method: 'PATCH',
         headers: {
-          token: JWT ?? "",
-          permissions: newPermissions,
+          "Content-Type": "application/json",
+          "token": JWT ?? "",
+          "permissions": permissions === "A" ? "Admin" : permissions
         },
-        body: JSON.stringify({ permissions: newPermissions }),
+        mode: 'cors',
+        body: JSON.stringify({ 
+          email: user.email,
+          permissions: newPermissions 
+        }),
       });
 
-      if (!response.ok) throw new Error('Failed to update user');
+      console.error('Response status:', response.status);
+      const responseData = await response.json();
+      console.error('Response data:', responseData);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Unauthorized - Please log in again');
+        }
+        throw new Error(responseData.message || 'Failed to update user');
+      }
 
       setUsers(users.map((user) => user.id === id ? { ...user, permissions: newPermissions } : user));
       setEditing((prev) => {
@@ -65,7 +139,10 @@ export default function UsersPage() {
         delete newState[id];
         return newState;
       });
+      setSuccess(language.userPermissionsUpdatedSuccessfully);
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
+      console.error('Error in handleUpdateUser:', err);
       setError(err instanceof Error ? err.message : 'Unknown error');
     }
   };
@@ -74,17 +151,28 @@ export default function UsersPage() {
     if (!userToDelete) return;
 
     try {
-      const response = await fetch(`http://localhost:3001/users/${userToDelete.id}`, {
+      const response = await fetch(`http://localhost:3001/auth/delete/${userToDelete.id}`, {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${JWT}`,
+          "Content-Type": "application/json",
+          "token": JWT ?? "",
+          "permissions": permissions === "A" ? "Admin" : permissions
         },
+        mode: 'cors',
       });
 
-      if (!response.ok) throw new Error('Failed to delete user');
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Unauthorized - Please log in again');
+        }
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete user');
+      }
 
       setUsers(users.filter((u) => u.id !== userToDelete.id));
       setUserToDelete(null);
+      setSuccess('User deleted successfully');
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
     }
@@ -92,7 +180,7 @@ export default function UsersPage() {
 
   return (
     <AdminProtected>
-      <main className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
+      <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
           {language.usersManagement}
         </h1>
@@ -100,6 +188,12 @@ export default function UsersPage() {
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {success}
           </div>
         )}
 
@@ -170,7 +264,7 @@ export default function UsersPage() {
           <div className="flex items-center justify-center min-h-screen px-4">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 z-50 max-w-sm mx-auto">
               <Dialog.Title className="text-lg font-medium text-gray-900 dark:text-white">
-                {language.confirmDelete}
+                {language.confirmDeleteUser}
               </Dialog.Title>
               <Dialog.Description className="mt-2 text-sm text-gray-600 dark:text-gray-300">
                 {userToDelete?.email}
@@ -192,7 +286,7 @@ export default function UsersPage() {
             </div>
           </div>
         </Dialog>
-      </main>
+      </div>
     </AdminProtected>
   );
 }

@@ -14,7 +14,7 @@ import { UserService } from './user/user.service';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '',
+      password: 'root',
       database: "rental",
       entities: [User],
       synchronize: true
