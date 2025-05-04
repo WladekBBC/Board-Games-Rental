@@ -4,13 +4,15 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
-import { Perms } from '../enums/permissions.enum';
+import { convertPerms, Perms } from '../enums/permissions.enum';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepo: Repository<User>
+    private readonly userRepo: Repository<User>,
+    private jwtService: JwtService
   ){}
   
   /**
@@ -20,21 +22,6 @@ export class UserService {
    */
   async create(createUserDto: CreateUserDto) {
     return this.userRepo.save(createUserDto)
-  }
-
-  async createAdminIfNotExists() {
-    const adminEmail = 'admin@example.com';
-    const adminPassword = '123456';
-    const adminUser = await this.findOne(adminEmail);
-    
-    if (!adminUser) {
-      const hashedPassword = await bcrypt.hash(adminPassword, 10);
-      await this.create({
-        email: adminEmail,
-        password: hashedPassword,
-        permissions: Perms.A
-      });
-    }
   }
 
   /**
@@ -60,8 +47,8 @@ export class UserService {
    * @param perms - permissions from request
    * @returns found user
    */
-  async findOneById(id:number, perms: string){
-    if(await this.checkPerms(id, perms))
+  async findOneById(id:number, perms: string, jwt: string){
+    if(await this.checkPerms(id, jwt) || convertPerms(perms) == Perms.A)
       return this.userRepo.findOneBy({ id })
     throw new UnauthorizedException
   }
@@ -73,8 +60,8 @@ export class UserService {
    * @param updateUserDto - data of user to update
    * @returns result of updating user
    */
-  async update(id: number, perms: string, updateUserDto: UpdateUserDto) {
-    if(await this.checkPerms(id, perms))
+  async update(id: number, perms: string, jwt: string, updateUserDto: UpdateUserDto) {
+    if(await this.checkPerms(id, jwt) || convertPerms(perms) == Perms.A)
       return this.userRepo.update(id, updateUserDto)
     throw new UnauthorizedException
   }
@@ -85,8 +72,8 @@ export class UserService {
    * @param perms - permissions from request
    * @returns result of deleting user
    */
-  async remove(id: number, perms: string) {
-    if(await this.checkPerms(id, perms))
+  async remove(id: number, perms: string, jwt: string) {
+    if(await this.checkPerms(id, jwt) || convertPerms(perms) == Perms.A)
       return this.userRepo.delete(id)
     throw new UnauthorizedException
   }
@@ -94,10 +81,26 @@ export class UserService {
   /**
    * Permission Checker
    * @param id - index number of user
-   * @param perms - permission from request
-   * @returns boolean if user's permissions are equal
+   * @param jwt - jwt token to check id of sender
+   * @returns boolean if user's ids are equal
    */
-  async checkPerms(id: number, perms: string): Promise<boolean>{
-    return this.userRepo.findOneBy({ id }).then( user => user?.permissions == perms)
+  checkPerms(id: number, jwt: string): boolean{
+    const user = this.jwtService.decode(jwt);
+    return id == user.id
+  }
+
+  async createAdminIfNotExists() {
+    const adminEmail = 'admin@example.com';
+    const adminPassword = '123456';
+    const adminUser = await this.findOne(adminEmail);
+    
+    if (!adminUser) {
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
+      await this.create({
+        email: adminEmail,
+        password: hashedPassword,
+        permissions: Perms.A
+      });
+    }
   }
 }

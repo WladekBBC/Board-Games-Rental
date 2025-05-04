@@ -18,6 +18,8 @@ export class AuthService {
    * @returns JWT token and permissions of logged user
    */
   async signIn(loginData: LoginDto): Promise<LoggedUserDto>{
+    if(!loginData)
+      throw new BadRequestException;
     const user = await this.usersService.findOne(loginData.email);
 
     if(!user || !await bcrypt.compare(loginData.password, user.password))
