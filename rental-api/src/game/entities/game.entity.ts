@@ -1,7 +1,22 @@
-import { Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Game {
     @PrimaryGeneratedColumn()
     id:number;
+
+    @Column()
+    title: string;
+
+    @Column()
+    desc: string;
+
+    @Column()
+    category: string;
+
+    @Column()
+    amount: number;
+
+    @Column()
+    quantity: number;
 }

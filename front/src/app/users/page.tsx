@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Dialog } from '@headlessui/react';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { useLang } from '@/lib/contexts/LanguageContext';
 import { AdminProtected } from '@/components/AdminProtected';
+import { Dialog } from '@headlessui/react';
 
 /**
  * @interface User
@@ -51,7 +51,7 @@ export default function UsersPage() {
           headers: {
             "Content-Type": "application/json",
             "token": JWT ?? "",
-            "permissions": permissions === "A" ? "Admin" : permissions
+            "permissions": permissions
           },
           mode: 'cors'
         });
@@ -113,7 +113,7 @@ export default function UsersPage() {
         headers: {
           "Content-Type": "application/json",
           "token": JWT ?? "",
-          "permissions": permissions === "A" ? "Admin" : permissions
+          "permissions": permissions
         },
         mode: 'cors',
         body: JSON.stringify({ 
@@ -156,7 +156,7 @@ export default function UsersPage() {
         headers: {
           "Content-Type": "application/json",
           "token": JWT ?? "",
-          "permissions": permissions === "A" ? "Admin" : permissions
+          "permissions": permissions
         },
         mode: 'cors',
       });

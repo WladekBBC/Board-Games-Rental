@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@deepgram/sdk": "^3.12.1",
+    "@headlessui/react": "^2.2.2",
     "date-fns": "^2.30.0",
     "firebase": "^11.6.0",
     "firebase-admin": "^13.2.0",

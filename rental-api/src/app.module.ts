@@ -1,12 +1,14 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
-import { UserService } from './user/user.service';
 import { GameModule } from './game/game.module';
+import { RentalModule } from './rental/rental.module';
+import { Game } from './game/entities/game.entity';
+import { Rental } from './rental/entities/rental.entity';
 
 @Module({
   imports: [
@@ -15,14 +17,15 @@ import { GameModule } from './game/game.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'root',
+      password: '',
       database: "rental",
-      entities: [User],
+      entities: [User, Game, Rental],
       synchronize: true
     }),
     UserModule,
     AuthModule,
-    GameModule],
+    GameModule,
+    RentalModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -7,15 +7,15 @@ import { jwtDecode } from "jwt-decode";
 import { useLang } from './LanguageContext';
 
 export enum Perms{
-  A = "A",
-  R = "R", 
-  U = "U"
+  A = "Admin",
+  R = "RWSS", 
+  U = "User"
 }
 
 export const toPerms = (perm: string): Perms =>{
-  if(perm === "A")
+  if(perm === "Admin")
     return Perms.A
-  else if(perm === "R")
+  else if(perm === "RWSS")
     return Perms.R
   else
     return Perms.U
