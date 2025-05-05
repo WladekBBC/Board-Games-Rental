@@ -9,6 +9,8 @@ import { GameModule } from './game/game.module';
 import { RentalModule } from './rental/rental.module';
 import { Game } from './game/entities/game.entity';
 import { Rental } from './rental/entities/rental.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { PermsGuard } from './guards/perms.guard';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { Rental } from './rental/entities/rental.entity';
     GameModule,
     RentalModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, {provide: APP_GUARD, useClass: PermsGuard}],
 })
 
 export class AppModule{};

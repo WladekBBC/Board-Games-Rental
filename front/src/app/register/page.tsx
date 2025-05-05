@@ -8,6 +8,7 @@ import { useLang } from '@/lib/contexts/LanguageContext';
 
 const RegisterPage = () => {
   const router = useRouter();
+  const { register } = useAuth();
   const { language } = useLang();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,53 +18,21 @@ const RegisterPage = () => {
     e.preventDefault();
     setError('');
 
-    try {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        setError(language.invalidEmail);
-        return;
-      }
-
-      if (password.length < 6) {
-        setError(language.passwordTooShort);
-        return;
-      }
-
-      // 🔹 Rejestracja użytkownika z domyślnym permission "U"
-      const registerResponse = await fetch('http://localhost:3001/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, permissions: 'U' }),
-      });
-
-      if (!registerResponse.ok) {
-        const data = await registerResponse.json();
-        setError(data.message || language.registrationFailed);
-        return;
-      }
-
-      const loginResponse = await fetch('http://localhost:3001/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!loginResponse.ok) {
-        setError(language.loginFailed);
-        return;
-      }
-
-      const loginData = await loginResponse.json();
-
-      
-      localStorage.setItem('token', loginData.token);
-
-      router.push('/login'); 
-    } catch (err) {
-      console.error('Error:', err);
-      setError(language.registrationFailed);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError(language.invalidEmail);
+      return;
     }
-  };
+
+    if (password.length < 6) {
+      setError(language.passwordTooShort);
+      return;
+    }
+
+    await register({email: email, password: password}).then((res)=>{
+      console.log(res)
+    })
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">

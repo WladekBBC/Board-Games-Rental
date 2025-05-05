@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { signInWithGoogle as firebaseSignInWithGoogle, logoutUser } from '@/lib/firebase/firebaseUtils'
 import { jwtDecode } from "jwt-decode";
 import { useLang } from './LanguageContext';
@@ -39,6 +39,7 @@ interface AuthContextType {
   permissions: Perms;
   loading: boolean;
   error: string | null;
+  register: (registerData: {email: string, password: string}) => Promise<ApiData>;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
@@ -86,13 +87,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const handleAuthSuccess = async (data: ApiData) => {
     if(data){
-      console.log('Auth success data:', data);
       const loggedUser = jwtDecode<User>(data.token)
-      console.log('Decoded user:', loggedUser);
+      const perms = toPerms(data.permissions);
+
       setUser(loggedUser);
       setJWT(data.token);
-      const perms = toPerms(data.permissions);
-      console.log('Converted permissions:', perms);
       setPermissions(perms);
       saveLocalUser(data)
       router.push('/')
@@ -113,6 +112,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     throw err;
   };
 
+  const register = async (registerData: {email: string, password: string}) => {
+    return fetch('http://localhost:3001/auth/register', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(registerData)})
+    .then((res: Response)=>{
+      if(res.ok)
+        return res.json();
+      return Promise.reject(new Error(res.statusText, {cause: res.status}))
+    }).then((data: ApiData)=>{
+      handleAuthSuccess(data)
+    }).catch((error)=>{
+      return error
+    })
+  };
   
   const signIn = async (email: string, password: string) => {
     setLoading(true);
@@ -173,6 +184,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     error,
     JWT,
     permissions,
+    register,
     signIn,
     signInWithGoogle,
     signOut

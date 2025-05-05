@@ -1,73 +1,66 @@
 'use client'
 
-import { Content } from 'next/font/google'
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { useAuth } from './AuthContext';
 
 export interface Game {
-  id: string
-  title: string
-  description: string
-  imageUrl: string
-  category: string
-  isAvailable: boolean
-  quantity: number // Кількість доступних екземплярів
-  availableQuantity?: number
+  id:number;
+  title: string;
+  desc: string;
+  imageUrl: string;
+  category: string;
+  amount: number;
+  quantity?: number;
 }
 
-/**
- * Kontekst zarządzający kolekcją gier planszowych
- * @interface GamesContextType
- */
 interface GamesContextType {
   games: Game[]
   loading: boolean
-  addGame: (game: Omit<Game, 'id'>) => void
+  addGame: (game: Partial<Game>) => void
   updateGame: (id: string, updates: Partial<Game>) => void
   updateGameAvailability: (id: string, rentedQuantity: number) => void
-  deleteGame: (id: string) => void
+  deleteGame: (id: number) => void
 }
 
 const GamesContext = createContext<GamesContextType | undefined>(undefined)
 
-/**
- * Dostawca kontekstu gier planszowych
- * @param {Object} props - Właściwości komponentu
- * @param {ReactNode} props.children - Dzieci komponentu
- * @returns {JSX.Element} Dostawca kontekstu
- */
 export function GamesProvider({ children }: { children: ReactNode }) {
+  const {JWT, permissions} = useAuth()
   const [games, setGames] = useState<Game[]>([])
   const [loading, setLoading] = useState(true)
 
-  /**
-   * Ładuje gry z localStorage przy inicjalizacji
-   */
+
   useEffect(() => {
-    try {
-      const savedGames = localStorage.getItem('games')
-      if (savedGames) {
-        setGames(JSON.parse(savedGames))
-      }
-    } catch (error) {
-      console.error('Помилка при завантаженні ігор:', error)
-    } finally {
-      setLoading(false)
-    }
+    getGames();
   }, [])
 
-  /**
-   * Dodaje nową grę do kolekcji
-   * @param {Omit<Game, 'id'>} game - Dane nowej gry (bez ID)
-   */
-  const addGame = (game: Omit<Game, 'id'>) => {
-    const newGame = {
-      ...game,
-      id: Date.now().toString(),
-      isAvailable: game.quantity > 0
-    }
-    const updatedGames = [...games, newGame]
-    setGames(updatedGames)
-    localStorage.setItem('games', JSON.stringify(updatedGames))
+  const getGames = () =>{
+    fetch('http://localhost:3001/game/games', {
+      method: 'GET', 
+      headers: { 
+        'Content-Type': 'application/json',
+        "token": `${JWT}`,
+        "permissions": permissions
+      }}).then((res)=>{
+        if (!res.ok) 
+          throw new Error(`Failed to fetch games: ${res.status} ${res.statusText}`);
+        return res.json()
+      }).then((res: Game[])=>{
+        setGames(res)
+        setLoading(false)
+      }).catch((error)=>{
+        console.log(error)
+      })
+  }
+
+  const addGame = (game: Partial<Game>) => {
+    fetch('http://localhost:3001/game/add', {
+      method: 'POST', 
+      headers: { 
+        'Content-Type': 'application/json',
+        "token": `${JWT}`,
+        "permissions": permissions
+      }, body: JSON.stringify(game)})
   }
 
   /**
@@ -76,18 +69,13 @@ export function GamesProvider({ children }: { children: ReactNode }) {
    * @param {Partial<Game>} updates - Częściowe dane do aktualizacji
    */
   const updateGame = (id: string, updates: Partial<Game>) => {
-    const updatedGames = games.map(game => {
-      if (game.id === id) {
-        const updatedGame = { ...game, ...updates }
-        if (typeof updates.quantity !== 'undefined') {
-          updatedGame.isAvailable = updatedGame.quantity > 0
-        }
-        return updatedGame
-      }
-      return game
-    })
-    setGames(updatedGames)
-    localStorage.setItem('games', JSON.stringify(updatedGames))
+      fetch(`http://localhost:3001/game/update/${id}`, {
+        method: 'PATCH', 
+        headers: { 
+          'Content-Type': 'application/json',
+          "token": `${JWT}`,
+          "permissions": permissions
+      }, body: JSON.stringify(updates)})
   }
 
   /**
@@ -96,25 +84,17 @@ export function GamesProvider({ children }: { children: ReactNode }) {
    * @param {number} rentedQuantity - Liczba wypożyczonych egzemplarzy
    */
   const updateGameAvailability = (id: string, rentedQuantity: number) => {
-    const updatedGames = games.map(game => {
-      if (game.id === id) {
-        const availableQuantity = game.quantity - rentedQuantity
-        return {
-          ...game,
-          isAvailable: availableQuantity > 0,
-          availableQuantity
-        }
-      }
-      return game
-    })
-    setGames(updatedGames)
-    localStorage.setItem('games', JSON.stringify(updatedGames))
+    //TODO
   }
 
-  const deleteGame = (id: string) => {
-    const updatedGames = games.filter(game => game.id !== id)
-    setGames(updatedGames)
-    localStorage.setItem('games', JSON.stringify(updatedGames))
+  const deleteGame = (id: number) => {
+    fetch(`http://localhost:3001/game/delete/${id}`, {
+      method: 'DELETE', 
+      headers: { 
+        'Content-Type': 'application/json',
+        "token": `${JWT}`,
+        "permissions": permissions
+    }})
   }
 
   return (

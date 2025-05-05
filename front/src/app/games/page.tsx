@@ -12,18 +12,18 @@ import { SingleGame } from '@/components/Game/SingleGame'
 
 export default function GamesPage() {
   const router = useRouter()
-  const { permissions, user, loading: authLoading } = useAuth()
+  const { permissions, user, loading } = useAuth()
   const { games, addGame, updateGame, deleteGame, loading: gamesLoading } = useGames()
   const [isProcessing, setIsProcessing] = useState(false)
   const { language } = useLang()
 
   useEffect(() => {
-    if (!authLoading && permissions != Perms.A) {
+    if (!loading && permissions != Perms.A) {
       router.push('/')
     }
-  }, [user, authLoading, router])
+  }, [user, loading, router])
 
-  if (authLoading || gamesLoading) {
+  if (loading || gamesLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -44,12 +44,12 @@ export default function GamesPage() {
       const quantity = parseInt(formData.get('quantity') as string) || 0
 
       await addGame({
-        title,
-        description,
-        imageUrl,
-        category,
-        quantity,
-        isAvailable: quantity > 0
+        title: title,
+        desc: description,
+        imageUrl: imageUrl,
+        category: category,
+        amount: quantity,
+        quantity: quantity
       })
 
       e.currentTarget.reset()
@@ -80,11 +80,10 @@ export default function GamesPage() {
       const isAvailable = formData.get('isAvailable') === 'true'
 
       await updateGame(id, {
-        title,
-        description,
-        imageUrl,
-        category,
-        isAvailable
+        title: title,
+        desc: description,
+        imageUrl: imageUrl,
+        category: category,
       })
     } catch (error) {
       console.error(`${language.editGameError}: `, error)
@@ -99,7 +98,7 @@ export default function GamesPage() {
    * @param {string} id - The ID of the game to delete.
    * @returns {void}
    */
-  const handleDeleteGame = async (id: string) => {
+  const handleDeleteGame = async (id: number) => {
     setIsProcessing(true)
 
     try {
@@ -110,7 +109,7 @@ export default function GamesPage() {
       setIsProcessing(false)
     }
   }
-  if((!authLoading || !gamesLoading) && permissions == Perms.A)
+  if((!loading || !gamesLoading) && permissions == Perms.A)
     return (
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">{language.manageGame}</h1>

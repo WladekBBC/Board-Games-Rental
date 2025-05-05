@@ -1,15 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
+import { Repository } from 'typeorm';
+import { Game } from './entities/game.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class GameService {
+  constructor(    
+    @InjectRepository(Game)
+    private readonly gameRepo: Repository<Game>,
+  ){}
   create(createGameDto: CreateGameDto) {
     return 'This action adds a new game';
   }
 
   findAll() {
-    return `This action returns all game`;
+    return this.gameRepo.find();
   }
 
   findOne(id: number) {

@@ -17,7 +17,7 @@ export const SingleGame = ({game, actions}: GameProp) =>{
     const [editingGame, setEditingGame] = useState<Game | null>(null)
     const [isProcessing, setIsProcessing] = useState(false)
 
-    const handleDeleteGame = async (id: string) => {
+    const handleDeleteGame = async (id: number) => {
         setIsProcessing(true)
         deleteGame(id)
         setIsProcessing(false)
@@ -37,15 +37,15 @@ export const SingleGame = ({game, actions}: GameProp) =>{
                 </div>
                 <div className="p-4">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{game.title}</h3>
-                    <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">{game.description}</div>
+                    <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">{game.desc}</div>
                     <div className="mt-4 flex items-center justify-between">
                         <span className="text-sm text-gray-500 dark:text-gray-400">{game.category}</span>
                         <div className="flex flex-col items-end">
-                            <span className={`text-sm ${game.availableQuantity && game.availableQuantity > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                                {game.availableQuantity && game.availableQuantity > 0 ? language.gameAvailable : language.gameUnavailable}
+                            <span className={`text-sm ${game.quantity && game.quantity > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                                {game.quantity && game.quantity > 0 ? language.gameAvailable : language.gameUnavailable}
                             </span>
                             <span className="text-xs text-gray-500 dark:text-gray-400">
-                                {language.available}: {game.availableQuantity} / {game.quantity}
+                                {language.available}: {game.quantity} / {game.quantity}
                             </span>
                         </div>
                     </div>

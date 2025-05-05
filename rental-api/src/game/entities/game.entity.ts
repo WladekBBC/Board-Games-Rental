@@ -15,6 +15,9 @@ export class Game {
     category: string;
 
     @Column()
+    imageUrl: string;
+
+    @Column()
     amount: number;
 
     @Column()
