@@ -5,8 +5,8 @@ import { useGames } from './GamesContext'
 import { useLang } from '@/lib/contexts/LanguageContext'
 
 interface GameRental {
-  id: string
-  gameId: string
+  id: number
+  gameId: number
   personId: string
   rentedAt: string
   returnedAt?: string
@@ -20,9 +20,9 @@ interface RentalsContextType {
   rentals: GameRental[]
   loading: boolean
   addRental: (rental: Omit<GameRental, 'id' | 'rentedAt'>) => void
-  updateRental: (id: string, updates: Partial<GameRental>) => void
-  returnGame: (id: string) => void
-  deleteRental: (id: string) => void
+  updateRental: (id: number, updates: Partial<GameRental>) => void
+  returnGame: (id: number) => void
+  deleteRental: (id: number) => void
 }
 
 const RentalsContext = createContext<RentalsContextType | undefined>(undefined)
@@ -67,7 +67,7 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
    * Updates the number of rented game instances
    * @param {string} gameId - Game ID
    */
-  const updateGameRentedQuantity = (gameId: string) => {
+  const updateGameRentedQuantity = (gameId: number) => {
     const activeRentals = rentals.filter(rental => 
       rental.gameId === gameId && !rental.returnedAt
     ).length
@@ -89,17 +89,17 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
       r.gameId === rental.gameId && !r.returnedAt
     ).length
 
-    if (activeRentalsCount >= game.quantity) {
+    if (activeRentalsCount >= game.amount) {
       throw new Error(language.gameUnavailableMessage)
     }
 
     const newRental = {
       ...rental,
-      id: Date.now().toString(),
+      id: 0,
       rentedAt: new Date().toISOString()
     }
     
-    const updatedRentals = [newRental, ...rentals]
+    const updatedRentals: GameRental[] = [newRental, ...rentals]
     setRentals(updatedRentals)
     localStorage.setItem('rentals', JSON.stringify(updatedRentals))
     updateGameRentedQuantity(rental.gameId)
@@ -110,7 +110,7 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
    * @param {string} id - Rental ID
    * @param {Partial<GameRental>} updates - Partial data to update
    */
-  const updateRental = (id: string, updates: Partial<GameRental>) => {
+  const updateRental = (id: number, updates: Partial<GameRental>) => {
     const updatedRentals = rentals.map(rental => {
       if (rental.id === id) {
         const updatedRental = { ...rental, ...updates }
@@ -126,7 +126,7 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
    * Marks the game as returned
    * @param {string} id - Rental ID
    */
-  const returnGame = (id: string) => {
+  const returnGame = (id: number) => {
     const rental = rentals.find(r => r.id === id)
     if (rental) {
       const updatedRentals = rentals.map(r => 
@@ -142,7 +142,7 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
    * Deletes the rental
    * @param {string} id - Rental ID to delete
    */
-  const deleteRental = (id: string) => {
+  const deleteRental = (id: number) => {
     const rental = rentals.find(r => r.id === id)
     if (rental) {
       const updatedRentals = rentals.filter(r => r.id !== id)

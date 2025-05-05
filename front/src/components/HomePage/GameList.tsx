@@ -22,17 +22,15 @@ export default function GameList(){
      **/
     const gamesWithAvailability = games.map(game => {
         const rentedCount = rentals.filter(r => r.gameId === game.id && !r.returnedAt).length
-        const availableQuantity = game.quantity - rentedCount
         return {
-        ...game,
-        availableQuantity
+            ...game,
         }
     })
 
     return (
         <><h2 className="text-2xl font-bold mb-6">{language.gameList}</h2><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {gamesWithAvailability.map(game => (
-                <SingleGame game={game}/>
+                <SingleGame game={game} key={game.id}/>
             ))}
         </div></>
     )

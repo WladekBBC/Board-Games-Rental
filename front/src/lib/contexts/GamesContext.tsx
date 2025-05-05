@@ -6,19 +6,19 @@ import { useAuth } from './AuthContext';
 export interface Game {
   id:number;
   title: string;
-  desc: string;
+  description: string;
   imageUrl: string;
   category: string;
   amount: number;
-  quantity?: number;
+  quantity: number;
 }
 
 interface GamesContextType {
   games: Game[]
   loading: boolean
   addGame: (game: Partial<Game>) => void
-  updateGame: (id: string, updates: Partial<Game>) => void
-  updateGameAvailability: (id: string, rentedQuantity: number) => void
+  updateGame: (id: number, updates: Partial<Game>) => Promise<void>
+  updateGameAvailability: (id: number, rentedQuantity: number) => void
   deleteGame: (id: number) => void
 }
 
@@ -32,7 +32,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     getGames();
-  }, [])
+  }, [permissions])
 
   const getGames = () =>{
     fetch('http://localhost:3001/game/games', {
@@ -60,7 +60,13 @@ export function GamesProvider({ children }: { children: ReactNode }) {
         'Content-Type': 'application/json',
         "token": `${JWT}`,
         "permissions": permissions
-      }, body: JSON.stringify(game)})
+      }, body: JSON.stringify(game)}).then((res)=>{
+        if(!res.ok)
+          return Promise.reject(new Error(res.statusText, {cause: res.status}))
+        getGames();
+      }).catch((error)=>{
+        throw new error
+      })
   }
 
   /**
@@ -68,14 +74,20 @@ export function GamesProvider({ children }: { children: ReactNode }) {
    * @param {string} id - ID gry do aktualizacji
    * @param {Partial<Game>} updates - Częściowe dane do aktualizacji
    */
-  const updateGame = (id: string, updates: Partial<Game>) => {
+  const updateGame = async (id: number, updates: Partial<Game>) => {
       fetch(`http://localhost:3001/game/update/${id}`, {
         method: 'PATCH', 
         headers: { 
           'Content-Type': 'application/json',
           "token": `${JWT}`,
           "permissions": permissions
-      }, body: JSON.stringify(updates)})
+      }, body: JSON.stringify(updates)}).then((res)=>{
+        if(!res.ok)
+          return Promise.reject(new Error(res.statusText, {cause: res.status}))
+        getGames();
+      }).catch((error)=>{
+        throw new error
+      })
   }
 
   /**
@@ -83,7 +95,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
    * @param {string} id - ID gry
    * @param {number} rentedQuantity - Liczba wypożyczonych egzemplarzy
    */
-  const updateGameAvailability = (id: string, rentedQuantity: number) => {
+  const updateGameAvailability = (id: number, rentedQuantity: number) => {
     //TODO
   }
 
@@ -94,7 +106,11 @@ export function GamesProvider({ children }: { children: ReactNode }) {
         'Content-Type': 'application/json',
         "token": `${JWT}`,
         "permissions": permissions
-    }})
+    }}).then((res)=>{
+      if(!res.ok)
+        return Promise.reject(new Error(res.statusText, {cause: res.status}))
+      getGames();
+    })
   }
 
   return (

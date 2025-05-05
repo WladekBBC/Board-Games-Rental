@@ -12,7 +12,7 @@ export class GameService {
     private readonly gameRepo: Repository<Game>,
   ){}
   create(createGameDto: CreateGameDto) {
-    return 'This action adds a new game';
+    return this.gameRepo.save(createGameDto);
   }
 
   findAll() {
@@ -20,14 +20,14 @@ export class GameService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} game`;
+    return this.gameRepo.findOneBy({id});
   }
 
   update(id: number, updateGameDto: UpdateGameDto) {
-    return `This action updates a #${id} game`;
+    return this.gameRepo.update(id, updateGameDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} game`;
+    return this.gameRepo.delete(id);
   }
 }

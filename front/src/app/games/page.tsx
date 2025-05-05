@@ -3,17 +3,14 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Perms, useAuth } from '@/lib/contexts/AuthContext'
-import { useGames, Game } from '@/lib/contexts/GamesContext'
-import { EditGameForm } from '@/components/EditGameForm'
-import Image from 'next/image'
+import { useGames } from '@/lib/contexts/GamesContext'
 import { useLang } from '@/lib/contexts/LanguageContext'
-import { imageLoader } from '@/lib/utils/imageLoader'
 import { SingleGame } from '@/components/Game/SingleGame'
 
 export default function GamesPage() {
   const router = useRouter()
   const { permissions, user, loading } = useAuth()
-  const { games, addGame, updateGame, deleteGame, loading: gamesLoading } = useGames()
+  const { games, addGame, loading: gamesLoading } = useGames()
   const [isProcessing, setIsProcessing] = useState(false)
   const { language } = useLang()
 
@@ -31,84 +28,31 @@ export default function GamesPage() {
     )
   }
 
-  const handleAddGame = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleAddGame = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsProcessing(true)
 
-    try {
-      const formData = new FormData(e.currentTarget)
-      const title = formData.get('title') as string
-      const description = formData.get('description') as string
-      const imageUrl = formData.get('imageUrl') as string
-      const category = formData.get('category') as string
-      const quantity = parseInt(formData.get('quantity') as string) || 0
+    const formData = new FormData(e.currentTarget)
+    const title = formData.get('title') as string
+    const description = formData.get('description') as string
+    const imageUrl = formData.get('imageUrl') as string
+    const category = formData.get('category') as string
+    const quantity = parseInt(formData.get('quantity') as string) || 0
 
-      await addGame({
-        title: title,
-        desc: description,
-        imageUrl: imageUrl,
-        category: category,
-        amount: quantity,
-        quantity: quantity
-      })
+    addGame({
+      title: title,
+      description: description,
+      imageUrl: imageUrl,
+      category: category,
+      amount: quantity,
+      quantity: quantity
+    })
 
-      e.currentTarget.reset()
-    } catch (error) {
-      console.error(`${language.addGameError}: `, error)
-    } finally {
-      setIsProcessing(false)
-    }
+    e.currentTarget.reset()
+    setIsProcessing(false)
+    
   }
 
-  /**
-   * @function handleUpdateGame
-   * @description This function updates a game in the database.
-   * @param {string} id - The ID of the game to update.
-   * @param {React.FormEvent<HTMLFormElement>} e - The form event.
-   * @returns {void}
-   */
-  const handleUpdateGame = async (id: string, e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsProcessing(true)
-
-    try {
-      const formData = new FormData(e.currentTarget)
-      const title = formData.get('title') as string
-      const description = formData.get('description') as string
-      const imageUrl = formData.get('imageUrl') as string
-      const category = formData.get('category') as string
-      const isAvailable = formData.get('isAvailable') === 'true'
-
-      await updateGame(id, {
-        title: title,
-        desc: description,
-        imageUrl: imageUrl,
-        category: category,
-      })
-    } catch (error) {
-      console.error(`${language.editGameError}: `, error)
-    } finally {
-      setIsProcessing(false)
-    }
-  }
-
-  /**
-   * @function handleDeleteGame
-   * @description This function deletes a game from the database.
-   * @param {string} id - The ID of the game to delete.
-   * @returns {void}
-   */
-  const handleDeleteGame = async (id: number) => {
-    setIsProcessing(true)
-
-    try {
-      await deleteGame(id)
-    } catch (error) {
-      console.error(`${language.deleteGameError}: `, error)
-    } finally {
-      setIsProcessing(false)
-    }
-  }
   if((!loading || !gamesLoading) && permissions == Perms.A)
     return (
       <div className="container mx-auto px-4 py-8">
@@ -191,7 +135,7 @@ export default function GamesPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {games.map(game => (
-            <SingleGame game={game} actions={true}/>
+            <SingleGame game={game} actions={true} key={game.id}/>
           ))}
         </div>
       </div>

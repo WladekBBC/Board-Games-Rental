@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { imageLoader } from '@/lib/utils/imageLoader'
 import { useLang } from "@/lib/contexts/LanguageContext"
 import { useState } from "react"
-import { EditGameForm } from "../EditGameForm"
+import { EditGameForm } from "./EditGameForm"
 
 type GameProp = {
     game: Game
@@ -37,7 +37,7 @@ export const SingleGame = ({game, actions}: GameProp) =>{
                 </div>
                 <div className="p-4">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{game.title}</h3>
-                    <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">{game.desc}</div>
+                    <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">{game.description}</div>
                     <div className="mt-4 flex items-center justify-between">
                         <span className="text-sm text-gray-500 dark:text-gray-400">{game.category}</span>
                         <div className="flex flex-col items-end">

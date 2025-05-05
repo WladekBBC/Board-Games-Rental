@@ -1,7 +1,7 @@
 export class CreateGameDto {
     id:number;
     title: string;
-    desc: string;
+    description: string;
     category: string;
     amount: number;
     quantity?: number;

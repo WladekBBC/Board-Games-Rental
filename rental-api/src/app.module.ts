@@ -19,7 +19,7 @@ import { PermsGuard } from './guards/perms.guard';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'root',
+      password: '',
       database: "rental",
       entities: [User, Game, Rental],
       synchronize: true

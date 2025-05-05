@@ -9,6 +9,12 @@ export class Rental {
     @Column()
     index: string;
 
+    @Column()
+    rentedAt: Date;
+
+    @Column()
+    returnedAt: Date;
+
     @OneToOne(type=>Game)
     @JoinColumn({ name: 'gameId' })
     game: Game;

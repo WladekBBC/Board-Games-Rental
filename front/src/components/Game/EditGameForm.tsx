@@ -30,7 +30,6 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
     imageUrl: game.imageUrl,
     quantity: game.quantity,
     category: game.category,
-    isAvailable: game.isAvailable
   })
   const [error, setError] = useState<string | null>(null)
   const [isImageValid, setIsImageValid] = useState(true)
@@ -76,7 +75,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
       return
     }
 
-    if (!formData.description.trim()) {
+    if (!formData.description || !formData.description.trim()) {
       setError(language.enterDesc)
       return
     }
@@ -101,15 +100,12 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
       return
     }
 
-    try {
-      updateGame(game.id, {
-        ...formData,
-        isAvailable: formData.quantity > 0
-      })
+    updateGame(game.id, formData).then(()=>{
       onClose()
-    } catch (error) {
+    }).catch(()=>{
       setError(language.editGameError)
-    }
+
+    })
   }
 
   /**

@@ -9,7 +9,7 @@ export class Game {
     title: string;
 
     @Column()
-    desc: string;
+    description: string;
 
     @Column()
     category: string;

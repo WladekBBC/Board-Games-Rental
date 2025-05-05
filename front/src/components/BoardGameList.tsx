@@ -4,7 +4,7 @@ import Image, { ImageLoaderProps } from 'next/image'
 import { useState } from 'react'
 import { Game, useGames } from '@/lib/contexts/GamesContext'
 import { useAuth } from '@/lib/contexts/AuthContext'
-import { EditGameForm } from './EditGameForm'
+import { EditGameForm } from './Game/EditGameForm'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/lib/contexts/LanguageContext'
 
