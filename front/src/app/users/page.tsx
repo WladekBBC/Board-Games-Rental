@@ -112,7 +112,7 @@ export default function UsersPage() {
         method: 'PATCH',
         headers: {
           "Content-Type": "application/json",
-          "token": JWT ?? "",
+          "token": `${JWT}`,
           "permissions": permissions
         },
         mode: 'cors',
@@ -155,7 +155,7 @@ export default function UsersPage() {
         method: 'DELETE',
         headers: {
           "Content-Type": "application/json",
-          "token": JWT ?? "",
+          "token": `${JWT}`,
           "permissions": permissions
         },
         mode: 'cors',
@@ -231,9 +231,9 @@ export default function UsersPage() {
                         }
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       >
-                        <option value="A">Admin</option>
-                        <option value="R">RWSS</option>
-                        <option value="U">User</option>
+                        <option value="Admin">Admin</option>
+                        <option value="RWSS">RWSS</option>
+                        <option value="User">User</option>
                       </select>
                       {editing[user.id] && editing[user.id] !== user.permissions && (
                         <button

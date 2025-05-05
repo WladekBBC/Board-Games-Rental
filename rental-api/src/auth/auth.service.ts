@@ -44,7 +44,6 @@ export class AuthService {
     const user = await this.usersService.create({
         email: newUser.email, 
         password: await bcrypt.hash(newUser.password, 10), 
-        permissions: Perms.U
       })
 
     const payload = { id: user.id, email: user.email };

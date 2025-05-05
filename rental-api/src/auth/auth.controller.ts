@@ -38,7 +38,7 @@ export class AuthController {
    * @returns User list
    */
   @UseGuards(AuthGuard)
-  @Permission([Perms.A, Perms.R])
+  @Permission([Perms.A])
   @Get('users')
   getUsers() {
     return this.userService.findAll();

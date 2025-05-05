@@ -46,3 +46,5 @@ rental-api/.prettierrc 2
 rental-api/eslint.config 2.mjs
 rental-api/package 2.json
 rental-api/package-lock 2.json
+front/package-lock.json
+rental-api/package-lock.json

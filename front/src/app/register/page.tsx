@@ -28,7 +28,7 @@ const RegisterPage = () => {
       setError(language.passwordTooShort);
       return;
     }
-
+    
     await register({email: email, password: password}).then((res)=>{
       console.log(res)
     })
