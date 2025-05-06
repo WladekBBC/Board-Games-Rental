@@ -2,54 +2,16 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { signInWithGoogle as firebaseSignInWithGoogle, logoutUser } from '@/lib/firebase/firebaseUtils'
 import { jwtDecode } from "jwt-decode";
 import { useLang } from './LanguageContext';
-
-export enum Perms{
-  A = "Admin",
-  R = "RWSS", 
-  U = "User"
-}
-
-export const toPerms = (perm: string): Perms =>{
-  if(perm === "Admin")
-    return Perms.A
-  else if(perm === "RWSS")
-    return Perms.R
-  else
-    return Perms.U
-}
-
-export interface User {
-  id: number,
-  email: string
-  password ?: string,
-  permissions ?: Perms
-}
-
-export interface ApiData{
-  token: string,
-  permissions: string,
-}
-
-interface AuthContextType {
-  user: User | null;
-  JWT: string | null;
-  permissions: Perms;
-  loading: boolean;
-  error: string | null;
-  register: (registerData: {email: string, password: string}) => Promise<ApiData>;
-  signIn: (email: string, password: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
-  signOut: () => Promise<void>;
-}
+import { IUserApi, Method, request } from '@/interfaces/api';
+import { Perms, toPerms } from '@/interfaces/perms';
+import { AuthContextType, LoggedUserType, LoginDataType } from '@/types/authContext';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<LoggedUserType | null>(null);
   const [JWT, setJWT] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<Perms>(Perms.U);
 
@@ -64,20 +26,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const getLocalUser = () =>{
-    if(localStorage.getItem('JWT')){
-      let jwt = localStorage.getItem('JWT')+''
-      let perms = localStorage.getItem('perms')
-      if (perms) {
-        handleAuthSuccess({token: jwt, permissions: perms})
-      }
+    if(localStorage.getItem('JWT') && localStorage.getItem('perms') ){
+      handleAuthSuccess({token: `${localStorage.getItem('JWT')}`, permissions: `${localStorage.getItem('perms')}`})
     }
   }
 
-  const saveLocalUser = (data: ApiData) =>{
-    if(data){
-      localStorage.setItem('JWT', data.token)
-      localStorage.setItem('perms', data.permissions)
-    }
+  const saveLocalUser = (data: IUserApi) =>{
+    localStorage.setItem('JWT', data.token)
+    localStorage.setItem('perms', data.permissions)
   }
 
   const clearLocalUser = () =>{
@@ -85,20 +41,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('perms')
   }
 
-  const handleAuthSuccess = async (data: ApiData) => {
-    if(data){
-      const loggedUser = jwtDecode<User>(data.token)
-      const perms = toPerms(data.permissions);
+  const handleAuthSuccess = async (data: IUserApi) => {
+    const loggedUser = jwtDecode<LoggedUserType>(data.token)
+    const perms = toPerms(data.permissions);
 
-      setUser(loggedUser);
-      setJWT(data.token);
-      setPermissions(perms);
-      saveLocalUser(data)
-      router.push('/')
-    }
+    setUser(loggedUser);
+    setJWT(data.token);
+    setPermissions(perms);
+    saveLocalUser(data)
+    router.push('/')
   };
 
-  const handleAuthError = (err: Error|any) => {
+  const handleAuthError = (err: Error) => {
     let errorMessage = 'Unknown error'
     if(err instanceof Error)
       switch(err.cause){
@@ -112,70 +66,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     throw err;
   };
 
-  const register = async (registerData: {email: string, password: string}) => {
-    return fetch('http://localhost:3001/auth/register', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(registerData)})
-    .then((res: Response)=>{
-      if(res.ok)
-        return res.json();
-      return Promise.reject(new Error(res.statusText, {cause: res.status}))
-    }).then((data: ApiData)=>{
-      handleAuthSuccess(data)
-    }).catch((error)=>{
-      return error
-    })
+  const register = async (data: LoginDataType) => {
+    request<IUserApi>('http://localhost:3001/auth/register', Method.POST, {}, JSON.stringify(data))
+      .then((data: IUserApi)=>{
+        handleAuthSuccess(data)
+      }).catch((error: Error)=>{
+        handleAuthError(error)
+      })
   };
   
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (data: LoginDataType) => {
     setLoading(true);
     setError(null);
 
-    let data = {email: email, password: password}
+    request<IUserApi>('http://localhost:3001/auth/login', Method.POST, {}, JSON.stringify(data))
+      .then((data: IUserApi)=>{
+        handleAuthSuccess(data)
+      }).catch((error: Error)=>{
+        handleAuthError(error)
+      })
 
-    fetch('http://localhost:3001/auth/login', {method: "POST", headers: {"Content-Type": "application/json"} , body: JSON.stringify(data), mode:'cors'})
-    .then((res: Response)=>{
-      if(res.ok)
-        return res.json();
-      return Promise.reject(new Error(res.statusText, {cause: res.status}))
-    }).then((data: ApiData)=>{
-      handleAuthSuccess(data)
-    }).catch((error)=>{
-      handleAuthError(error)
-    })
     setLoading(false);
-  };
-
-  const signInWithGoogle = async () => {
-    // TODO: Remove logging via google or move it into api
-    // try {
-    //   setLoading(true);
-    //   setError(null);
-      
-    //   const result = await firebaseSignInWithGoogle();
-      
-    //   if (!result?.email) {
-    //     throw new Error('Не вдалося отримати email від Google');
-    //   }
-
-    // } catch (err) {
-    //   handleAuthError(err);
-    // } finally {
-    //   setLoading(false);
-    // }
   };
 
   const signOut = async () => {
     clearLocalUser();
-    try {
-      setLoading(true);
-      setError(null);
-      await logoutUser();
-      setUser(null);
-      router.push('/')
-    } catch (err) {
-      handleAuthError(err);
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true);
+    setError(null);
+    setUser(null);
+    router.push('/')
   };
 
   const contextValue = {
@@ -186,7 +105,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     permissions,
     register,
     signIn,
-    signInWithGoogle,
     signOut
   };
 

@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Perms, useAuth } from '@/lib/contexts/AuthContext'
 import { useGames } from '@/lib/contexts/GamesContext'
 import { useLang } from '@/lib/contexts/LanguageContext'
 import { SingleGame } from '@/components/Game/SingleGame'
+import { useAuth } from '@/lib/contexts/AuthContext'
+import { Perms } from '@/interfaces/perms'
 
 export default function GamesPage() {
   const router = useRouter()

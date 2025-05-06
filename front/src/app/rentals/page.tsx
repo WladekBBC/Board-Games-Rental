@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Perms, useAuth } from '@/lib/contexts/AuthContext'
+import { useAuth } from '@/lib/contexts/AuthContext'
 import { useRentals } from '@/lib/contexts/RentalsContext'
 import { useGames } from '@/lib/contexts/GamesContext'
 import { useLang } from '@/lib/contexts/LanguageContext'
 import ErrorField from '@/components/Messages/ErrorField'
 import SuccessField from '@/components/Messages/SuccessField'
 import { Spinner } from '@/components/Messages/Spinner'
+import { Perms } from '@/interfaces/perms'
 
 /**
  * Rentals page
@@ -65,8 +66,8 @@ export default function RentalsPage() {
       if (!form) return
 
       const formData = new FormData(form)
-      const personId = formData.get('personId') as string
-      const gameId = formData.get('gameId') as string
+      const personId = `${formData.get('personId')?.toString()}`
+      const gameId:number = +`${formData.get('gameId')?.toString()}`
 
       const game = games.find(g => g.id === gameId)
       if (!game) {
@@ -101,7 +102,7 @@ export default function RentalsPage() {
    * @param {string} id - Rental ID
    * @param {React.FormEvent<HTMLFormElement>} e - Form event
    */
-  const handleUpdateRental = async (id: string, e: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdateRental = async (id: number, e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsProcessing(true)
     setError(null)
@@ -112,8 +113,8 @@ export default function RentalsPage() {
       if (!form) return
 
       const formData = new FormData(form)
-      const personId = formData.get('personId') as string
-      const gameId = formData.get('gameId') as string
+      const personId = `${formData.get('personId')?.toString()}`
+      const gameId:number = +`${formData.get('gameId')?.toString()}`
 
       await updateRental(id, {
         personId,
@@ -132,7 +133,7 @@ export default function RentalsPage() {
    * Handle deleting a rental
    * @param {string} id - Rental ID
    */
-  const handleDeleteRental = async (id: string) => {
+  const handleDeleteRental = async (id: number) => {
     setIsProcessing(true)
     setError(null)
     setSuccess(null)
@@ -152,7 +153,7 @@ export default function RentalsPage() {
    * Handle returning a game
    * @param {string} id - Rental ID
    */
-  const handleReturnGame = async (id: string) => {
+  const handleReturnGame = async (id: number) => {
     setIsProcessing(true)
     setError(null)
     setSuccess(null)

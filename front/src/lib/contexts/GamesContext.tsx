@@ -2,31 +2,15 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useAuth } from './AuthContext';
-
-export interface Game {
-  id:number;
-  title: string;
-  description: string;
-  imageUrl: string;
-  category: string;
-  amount: number;
-  quantity: number;
-}
-
-interface GamesContextType {
-  games: Game[]
-  loading: boolean
-  addGame: (game: Partial<Game>) => void
-  updateGame: (id: number, updates: Partial<Game>) => Promise<void>
-  updateGameAvailability: (id: number, rentedQuantity: number) => void
-  deleteGame: (id: number) => void
-}
+import { GamesContextType } from '@/types/gameContext';
+import { IGame } from '@/interfaces/game';
+import { Method, request } from '@/interfaces/api';
 
 const GamesContext = createContext<GamesContextType | undefined>(undefined)
 
 export function GamesProvider({ children }: { children: ReactNode }) {
   const {JWT, permissions} = useAuth()
-  const [games, setGames] = useState<Game[]>([])
+  const [games, setGames] = useState<IGame[]>([])
   const [loading, setLoading] = useState(true)
 
 
@@ -35,25 +19,15 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   }, [permissions])
 
   const getGames = () =>{
-    fetch('http://localhost:3001/game/games', {
-      method: 'GET', 
-      headers: { 
-        'Content-Type': 'application/json',
-        "token": `${JWT}`,
-        "permissions": permissions
-      }}).then((res)=>{
-        if (!res.ok) 
-          throw new Error(`Failed to fetch games: ${res.status} ${res.statusText}`);
-        return res.json()
-      }).then((res: Game[])=>{
-        setGames(res)
-        setLoading(false)
-      }).catch((error)=>{
-        console.log(error)
-      })
+    request<IGame[]>('http://localhost:3001/game/games', Method.GET, {"token": `${JWT}`, "permissions": permissions}).then((res: IGame[])=>{
+      setGames(res)
+      setLoading(false)
+    }).catch((error)=>{
+      console.log(error)
+    })
   }
 
-  const addGame = (game: Partial<Game>) => {
+  const addGame = (game: Partial<IGame>) => {
     fetch('http://localhost:3001/game/add', {
       method: 'POST', 
       headers: { 
@@ -74,7 +48,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
    * @param {string} id - ID gry do aktualizacji
    * @param {Partial<Game>} updates - Częściowe dane do aktualizacji
    */
-  const updateGame = async (id: number, updates: Partial<Game>) => {
+  const updateGame = async (id: number, updates: Partial<IGame>) => {
       fetch(`http://localhost:3001/game/update/${id}`, {
         method: 'PATCH', 
         headers: { 

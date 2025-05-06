@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { useLang } from '@/lib/contexts/LanguageContext';
 import { AdminProtected } from '@/components/AdminProtected';
 import { Dialog } from '@headlessui/react';
+import { Method, request } from '@/interfaces/api';
 
 /**
  * @interface User
@@ -33,42 +34,27 @@ export default function UsersPage() {
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   /**
-   * @function fetchUsers
-   * @description This function fetches the users from the server.
    * @returns {void}
    */
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        // Server-side logging
-        // console.error('=== FETCH USERS DEBUG ===');
-        // console.error('JWT Token length:', JWT?.length);
-        // console.error('Permissions:', permissions);
-        // console.error('=================');
-
-        const response: Response = await fetch('http://localhost:3001/auth/users', {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "token": JWT ?? "",
-            "permissions": permissions
-          },
-          mode: 'cors'
-        });
-
-        if (!response.ok) throw new Error(`Failed to fetch users: ${response.status} ${response.statusText}`);
-
-        const data: User[] = await response.json();
-        setUsers(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (JWT) fetchUsers();
+    if (JWT) 
+      fetchUsers();
   }, [JWT]);
+
+  const fetchUsers = async () => {
+    request<User[]>('http://localhost:3001/auth/users', Method.GET, {"token": `${JWT}`, "permissions": permissions}).then((data: User[])=>{
+      setUsers(data);
+      setLoading(false);
+    }).catch((err: Error)=>{
+      setError(err.message);
+    })
+  };
+
+  const handleSuccess = (successMessage: string) =>{
+    fetchUsers();
+    setSuccess(successMessage);
+    setTimeout(() => setSuccess(null), 3000);
+  }
 
   /**
    * @function handleUpdateUser
@@ -77,105 +63,50 @@ export default function UsersPage() {
    * @returns {void}
    */ 
   const handleUpdateUser = async (id: number) => {
-    try {
-      const newPermissions = editing[id];
-      const user = users.find(u => u.id === id);
-      if (!user) return;
+    const user = users.find(u => u.id === id);
+    if (!user) 
+      return;
 
-      // Check if we have a valid token
-      if (!JWT) {
-        console.error('No JWT token found!');
-        setError('No authentication token found. Please log in again.');
-        return;
-      }
+    if (!JWT) {
+      setError('No authentication token found. Please log in again.');
+      return;
+    }
 
-      // // Server-side logging
-      // console.error('=== SERVER DEBUG INFO ===');
-      // console.error('JWT Token length:', JWT.length);
-      // console.error('JWT Token first 20 chars:', JWT.substring(0, 20));
-      // console.error('Current Permissions:', permissions);
-      // console.error('New Permissions:', newPermissions);
-      // console.error('User ID:', id);
-      // console.error('Request URL:', `http://localhost:3001/auth/update/${id}`);
-      // console.error('Request Headers:', {
-      //   "Content-Type": "application/json",
-      //   "Authorization": `Bearer ${JWT}`,
-      //   "permissions": permissions
-      // });
-      // console.error('Request Body:', {
-      //   email: user.email,
-      //   permissions: newPermissions
-      // });
-      // console.error('=================');
+    setLoading(true);
+    const newPermissions = editing[id];
 
-      const response = await fetch(`http://localhost:3001/auth/update/${id}`, {
-        method: 'PATCH',
-        headers: {
-          "Content-Type": "application/json",
-          "token": `${JWT}`,
-          "permissions": permissions
-        },
-        mode: 'cors',
-        body: JSON.stringify({ 
-          email: user.email,
-          permissions: newPermissions 
-        }),
-      });
-
-      console.error('Response status:', response.status);
-      const responseData = await response.json();
-      console.error('Response data:', responseData);
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Unauthorized - Please log in again');
-        }
-        throw new Error(responseData.message || 'Failed to update user');
-      }
-
-      setUsers(users.map((user) => user.id === id ? { ...user, permissions: newPermissions } : user));
+    request(
+      `http://localhost:3001/auth/update/${id}`, 
+      Method.PATCH, 
+      {"token": `${JWT}`, "permissions": permissions}, 
+      JSON.stringify({email: user.email, permissions: newPermissions}
+    )).then(()=>{
+      handleSuccess(language.userPermissionsUpdatedSuccessfully);
       setEditing((prev) => {
         const newState = { ...prev };
         delete newState[id];
         return newState;
       });
-      setSuccess(language.userPermissionsUpdatedSuccessfully);
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (err) {
-      console.error('Error in handleUpdateUser:', err);
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    }
+    }).catch((err: Error)=>{
+      setError(err.message);
+    })
+
+    setLoading(false);
   };
 
   const handleDeleteUser = async () => {
     if (!userToDelete) return;
 
-    try {
-      const response = await fetch(`http://localhost:3001/auth/delete/${userToDelete.id}`, {
-        method: 'DELETE',
-        headers: {
-          "Content-Type": "application/json",
-          "token": `${JWT}`,
-          "permissions": permissions
-        },
-        mode: 'cors',
-      });
+    setLoading(true);
 
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Unauthorized - Please log in again');
-        }
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to delete user');
-      }
-
-      setUsers(users.filter((u) => u.id !== userToDelete.id));
+    request(`http://localhost:3001/auth/delete/${userToDelete.id}`, Method.DELETE, {"token": `${JWT}`, "permissions": permissions}).then(()=>{
+      handleSuccess('User deleted successfully')
       setUserToDelete(null);
-      setSuccess('User deleted successfully');
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    }
+    }).catch((err:Error)=>{
+      setError(err.message);
+    })
+
+    setLoading(false);
   };
 
   return (

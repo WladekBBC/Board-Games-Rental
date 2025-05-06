@@ -7,7 +7,7 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import { useLang } from '@/lib/contexts/LanguageContext';
 import ErrorField from '@/components/Messages/ErrorField';
 import { Spinner } from '@/components/Messages/Spinner';
-
+import { hash } from 'bcrypt';
 /**
  * LoginPage component that handles user authentication
  */
@@ -57,13 +57,8 @@ function SignInForm() {
   const { signIn, error, loading: authLoading } = useAuth();
   const { language } = useLang();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await signIn(email, password);
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+    <form onSubmit={()=>signIn({email, password})} className="mt-8 space-y-6">
       <div className="space-y-4">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -115,36 +110,5 @@ function SignInForm() {
         </Link>
       </div>
     </form>
-  );
-}
-
-/**
- * Google sign-in button (optional)
- */
-function SignInWithGoogle() {
-  const { signInWithGoogle, loading } = useAuth();
-  const { language } = useLang();
-  const router = useRouter();
-
-  const handleGoogleSignIn = async () => {
-    await signInWithGoogle();
-    router.push('/');
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={handleGoogleSignIn}
-      disabled={loading}
-      className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 dark:focus:ring-offset-gray-800"
-    >
-      <svg className="h-5 w-5 text-gray-700 dark:text-gray-300 mr-2" viewBox="0 0 24 24">
-        <path
-          fill="currentColor"
-          d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"
-        />
-      </svg>
-      {language.loginWithGoogle}
-    </button>
   );
 }
