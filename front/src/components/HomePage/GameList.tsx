@@ -1,8 +1,8 @@
 'use client'
 
-import { useGames } from '@/lib/contexts/GamesContext'
-import { useRentals } from '@/lib/contexts/RentalsContext'
-import { useLang } from '@/lib/contexts/LanguageContext'
+import { useGames } from '@/contexts/GamesContext'
+import { useRentals } from '@/contexts/RentalsContext'
+import { useLang } from '@/contexts/LanguageContext'
 import { SingleGame } from '../Game/SingleGame'
 
 /**

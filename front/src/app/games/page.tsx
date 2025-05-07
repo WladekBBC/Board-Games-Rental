@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useGames } from '@/lib/contexts/GamesContext'
-import { useLang } from '@/lib/contexts/LanguageContext'
+import { useGames } from '@/contexts/GamesContext'
+import { useLang } from '@/contexts/LanguageContext'
 import { SingleGame } from '@/components/Game/SingleGame'
-import { useAuth } from '@/lib/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { Perms } from '@/interfaces/perms'
 
 export default function GamesPage() {

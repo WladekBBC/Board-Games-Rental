@@ -15,3 +15,5 @@ export type AuthContextType = {
 export type LoggedUserType = Pick<IUser, "id" | "email">
 
 export type LoginDataType = Pick<IUser, "email" | "password">
+
+/* contextes,  */

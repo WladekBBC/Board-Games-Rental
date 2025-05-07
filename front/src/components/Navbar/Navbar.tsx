@@ -1,11 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { useTheme } from '@/lib/contexts/ThemeContext'
-import { useLang } from '@/lib/contexts/LanguageContext'
+import { useTheme } from '@/contexts/ThemeContext'
+import { useLang } from '@/contexts/LanguageContext'
 import { RouterLink } from './RouterLink'
 import { UserButton } from './UserButton'
-import { useAuth } from '@/lib/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { Perms } from '@/interfaces/perms'
 
 /**

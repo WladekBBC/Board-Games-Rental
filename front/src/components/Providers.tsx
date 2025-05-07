@@ -1,11 +1,11 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { AuthProvider } from '@/lib/contexts/AuthContext'
-import { GamesProvider } from '@/lib/contexts/GamesContext'
-import { RentalsProvider } from '@/lib/contexts/RentalsContext'
-import { ThemeProvider } from '@/lib/contexts/ThemeContext'
-import { LanguageProvider } from '@/lib/contexts/LanguageContext'
+import { AuthProvider } from '@/contexts/AuthContext'
+import { GamesProvider } from '@/contexts/GamesContext'
+import { RentalsProvider } from '@/contexts/RentalsContext'
+import { ThemeProvider } from '@/contexts/ThemeContext'
+import { LanguageProvider } from '@/contexts/LanguageContext'
 
 interface ProvidersProps {
   children: ReactNode

@@ -1,9 +1,9 @@
 'use client'
 
-import { useGames } from '@/lib/contexts/GamesContext'
-import { useRentals } from '@/lib/contexts/RentalsContext'
-import { useLang } from '@/lib/contexts/LanguageContext'
-import { useAuth } from '@/lib/contexts/AuthContext'
+import { useGames } from '@/contexts/GamesContext'
+import { useRentals } from '@/contexts/RentalsContext'
+import { useLang } from '@/contexts/LanguageContext'
+import { useAuth } from '@/contexts/AuthContext'
 import Link from 'next/link'
 
 /**

@@ -1,6 +1,6 @@
 'use client'
 
-import { useLang } from '@/lib/contexts/LanguageContext'
+import { useLang } from '@/contexts/LanguageContext'
 import { Language } from '@/lib/i18n/translations'
 
 /**

@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/lib/contexts/AuthContext';
-import { useLang } from '@/lib/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useLang } from '@/contexts/LanguageContext';
 import { AdminProtected } from '@/components/AdminProtected';
 import { Dialog } from '@headlessui/react';
 import { Method, request } from '@/interfaces/api';

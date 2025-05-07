@@ -3,8 +3,8 @@
 import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/contexts/AuthContext';
-import { useLang } from '@/lib/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useLang } from '@/contexts/LanguageContext';
 import ErrorField from '@/components/Messages/ErrorField';
 import { Spinner } from '@/components/Messages/Spinner';
 import { hash } from 'bcrypt';

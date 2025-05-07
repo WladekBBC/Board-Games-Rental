@@ -1,7 +1,7 @@
 'use client'
 
-import { useAuth } from '@/lib/contexts/AuthContext'
-import { useLang } from '@/lib/contexts/LanguageContext'
+import { useAuth } from '@/contexts/AuthContext'
+import { useLang } from '@/contexts/LanguageContext'
 import HomeUserPanel from '@/components/HomePage/HomeUserPanel'
 import GameList from '@/components/HomePage/GameList'
 

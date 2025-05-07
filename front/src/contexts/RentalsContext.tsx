@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useGames } from './GamesContext'
-import { useLang } from '@/lib/contexts/LanguageContext'
+import { useLang } from '@/contexts/LanguageContext'
 
 interface GameRental {
   id: number

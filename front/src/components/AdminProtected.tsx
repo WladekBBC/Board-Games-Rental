@@ -1,7 +1,7 @@
 'use client'
 
 import { Perms } from '@/interfaces/perms'
-import { useAuth } from '@/lib/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { redirect } from 'next/navigation'
 import { useEffect } from 'react'
 

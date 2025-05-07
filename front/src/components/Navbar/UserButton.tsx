@@ -1,5 +1,5 @@
-import { useAuth } from "@/lib/contexts/AuthContext"
-import { useLang } from "@/lib/contexts/LanguageContext"
+import { useAuth } from "@/contexts/AuthContext"
+import { useLang } from "@/contexts/LanguageContext"
 
 export const UserButton = () => {
     const { user, signOut } = useAuth()

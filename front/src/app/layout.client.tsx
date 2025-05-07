@@ -2,11 +2,11 @@
 
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { AuthProvider } from "@/lib/contexts/AuthContext"
-import { GamesProvider } from "@/lib/contexts/GamesContext"
-import { RentalsProvider } from "@/lib/contexts/RentalsContext"
-import { LanguageProvider } from "@/lib/contexts/LanguageContext"
-import { ThemeProvider } from "@/lib/contexts/ThemeContext"
+import { AuthProvider } from "@/contexts/AuthContext"
+import { GamesProvider } from "@/contexts/GamesContext"
+import { RentalsProvider } from "@/contexts/RentalsContext"
+import { LanguageProvider } from "@/contexts/LanguageContext"
+import { ThemeProvider } from "@/contexts/ThemeContext"
 import { Navbar } from '@/components/Navbar/Navbar'
 
 const inter = Inter({ subsets: ['latin'] })

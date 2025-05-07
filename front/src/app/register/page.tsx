@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/contexts/AuthContext';
-import { useLang } from '@/lib/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useLang } from '@/contexts/LanguageContext';
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -29,8 +29,8 @@ const RegisterPage = () => {
       return;
     }
     
-    await register({email: email, password: password}).then((res)=>{
-      console.log(res)
+    register({email: email, password: password}).catch((err: Error)=>{
+      setError(err.message)
     })
   }
 

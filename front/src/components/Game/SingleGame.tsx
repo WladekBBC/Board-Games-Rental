@@ -1,7 +1,7 @@
-import { Game, useGames } from "@/lib/contexts/GamesContext"
+import { Game, useGames } from "@/contexts/GamesContext"
 import Image from 'next/image'
 import { imageLoader } from '@/lib/utils/imageLoader'
-import { useLang } from "@/lib/contexts/LanguageContext"
+import { useLang } from "@/contexts/LanguageContext"
 import { useState } from "react"
 import { EditGameForm } from "./EditGameForm"
 

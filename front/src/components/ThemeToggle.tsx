@@ -1,6 +1,6 @@
 'use client'
 
-import { useTheme } from '@/lib/contexts/ThemeContext'
+import { useTheme } from '@/contexts/ThemeContext'
 
 /**
  * Component for toggling between light and dark themes

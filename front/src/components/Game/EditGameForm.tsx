@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { useGames, Game } from '@/lib/contexts/GamesContext'
+import { useGames, Game } from '@/contexts/GamesContext'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { imageLoader } from '@/lib/utils/imageLoader'
-import { useLang } from '@/lib/contexts/LanguageContext'
+import { useLang } from '@/contexts/LanguageContext'
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
 

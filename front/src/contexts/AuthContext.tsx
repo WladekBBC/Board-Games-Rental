@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .then((data: IUserApi)=>{
         handleAuthSuccess(data)
       }).catch((error: Error)=>{
-        handleAuthError(error)
+        throw error
       })
   };
   

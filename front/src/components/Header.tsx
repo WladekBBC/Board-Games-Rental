@@ -1,10 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { useAuth } from '@/lib/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { LanguageToggle } from './LanguageToggle'
-import { useLang } from '@/lib/contexts/LanguageContext'
-import { Perms } from '@/lib/contexts/AuthContext'
+import { useLang } from '@/contexts/LanguageContext'
+import { Perms } from '@/contexts/AuthContext'
 
 /**
  * Header component
