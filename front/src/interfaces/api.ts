@@ -22,6 +22,6 @@ export const request = async <T> (url: string, method: Method, headers?: {[x:str
   }).then((res: Response)=>{
     if(res.ok)
       return res.json();
-    return Promise.reject(new Error(res.statusText, {cause: res.status}))
+    throw new Error(res.statusText, {cause: res.status})
   })
 }
