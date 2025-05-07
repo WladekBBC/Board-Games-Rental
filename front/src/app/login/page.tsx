@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -57,8 +57,13 @@ function SignInForm() {
   const { signIn, error, loading: authLoading } = useAuth();
   const { language } = useLang();
 
+  const handleSignIn = (ev:FormEvent<HTMLFormElement>) =>{
+    ev.preventDefault();
+    signIn({email, password})
+  }
+
   return (
-    <form onSubmit={()=>signIn({email, password})} className="mt-8 space-y-6">
+    <form onSubmit={(e)=>handleSignIn(e)} className="mt-8 space-y-6">
       <div className="space-y-4">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
