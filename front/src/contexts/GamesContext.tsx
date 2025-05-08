@@ -16,7 +16,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     getGames();
-  }, [permissions])
+  }, [JWT])
 
   const getGames = () =>{
     request<IGame[]>('http://localhost:3001/game/games', Method.GET, {"token": `${JWT}`, "permissions": permissions}).then((res: IGame[])=>{

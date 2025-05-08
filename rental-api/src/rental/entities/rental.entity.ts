@@ -1,5 +1,5 @@
 import { Game } from "src/game/entities/game.entity";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Rental {
@@ -9,13 +9,13 @@ export class Rental {
     @Column()
     index: string;
 
-    @Column()
+    @CreateDateColumn({ type: "timestamp"})
     rentedAt: Date;
 
-    @Column()
-    returnedAt: Date;
+    @Column({ nullable: true, type: 'timestamp' })
+    returnedAt: Date | null;
 
-    @OneToOne(type=>Game)
-    @JoinColumn({ name: 'gameId' })
+    @ManyToOne(()=>Game, {nullable: false, cascade: false, eager: true})
+    @JoinColumn({ name: 'gameId', referencedColumnName: 'id' })
     game: Game;
 }

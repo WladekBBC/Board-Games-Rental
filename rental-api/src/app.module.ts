@@ -30,7 +30,8 @@ import { config } from './env';
       password: config.DB_PASS,
       database: config.DB_NAME,
       entities: [User, Game, Rental],
-      synchronize: true
+      synchronize: true,
+      autoLoadEntities: true,
     }),
     UserModule,
     AuthModule,

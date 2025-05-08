@@ -3,27 +3,15 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useGames } from './GamesContext'
 import { useLang } from '@/contexts/LanguageContext'
-
-interface GameRental {
-  id: number
-  gameId: number
-  personId: string
-  rentedAt: string
-  returnedAt?: string
-}
+import { IRental } from '@/interfaces/rental'
+import { RentalsContextType } from '@/types/rentalContext'
+import { Method, request } from '@/interfaces/api'
+import { useAuth } from './AuthContext'
 
 /**
  * Rentals context type
  * @interface RentalsContextType
  */
-interface RentalsContextType {
-  rentals: GameRental[]
-  loading: boolean
-  addRental: (rental: Omit<GameRental, 'id' | 'rentedAt'>) => void
-  updateRental: (id: number, updates: Partial<GameRental>) => void
-  returnGame: (id: number) => void
-  deleteRental: (id: number) => void
-}
 
 const RentalsContext = createContext<RentalsContextType | undefined>(undefined)
 
@@ -34,122 +22,42 @@ const RentalsContext = createContext<RentalsContextType | undefined>(undefined)
  * @returns {JSX.Element} Rentals context provider
  */
 export function RentalsProvider({ children }: { children: ReactNode }) {
-  const [rentals, setRentals] = useState<GameRental[]>([])
+  const [rentals, setRentals] = useState<IRental[]>([])
   const [loading, setLoading] = useState(true)
-  const { updateGameAvailability, games } = useGames()
-  const { language } = useLang()
+  const [error, setError] = useState("")
 
-  /**
-   * Loads rentals from localStorage when application starts
-   */
+  const { JWT, permissions } = useAuth()
+
   useEffect(() => {
-    const loadRentals = () => {
-      try {
-        const savedRentals = localStorage.getItem('rentals')
-        if (savedRentals) {
-          const parsedRentals = JSON.parse(savedRentals)
-          const sortedRentals = parsedRentals.sort((a: GameRental, b: GameRental) => 
-            new Date(b.rentedAt).getTime() - new Date(a.rentedAt).getTime()
-          )
-          setRentals(sortedRentals)
-        }
-      } catch (error) {
-        console.error('Помилка при завантаженні оренд:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
+    if(JWT)
+      getRentals()
+    setLoading(false)
+  }, [JWT])
 
-    loadRentals()
-  }, [])
-
-  /**
-   * Updates the number of rented game instances
-   * @param {string} gameId - Game ID
-   */
-  const updateGameRentedQuantity = (gameId: number) => {
-    const activeRentals = rentals.filter(rental => 
-      rental.gameId === gameId && !rental.returnedAt
-    ).length
-    updateGameAvailability(gameId, activeRentals)
-  }
-
-  /**
-   * Adds a new rental
-   * @param {Omit<GameRental, 'id' | 'rentedAt'>} rental - Rental data (without ID and rental date)
-   * @throws {Error} If game does not exist or is not available
-   */
-  const addRental = (rental: Omit<GameRental, 'id' | 'rentedAt'>) => {
-    const game = games.find(g => g.id === rental.gameId)
-    if (!game) {
-      throw new Error(language.gameNotFound)
-    }
-
-    const activeRentalsCount = rentals.filter(r => 
-      r.gameId === rental.gameId && !r.returnedAt
-    ).length
-
-    if (activeRentalsCount >= game.amount) {
-      throw new Error(language.gameUnavailableMessage)
-    }
-
-    const newRental = {
-      ...rental,
-      id: 0,
-      rentedAt: new Date().toISOString()
-    }
-    
-    const updatedRentals: GameRental[] = [newRental, ...rentals]
-    setRentals(updatedRentals)
-    localStorage.setItem('rentals', JSON.stringify(updatedRentals))
-    updateGameRentedQuantity(rental.gameId)
-  }
-
-  /**
-   * Updates the rental data
-   * @param {string} id - Rental ID
-   * @param {Partial<GameRental>} updates - Partial data to update
-   */
-  const updateRental = (id: number, updates: Partial<GameRental>) => {
-    const updatedRentals = rentals.map(rental => {
-      if (rental.id === id) {
-        const updatedRental = { ...rental, ...updates }
-        return updatedRental
-      }
-      return rental
+  const getRentals = () =>{
+    request<IRental[]>('http://localhost:3001/rental/rentals', Method.GET, {"token": `${JWT}`, "permissions": permissions}).then((res: IRental[])=>{
+      setRentals(res)
     })
-    setRentals(updatedRentals)
-    localStorage.setItem('rentals', JSON.stringify(updatedRentals))
   }
 
-  /**
-   * Marks the game as returned
-   * @param {string} id - Rental ID
-   */
-  const returnGame = (id: number) => {
-    const rental = rentals.find(r => r.id === id)
-    if (rental) {
-      const updatedRentals = rentals.map(r => 
-        r.id === id ? { ...r, returnedAt: new Date().toISOString() } : r
-      )
-      setRentals(updatedRentals)
-      localStorage.setItem('rentals', JSON.stringify(updatedRentals))
-      updateGameRentedQuantity(rental.gameId)
-    }
+  const addRental = async (rental: Partial<IRental>) =>{
+    setLoading(true)
+
+    return request<null>('http://localhost:3001/rental/add', Method.POST, {"token": `${JWT}`, "permissions": permissions}, JSON.stringify(rental))
+    .finally(()=>{
+      getRentals()
+      setLoading(false)
+    })
   }
 
-  /**
-   * Deletes the rental
-   * @param {string} id - Rental ID to delete
-   */
-  const deleteRental = (id: number) => {
-    const rental = rentals.find(r => r.id === id)
-    if (rental) {
-      const updatedRentals = rentals.filter(r => r.id !== id)
-      setRentals(updatedRentals)
-      localStorage.setItem('rentals', JSON.stringify(updatedRentals))
-      updateGameRentedQuantity(rental.gameId)
-    }
+  const returnGame = async (id: number) =>{
+    setLoading(true)
+
+    return request('http://localhost:3001/rental/return/'+id, Method.PATCH, {"token": `${JWT}`, "permissions": permissions})
+    .finally(()=>{
+      getRentals()
+      setLoading(false)
+    })
   }
 
   return (
@@ -157,9 +65,7 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
       rentals, 
       loading, 
       addRental, 
-      updateRental, 
       returnGame, 
-      deleteRental 
     }}>
       {children}
     </RentalsContext.Provider>

@@ -1,34 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { RentalService } from './rental.service';
 import { CreateRentalDto } from './dto/create-rental.dto';
-import { UpdateRentalDto } from './dto/update-rental.dto';
+import { Permission } from 'src/decorators/permissions.decorator';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { Perms } from 'src/enums/permissions.enum';
 
+@UseGuards(AuthGuard)
+@Permission([Perms.A, Perms.R])
 @Controller('rental')
 export class RentalController {
   constructor(private readonly rentalService: RentalService) {}
 
-  @Post()
+  @Post('/add')
   create(@Body() createRentalDto: CreateRentalDto) {
     return this.rentalService.create(createRentalDto);
   }
 
-  @Get()
+  @Get("/rentals")
   findAll() {
     return this.rentalService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.rentalService.findOne(+id);
+  @Get('/rental/:id')
+  findOne(@Param('id') id: number) {
+    return this.rentalService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRentalDto: UpdateRentalDto) {
-    return this.rentalService.update(+id, updateRentalDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.rentalService.remove(+id);
+  @Patch('/return/:id')
+  update(@Param('id') id: number) {
+    return this.rentalService.return(id);
   }
 }

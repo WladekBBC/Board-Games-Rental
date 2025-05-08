@@ -10,6 +10,7 @@ import ErrorField from '@/components/Messages/ErrorField'
 import SuccessField from '@/components/Messages/SuccessField'
 import { Spinner } from '@/components/Messages/Spinner'
 import { Perms } from '@/interfaces/perms'
+import { Rent } from '@/types/rentalContext'
 
 /**
  * Rentals page
@@ -18,7 +19,7 @@ import { Perms } from '@/interfaces/perms'
 export default function RentalsPage() {
   const router = useRouter()
   const { permissions, user, loading: authLoading } = useAuth()
-  const { rentals, addRental, updateRental, deleteRental, returnGame, loading: rentalsLoading } = useRentals()
+  const { rentals, addRental, returnGame, loading: rentalsLoading } = useRentals()
   const { games, loading: gamesLoading } = useGames()
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -51,102 +52,40 @@ export default function RentalsPage() {
     return null
   }
 
+  const resetFields = () =>{
+    setIsProcessing(true)
+    setError(null)
+    setSuccess(null)
+  }
+
   /**
    * Handle adding a new rental
    * @param {React.FormEvent<HTMLFormElement>} e - Form event
    */
   const handleAddRental = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsProcessing(true)
-    setError(null)
-    setSuccess(null)
+    resetFields()
 
-    try {
-      const form = e.currentTarget
-      if (!form) return
+    const form = new FormData(e.currentTarget)
+    if (!form) return
 
-      const formData = new FormData(form)
-      const personId = `${formData.get('personId')?.toString()}`
-      const gameId:number = +`${formData.get('gameId')?.toString()}`
+    const game = games.find((el)=> el.id == +`${form.get('gameId')}`)
+    if (!game) return
 
-      const game = games.find(g => g.id === gameId)
-      if (!game) {
-        throw new Error(language.gameNotFound)
-      }
+    const data: Rent = {
+      index:  `${form.get('personId')}`,
+      game: game,
+      rentedAt: new Date(Date.now())
+    }
 
-      const activeRentalsCount = rentals.filter(r => 
-        r.gameId === gameId && !r.returnedAt
-      ).length
-
-      if (activeRentalsCount >= game.quantity) {
-        throw new Error(language.gameUnavailableMessage)
-      }
-
-      await addRental({
-        personId,
-        gameId
-      })
-
-      form.reset()
+    addRental(data).then(()=>{
       setSuccess(language.gameRented)
-    } catch (error) {
-      console.error(`${language.rentGameError}: `, error)
-      setError(error instanceof Error ? error.message : language.rentGameError)
-    } finally {
-      setIsProcessing(false)
-    }
-  }
-
-  /**
-   * Handle updating a rental
-   * @param {string} id - Rental ID
-   * @param {React.FormEvent<HTMLFormElement>} e - Form event
-   */
-  const handleUpdateRental = async (id: number, e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsProcessing(true)
-    setError(null)
-    setSuccess(null)
-
-    try {
-      const form = e.currentTarget
-      if (!form) return
-
-      const formData = new FormData(form)
-      const personId = `${formData.get('personId')?.toString()}`
-      const gameId:number = +`${formData.get('gameId')?.toString()}`
-
-      await updateRental(id, {
-        personId,
-        gameId
-      })
-      setSuccess(language.gameRerented)
-    } catch (error) {
-      console.error(`${language.rerentGameError}: `, error)
-      setError(error instanceof Error ? error.message : language.rerentGameError)
-    } finally {
-      setIsProcessing(false)
-    }
-  }
-
-  /**
-   * Handle deleting a rental
-   * @param {string} id - Rental ID
-   */
-  const handleDeleteRental = async (id: number) => {
-    setIsProcessing(true)
-    setError(null)
-    setSuccess(null)
-
-    try {
-      await deleteRental(id)
-      setSuccess(language.gameDeletedRent)
-    } catch (error) {
-      console.error(`${language.deleteGameRentError}: `, error)
-      setError(error instanceof Error ? error.message : language.deleteGameRentError)
-    } finally {
-      setIsProcessing(false)
-    }
+    }).catch((err: Error)=>{
+      console.log(err)
+      setError(err.cause == 406 ? language.rentGameError : language.serverError)
+    })
+      
+    setIsProcessing(false)
   }
 
   /**
@@ -154,19 +93,15 @@ export default function RentalsPage() {
    * @param {string} id - Rental ID
    */
   const handleReturnGame = async (id: number) => {
-    setIsProcessing(true)
-    setError(null)
-    setSuccess(null)
+    resetFields()
 
-    try {
-      await returnGame(id)
+    returnGame(id).then(()=>{
       setSuccess(language.gameReturned)
-    } catch (error) {
-      console.error(`${language.returnGameError}: `, error)
-      setError(error instanceof Error ? error.message : language.returnGameError)
-    } finally {
-      setIsProcessing(false)
-    }
+    }).catch((err: Error)=>{
+      setError(err.cause == 406 ? language.returnGameError : language.fetchError)
+    })
+
+    setIsProcessing(false)
   }
 
   return (
@@ -206,7 +141,7 @@ export default function RentalsPage() {
               <option value="">{language.selectGame}</option>
               {games.map(game => {
                 const activeRentalsCount = rentals.filter(r => 
-                  r.gameId === game.id && !r.returnedAt
+                  r.game.id === game.id && !r.returnedAt
                 ).length
                 const availableQuantity = game.quantity - activeRentalsCount
                 return (
@@ -256,10 +191,10 @@ export default function RentalsPage() {
             {rentals.map(rental => (
               <tr key={rental.id}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                  {rental.personId}
+                  {rental.index}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                  {games.find(g => g.id === rental.gameId)?.title || 'Невідома гра'}
+                  {games.find(g => g.id === rental.game.id)?.title || 'Невідома гра'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                   {new Date(rental.rentedAt).toLocaleDateString()}
@@ -277,13 +212,6 @@ export default function RentalsPage() {
                       {language.return}
                     </button>
                   )}
-                  <button
-                    onClick={() => handleDeleteRental(rental.id)}
-                    disabled={isProcessing}
-                    className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50"
-                  >
-                    {language.deleteGame}
-                  </button>
                 </td>
               </tr>
             ))}
