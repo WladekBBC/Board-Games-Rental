@@ -7,6 +7,7 @@ import { GamesProvider } from "@/contexts/GamesContext"
 import { RentalsProvider } from "@/contexts/RentalsContext"
 import { LanguageProvider } from "@/contexts/LanguageContext"
 import { ThemeProvider } from "@/contexts/ThemeContext"
+import { UsersProvider } from "@/contexts/UsersContext"
 import { Navbar } from '@/components/Navbar/Navbar'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -30,10 +31,12 @@ export default function RootLayoutClient({
             <AuthProvider>
               <GamesProvider>
                 <RentalsProvider>
-                  <Navbar />
-                  <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
-                    {children}
-                  </main>
+                  <UsersProvider>
+                    <Navbar />
+                    <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+                      {children}
+                    </main>
+                  </UsersProvider>
                 </RentalsProvider>
               </GamesProvider>
             </AuthProvider>
