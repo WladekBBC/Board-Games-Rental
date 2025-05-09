@@ -52,3 +52,5 @@ front/paths/.DS_Store
 rental-api/.DS_Store
 rental-api/.DS_Store
 rental-api/.DS_Store
+rental-api/src/env.ts
+rental-api/src/env.ts

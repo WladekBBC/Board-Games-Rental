@@ -65,9 +65,16 @@ export default function RentalsPage() {
   const handleAddRental = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     resetFields()
-
+    
     const form = new FormData(e.currentTarget)
     if (!form) return
+
+    const idPersonRegex = /^(?:\d{6}|SD\d{4}|\+48\d{9})$/;
+    if (!idPersonRegex.test(form.get('personId') as string)) {
+      setError(language.invalidAlbumNumberFormat);
+      setIsProcessing(false);
+      return;
+    }
 
     const game = games.find((el)=> el.id == +`${form.get('gameId')}`)
     if (!game) return

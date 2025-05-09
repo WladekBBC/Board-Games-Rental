@@ -33,9 +33,7 @@ export default function UsersPage() {
     setEditing,
     setUserToDelete,
     handleUpdateUser,
-    handleDeleteUser,
-    setSuccess,
-    setError
+    handleDeleteUser
   } = useUsers();
 
   return (
