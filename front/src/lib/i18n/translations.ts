@@ -43,6 +43,7 @@ export const translations = {
     loginFailed: 'Nie udało się zalogować',
     userPermissionsUpdatedSuccessfully: 'Uprawnienia zostały zaktualizowane',
     invalidAlbumNumberFormat: 'Nieprawidłowy format numeru albumu',
+    
     // Przyciski
     addGame: 'Dodaj Grę',
     editGame: 'Edytuj',
@@ -55,7 +56,7 @@ export const translations = {
     gameAvailable: 'Dostępna',
     gameUnavailable: 'Niedostępna',
     available: 'Dostępne',
-    
+    unknownGame: 'Nieznana gra',
     // Komunikaty
     confirmDelete: 'Czy na pewno chcesz usunąć tę grę?',
     addGameError: 'Błąd podczas dodawania gry',
@@ -165,7 +166,8 @@ export const translations = {
     gameAvailable: 'Доступна',
     gameUnavailable: 'Недоступна',
     available: 'Доступно',
-    
+    unknownGame: 'Невідома гра',
+
     // Повідомлення
     confirmDelete: 'Ви впевнені, що хочете видалити цю гру?',
     addGameError: 'Помилка при додаванні гри',

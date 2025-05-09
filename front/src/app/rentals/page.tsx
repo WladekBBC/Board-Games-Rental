@@ -205,7 +205,7 @@ export default function RentalsPage() {
                   {rental.index}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                  {games.find(g => g.id === rental.game.id)?.title || 'Невідома гра'}
+                  {games.find(g => g.id === rental.game.id)?.title || language.unknownGame}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                   {new Date(rental.rentedAt).toLocaleDateString()}
