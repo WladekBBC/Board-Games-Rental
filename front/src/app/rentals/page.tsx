@@ -26,6 +26,10 @@ export default function RentalsPage() {
   const [success, setSuccess] = useState<string | null>(null)
   const { language } = useLang()
 
+  const handleSuccess = (successMessage: string) =>{
+    setSuccess(successMessage);
+    setTimeout(() => setSuccess(null), 3000);
+  }
   /**
    * Redirect to login page if user is not authenticated
    */
@@ -86,7 +90,7 @@ export default function RentalsPage() {
     }
 
     addRental(data).then(()=>{
-      setSuccess(language.gameRented)
+      handleSuccess(language.gameRented)
     }).catch((err: Error)=>{
       console.log(err)
       setError(err.cause == 406 ? language.rentGameError : language.serverError)
@@ -103,7 +107,7 @@ export default function RentalsPage() {
     resetFields()
 
     returnGame(id).then(()=>{
-      setSuccess(language.gameReturned)
+      handleSuccess(language.gameReturned)
     }).catch((err: Error)=>{
       setError(err.cause == 406 ? language.returnGameError : language.fetchError)
     })
