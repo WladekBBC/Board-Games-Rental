@@ -16,7 +16,7 @@ export class RentalController {
     return this.rentalService.create(createRentalDto);
   }
 
-  @Get("/rentals")
+  @Get('/rentals')
   findAll() {
     return this.rentalService.findAll();
   }

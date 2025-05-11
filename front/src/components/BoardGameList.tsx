@@ -2,7 +2,8 @@
 
 import Image, { ImageLoaderProps } from 'next/image'
 import { useState } from 'react'
-import { Game, useGames } from '@/contexts/GamesContext'
+import { useGames } from '@/contexts/GamesContext'
+import { IGame } from '@/interfaces/game'
 import { useAuth } from '@/contexts/AuthContext'
 import { EditGameForm } from './Game/EditGameForm'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -10,10 +11,10 @@ import { useLang } from '@/contexts/LanguageContext'
 
 
 interface BoardGameListProps {
-  games: Game[]
+  games: IGame[]
   isAdmin: boolean
-  onEdit: (game: Game) => void
-  onDelete: (id: string) => void
+  onEdit: (game: IGame) => void
+  onDelete: (id: number) => void
 }
 
 const imageLoader = ({ src, width, quality = 75 }: ImageLoaderProps): string => {
@@ -31,14 +32,14 @@ const imageLoader = ({ src, width, quality = 75 }: ImageLoaderProps): string => 
 export function BoardGameList({ games, isAdmin, onEdit, onDelete }: BoardGameListProps) {
   const { language } = useLang()
   const { deleteGame } = useGames()
-  const [editingGame, setEditingGame] = useState<Game | null>(null)
-  const [deletingGame, setDeletingGame] = useState<Game | null>(null)
+  const [editingGame, setEditingGame] = useState<IGame | null>(null)
+  const [deletingGame, setDeletingGame] = useState<IGame | null>(null)
 
   /**
    * Handles game edit click
    * @param {Game} game - Game to edit
    */
-  const handleEdit = (game: Game) => {
+  const handleEdit = (game: IGame) => {
     setEditingGame(game)
   }
 
@@ -46,7 +47,7 @@ export function BoardGameList({ games, isAdmin, onEdit, onDelete }: BoardGameLis
    * Handles game deletion click
    * @param {string} id - ID game to delete
    */
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     if (window.confirm(language.confirmDelete)) {
       onDelete(id)
     }
@@ -90,7 +91,7 @@ export function BoardGameList({ games, isAdmin, onEdit, onDelete }: BoardGameLis
               <p className="mt-2 text-gray-600 dark:text-gray-300">{game.description}</p>
               <div className="mt-4 flex items-center justify-between">
                 <span className="text-lg font-medium text-gray-900 dark:text-white">
-                  В наявності: {game.quantity} шт.
+                  {language.inStock}: {game.quantity} {language.pcs}
                 </span>
                 <span className={`px-3 py-1 rounded-full text-sm ${
                   game.isAvailable 
@@ -158,21 +159,21 @@ export function BoardGameList({ games, isAdmin, onEdit, onDelete }: BoardGameLis
               className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full"
             >
               <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Підтвердження видалення</h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-6">
-                Ви впевнені, що хочете видалити гру {deletingGame.title}?
-              </p>
+              <div className="text-gray-600 dark:text-gray-300 mb-6">
+                {language.confirmDelete} {deletingGame.title}?
+              </div>
               <div className="flex space-x-4">
                 <button
                   onClick={confirmDelete}
                   className="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                 >
-                  Видалити
+                  {language.deleteGame}
                 </button>
                 <button
                   onClick={() => setDeletingGame(null)}
                   className="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 py-2 px-4 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                 >
-                  Скасувати
+                  {language.cancel}
                 </button>
               </div>
             </motion.div>

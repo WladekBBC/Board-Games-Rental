@@ -1,17 +1,19 @@
 'use client'
 
 import { useState } from 'react'
-import { useGames, Game } from '@/contexts/GamesContext'
+import { useGames } from '@/contexts/GamesContext'
+import { IGame } from '@/interfaces/game'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { imageLoader } from '@/lib/utils/imageLoader'
 import { useLang } from '@/contexts/LanguageContext'
 
-interface AddGameFormProps {
+interface AddGameFormProps 
+{
   onClose: () => void
 }
 
-type FormData = Omit<Game, 'id'>
+type FormData = Omit<IGame, 'id'>
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
 
