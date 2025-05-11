@@ -61,8 +61,12 @@ export class UserService {
    * @returns result of updating user
    */
   async update(id: number, perms: string, jwt: string, updateUserDto: UpdateUserDto) {
-    if(await this.checkPerms(id, jwt) || convertPerms(perms) == Perms.A)
+    if(await this.checkPerms(id, jwt) || convertPerms(perms) == Perms.A) {
+      if (updateUserDto.password) {
+        updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+      }
       return this.userRepo.update(id, updateUserDto)
+    }
     throw new UnauthorizedException
   }
 

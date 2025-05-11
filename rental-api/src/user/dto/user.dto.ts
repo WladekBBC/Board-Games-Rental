@@ -7,9 +7,9 @@ export class CreateUserDto{
 }
 
 export class UpdateUserDto{
-    readonly email: string;
-    readonly password: string;
-    readonly permissions: Perms;
+    email?: string;
+    password?: string;
+    permissions?: Perms;
 }
 
 export class UserDto{

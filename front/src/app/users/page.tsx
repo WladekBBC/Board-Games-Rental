@@ -36,6 +36,16 @@ export default function UsersPage() {
     handleDeleteUser
   } = useUsers();
 
+  const handleEditChange = (userId: number, field: 'email' | 'permissions' | 'password', value: string) => {
+    setEditing((prev) => ({
+      ...prev,
+      [userId]: {
+        ...prev[userId],
+        [field]: value
+      }
+    }));
+  };
+
   return (
     <AdminProtected>
       <div className="container mx-auto px-4 py-8">
@@ -70,6 +80,9 @@ export default function UsersPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     {language.permissions}
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    {language.newPassword}
+                  </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     {language.actions}
                   </th>
@@ -78,31 +91,45 @@ export default function UsersPage() {
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {users.map((user) => (
                   <tr key={user.id}>
-                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                      {user.email}
+                    <td className="px-6 py-4 text-sm">
+                      <input
+                        type="email"
+                        value={editing[user.id]?.email ?? user.email}
+                        onChange={(e) => handleEditChange(user.id, 'email', e.target.value)}
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      />
                     </td>
                     <td className="px-6 py-4 text-sm">
                       <select
-                        value={editing[user.id] ?? user.permissions}
-                        onChange={(e) =>
-                          setEditing((prev) => ({ ...prev, [user.id]: e.target.value }))
-                        }
+                        value={editing[user.id]?.permissions ?? user.permissions}
+                        onChange={(e) => handleEditChange(user.id, 'permissions', e.target.value)}
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       >
                         <option value="Admin">Admin</option>
                         <option value="RWSS">RWSS</option>
                         <option value="User">User</option>
                       </select>
-                      {editing[user.id] && editing[user.id] !== user.permissions && (
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      <input
+                        type="password"
+                        placeholder={language.newPassword}
+                        value={editing[user.id]?.password ?? ''}
+                        onChange={(e) => handleEditChange(user.id, 'password', e.target.value)}
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      />
+                    </td>
+                    <td className="px-6 py-4 text-right text-sm font-medium space-x-2">
+                      {(editing[user.id]?.email !== user.email ||
+                        editing[user.id]?.permissions !== user.permissions ||
+                        editing[user.id]?.password) && (
                         <button
                           onClick={() => handleUpdateUser(user.id)}
-                          className="mt-2 text-blue-600 hover:underline dark:text-blue-400"
+                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                         >
                           {language.save}
                         </button>
                       )}
-                    </td>
-                    <td className="px-6 py-4 text-right text-sm font-medium">
                       <button
                         onClick={() => setUserToDelete(user)}
                         className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"

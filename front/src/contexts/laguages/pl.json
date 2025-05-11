@@ -61,5 +61,17 @@
     "gameReturned": "Pomyślnie zwrócono grę",
 
     "gameDescription": "Opis Gry",
-    "saveChanges": "Zapisz Zmiany"
+    "saveChanges": "Zapisz Zmiany",
+
+    "usersManagement": "Zarządzanie użytkownikami",
+    "email": "Email",
+    "permissions": "Uprawnienia",
+    "newPassword": "Nowe hasło",
+    "enterNewPassword": "Wprowadź nowe hasło",
+    "save": "Zapisz",
+    "deleteUser": "Usuń użytkownika",
+    "confirmDeleteUser": "Potwierdź usunięcie użytkownika",
+    "cancel": "Anuluj",
+    "userUpdated": "Użytkownik zaktualizowany pomyślnie",
+    "userDeleted": "Użytkownik usunięty pomyślnie"
 }

@@ -61,5 +61,17 @@
     "gameReturned": "Гру успішно повернено",
 
     "gameDescription": "Опис Гри",
-    "saveChanges": "Зберегти Зміни"
+    "saveChanges": "Зберегти Зміни",
+
+    "usersManagement": "Управління користувачами",
+    "email": "Email",
+    "permissions": "Права доступу",
+    "newPassword": "Новий пароль",
+    "enterNewPassword": "Введіть новий пароль",
+    "save": "Зберегти",
+    "deleteUser": "Видалити користувача",
+    "confirmDeleteUser": "Підтвердження видалення користувача",
+    "cancel": "Скасувати",
+    "userUpdated": "Користувача успішно оновлено",
+    "userDeleted": "Користувача успішно видалено"
 }

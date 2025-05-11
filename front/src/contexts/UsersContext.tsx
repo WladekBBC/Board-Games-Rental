@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { Method, request } from '@/interfaces/api';
+import { useLang } from './LanguageContext';
 
 interface User {
   id: number;
@@ -8,14 +9,20 @@ interface User {
   permissions: string;
 }
 
+interface UserUpdate {
+  email?: string;
+  permissions?: string;
+  password?: string;
+}
+
 interface UsersContextType {
   users: User[];
   loading: boolean;
   error: string | null;
   success: string | null;
-  editing: { [key: number]: string };
+  editing: { [key: number]: UserUpdate };
   userToDelete: User | null;
-  setEditing: React.Dispatch<React.SetStateAction<{ [key: number]: string }>>;
+  setEditing: React.Dispatch<React.SetStateAction<{ [key: number]: UserUpdate }>>;
   setUserToDelete: (user: User | null) => void;
   handleUpdateUser: (id: number) => Promise<void>;
   handleDeleteUser: () => Promise<void>;
@@ -28,11 +35,12 @@ const UsersContext = createContext<UsersContextType | undefined>(undefined);
 export function UsersProvider({ children }: { children: ReactNode }) {
   const { JWT, permissions } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
-  const [editing, setEditing] = useState<{ [key: number]: string }>({});
+  const [editing, setEditing] = useState<{ [key: number]: UserUpdate }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const { language } = useLang();
 
   useEffect(() => {
     if (JWT) {
@@ -57,8 +65,7 @@ export function UsersProvider({ children }: { children: ReactNode }) {
 
   const handleUpdateUser = async (id: number) => {
     const user = users.find(u => u.id === id);
-    if (!user) 
-      return;
+    if (!user) return;
 
     if (!JWT) {
       setError('No authentication token found. Please log in again.');
@@ -66,15 +73,31 @@ export function UsersProvider({ children }: { children: ReactNode }) {
     }
 
     setLoading(true);
-    const newPermissions = editing[id];
+    const updates = editing[id];
+    const updateData: UserUpdate = {};
+
+    if (updates.email && updates.email !== user.email) {
+      updateData.email = updates.email;
+    }
+    if (updates.permissions && updates.permissions !== user.permissions) {
+      updateData.permissions = updates.permissions;
+    }
+    if (updates.password) {
+      updateData.password = updates.password;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      setLoading(false);
+      return;
+    }
 
     request(
       `http://localhost:3001/auth/update/${id}`, 
       Method.PATCH, 
       {"token": `${JWT}`, "permissions": permissions}, 
-      JSON.stringify({email: user.email, permissions: newPermissions}
-    )).then(()=>{
-      handleSuccess('User permissions updated successfully');
+      JSON.stringify(updateData)
+    ).then(()=>{
+      handleSuccess(language.userUpdated);
       setEditing((prev) => {
         const newState = { ...prev };
         delete newState[id];
@@ -93,7 +116,7 @@ export function UsersProvider({ children }: { children: ReactNode }) {
     setLoading(true);
 
     request(`http://localhost:3001/auth/delete/${userToDelete.id}`, Method.DELETE, {"token": `${JWT}`, "permissions": permissions}).then(()=>{
-      handleSuccess('User deleted successfully')
+      handleSuccess(language.userDeleted);
       setUserToDelete(null);
     }).catch((err:Error)=>{
       setError(err.message);

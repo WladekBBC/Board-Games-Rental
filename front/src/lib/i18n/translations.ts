@@ -26,7 +26,7 @@ export const translations = {
     registrationFailed: "Rejestracja się nie powiodła",
     register: "Rejestracja",
     email: "Email",
-    
+    userUpdated: "Dane użytkownika zaktualizowane pomyślnie",
     // Formularze
     gameTitle: 'Tytuł Gry',
     gameDesc: 'Opis',
@@ -112,7 +112,9 @@ export const translations = {
     saveChanges: 'Zapisz Zmiany',
     deleteUser: 'Usuń',
     confirmDeleteUser: 'Czy na pewno chcesz usunąć tego użytkownika?',
-    users: 'Użytkownicy'
+    users: 'Użytkownicy',
+    newPassword: 'Nowe hasło',
+    userDeleted: 'Użytkownik został usunięty pomyślnie',
   },
   ua: {
     // Заголовки
@@ -154,6 +156,7 @@ export const translations = {
     validating: 'Перевірка...',
     userPermissionsUpdatedSuccessfully: 'Права доступу оновлено успішно',
     invalidAlbumNumberFormat: 'Неправильний формат номера альбому',
+    userUpdated: 'Дані користувача оновлено успішно',
     inStock: 'В наявності',
     pcs: 'шт.',
     // Кнопки
@@ -187,6 +190,7 @@ export const translations = {
     gameReturned: 'Гру повернуто',
     warning: 'Увага',
     permissionDenied: 'Немає прав доступу до цієї сторінки',
+    newPassword: 'Новий пароль',
     
     // Валідація
     enterTitle: 'Будь ласка, введіть назву гри',
@@ -224,6 +228,7 @@ export const translations = {
     saveChanges: 'Зберегти Зміни',
     deleteUser: 'Видалити',
     confirmDeleteUser: 'Ви впевнені, що хочете видалити цього користувача?',
-    users: 'Користувачі'
+    users: 'Користувачі',
+    userDeleted: 'Користувач видалено успішно',
   }
 } as const; 
