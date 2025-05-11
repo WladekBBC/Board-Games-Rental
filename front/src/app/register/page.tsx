@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLang } from '@/contexts/LanguageContext';
+import ErrorField from '@/components/Messages/ErrorField';
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -12,7 +13,7 @@ const RegisterPage = () => {
   const { language } = useLang();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,8 +31,10 @@ const RegisterPage = () => {
     }
     
     register({email: email, password: password}).catch((err: Error)=>{
-      setError(err.message)
+      setError(language.userAlreadyExists)
     })
+
+
   }
 
   return (
@@ -40,6 +43,8 @@ const RegisterPage = () => {
         <h2 className="text-center text-3xl font-extrabold text-gray-900 dark:text-white">
           {language.register}
         </h2>
+
+        
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
