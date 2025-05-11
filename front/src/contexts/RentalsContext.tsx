@@ -29,15 +29,22 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
   const { JWT, permissions } = useAuth()
 
   useEffect(() => {
-    if(JWT)
+    if(JWT) {
       getRentals()
+    }
     setLoading(false)
-  }, [JWT])
+  }, [JWT, permissions])
 
-  const getRentals = () =>{
-    request<IRental[]>('http://localhost:3001/rental/rentals', Method.GET, {"token": `${JWT}`, "permissions": permissions}).then((res: IRental[])=>{
-      setRentals(res)
-    })
+  const getRentals = () => {
+    request<IRental[]>('http://localhost:3001/rental/rentals', Method.GET, {"token": `${JWT}`, "permissions": permissions})
+      .then((res: IRental[]) => {
+        setRentals(res)
+        setLoading(false)
+      })
+      .catch((error) => {
+        setError(error.message)
+        setLoading(false)
+      })
   }
 
   const addRental = async (rental: Partial<IRental>) =>{

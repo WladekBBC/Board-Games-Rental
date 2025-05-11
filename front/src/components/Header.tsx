@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { LanguageToggle } from './LanguageToggle'
 import { useLang } from '@/contexts/LanguageContext'
-import { Perms } from '@/contexts/AuthContext'
+import { Perms } from '@/interfaces/perms'
 
 /**
  * Header component

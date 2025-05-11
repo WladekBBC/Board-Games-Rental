@@ -21,7 +21,7 @@ export default function GameList(){
      * @returns {Game[]} List of games with availability
      **/
     const gamesWithAvailability = games.map(game => {
-        const rentedCount = rentals.filter(r => r.gameId === game.id && !r.returnedAt).length
+        const rentedCount = rentals.filter(r => r.game.id === game.id && !r.returnedAt).length
         return {
             ...game,
         }

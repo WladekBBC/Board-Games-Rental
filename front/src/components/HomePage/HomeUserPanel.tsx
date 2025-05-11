@@ -23,7 +23,7 @@ export default function HomeUserPanel(){
      * @returns {Game[]} List of games with availability
      **/
     const gamesWithAvailability = games.map(game => {
-        const rentedCount = rentals.filter(r => r.gameId === game.id && !r.returnedAt).length
+        const rentedCount = rentals.filter(r => r.game.id === game.id && !r.returnedAt).length
         const availableQuantity = game.quantity - rentedCount
         return {
         ...game,
@@ -46,7 +46,7 @@ export default function HomeUserPanel(){
      * @returns {Rental[]} List of active rentals
      **/
     const activeRentals = rentals.filter(rental => !rental.returnedAt)
-    const userActiveRentals = activeRentals.filter(rental => rental.personId === user!.email)
+    const userActiveRentals = activeRentals.filter(rental => rental.index === user!.email)
 
     return (
         <>
@@ -76,7 +76,7 @@ export default function HomeUserPanel(){
                     </div>
                     </div>
                 </Link>
-                <Link href="/profile" className="block h-full">
+                <Link href="/users" className="block h-full">
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow h-full flex flex-col">
                     <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">{language.profile}</h2>
                     <div className="text-gray-600 dark:text-gray-300 flex-grow">

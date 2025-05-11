@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { useGames, Game } from '@/contexts/GamesContext'
+import { useGames } from '@/contexts/GamesContext'
+import { IGame } from '@/interfaces/game'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { imageLoader } from '@/lib/utils/imageLoader'
@@ -10,14 +11,14 @@ import { useLang } from '@/contexts/LanguageContext'
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
 
 interface EditGameFormProps {
-  game: Game
+  game: IGame
   onClose: () => void
 }
 
 /**
  * Formularz edycji istniejącej gry
  * @param {Object} props - Właściwości komponentu
- * @param {Game} props.game - Gra do edycji
+ * @param {IGame} props.game - Gra do edycji
  * @param {() => void} props.onClose - Funkcja zamykająca formularz
  * @returns {JSX.Element} Komponent formularza
  */

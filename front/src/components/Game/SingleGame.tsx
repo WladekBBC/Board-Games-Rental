@@ -1,4 +1,5 @@
-import { Game, useGames } from "@/contexts/GamesContext"
+import { useGames } from "@/contexts/GamesContext"
+import { IGame } from "@/interfaces/game"
 import Image from 'next/image'
 import { imageLoader } from '@/lib/utils/imageLoader'
 import { useLang } from "@/contexts/LanguageContext"
@@ -6,7 +7,7 @@ import { useState } from "react"
 import { EditGameForm } from "./EditGameForm"
 
 type GameProp = {
-    game: Game
+    game: IGame
     actions?: boolean
 }
 
@@ -14,7 +15,7 @@ export const SingleGame = ({game, actions}: GameProp) =>{
     const { language } = useLang()
     const { deleteGame } = useGames()
     
-    const [editingGame, setEditingGame] = useState<Game | null>(null)
+    const [editingGame, setEditingGame] = useState<IGame | null>(null)
     const [isProcessing, setIsProcessing] = useState(false)
 
     const handleDeleteGame = async (id: number) => {

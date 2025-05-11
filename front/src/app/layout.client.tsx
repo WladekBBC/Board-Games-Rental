@@ -2,12 +2,7 @@
 
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { AuthProvider } from "@/contexts/AuthContext"
-import { GamesProvider } from "@/contexts/GamesContext"
-import { RentalsProvider } from "@/contexts/RentalsContext"
-import { LanguageProvider } from "@/contexts/LanguageContext"
-import { ThemeProvider } from "@/contexts/ThemeContext"
-import { UsersProvider } from "@/contexts/UsersContext"
+import { Providers } from '@/components/Providers'
 import { Navbar } from '@/components/Navbar/Navbar'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -26,22 +21,12 @@ export default function RootLayoutClient({
   return (
     <html lang="pl" className="light">
       <body className={`${inter.className} transition-colors duration-200`}>
-        <ThemeProvider>
-          <LanguageProvider>
-            <AuthProvider>
-              <GamesProvider>
-                <RentalsProvider>
-                  <UsersProvider>
-                    <Navbar />
-                    <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
-                      {children}
-                    </main>
-                  </UsersProvider>
-                </RentalsProvider>
-              </GamesProvider>
-            </AuthProvider>
-          </LanguageProvider>
-        </ThemeProvider>
+        <Providers>
+          <Navbar />
+          <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   )
