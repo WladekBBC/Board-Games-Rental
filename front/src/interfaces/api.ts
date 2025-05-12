@@ -1,3 +1,6 @@
+import { Dispatch, SetStateAction } from "react";
+import { EventSource } from 'eventsource'
+
 export interface IUserApi{
   token: string,
   permissions: string,
@@ -24,4 +27,21 @@ export const request = async <T> (url: string, method: Method, headers?: {[x:str
       return res.json();
     throw new Error(res.statusText, {cause: res.status})
   })
+}
+
+export const stream = (url: string, setter: Dispatch<SetStateAction<any>>, headers?: {[x:string]: string}) =>{
+  const event = new EventSource(url, {
+    fetch: (input, init) =>
+      fetch(input, {
+        ...init,
+        headers: {
+          ...init.headers,
+          ...headers
+        },
+      }),
+  })
+  event.onmessage = ({ data }) =>{
+    setter(JSON.parse(data))
+  }
+  return () => event.close();
 }

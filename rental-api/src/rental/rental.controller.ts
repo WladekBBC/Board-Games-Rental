@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Sse } from '@nestjs/common';
 import { RentalService } from './rental.service';
 import { CreateRentalDto } from './dto/create-rental.dto';
 import { Permission } from 'src/decorators/permissions.decorator';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { Perms } from 'src/enums/permissions.enum';
+import { from, map, Observable } from 'rxjs';
+import { Rental } from './entities/rental.entity';
 
 @UseGuards(AuthGuard)
 @Permission([Perms.A, Perms.R])
@@ -14,6 +16,11 @@ export class RentalController {
   @Post('/add')
   create(@Body() createRentalDto: CreateRentalDto) {
     return this.rentalService.create(createRentalDto);
+  }
+
+  @Sse('/stream-rentals')
+  subscribeGames(): Observable<{data: Rental[]}> {
+    return from(this.rentalService.findAll()).pipe(map((games)=>({ data: games })))
   }
 
   @Get('/rentals')

@@ -46,7 +46,7 @@ export const SingleGame = ({game, actions}: GameProp) =>{
                                 {game.quantity && game.quantity > 0 ? language.gameAvailable : language.gameUnavailable}
                             </span>
                             <span className="text-xs text-gray-500 dark:text-gray-400">
-                                {language.available}: {game.quantity} / {game.quantity}
+                                {language.available}: {game.quantity} / {game.amount}
                             </span>
                         </div>
                     </div>

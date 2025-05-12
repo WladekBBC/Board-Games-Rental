@@ -15,7 +15,7 @@ export class Rental {
     @Column({ nullable: true, type: 'timestamp' })
     returnedAt: Date | null;
 
-    @ManyToOne(()=>Game, {nullable: false, cascade: false, eager: true})
+    @ManyToOne(()=>Game, {nullable: false, cascade: true, eager: true, onDelete: "CASCADE"})
     @JoinColumn({ name: 'gameId', referencedColumnName: 'id' })
     game: Game;
 }

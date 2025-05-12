@@ -4,7 +4,7 @@ export interface IGame {
     description: string;
     imageUrl: string;
     category: string;
-    amount?: number;
+    amount: number;
     quantity: number;
     isAvailable: boolean;
 }

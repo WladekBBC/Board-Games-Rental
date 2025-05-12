@@ -151,17 +151,13 @@ export default function RentalsPage() {
             >
               <option value="">{language.selectGame}</option>
               {games.map(game => {
-                const activeRentalsCount = rentals.filter(r => 
-                  r.game.id === game.id && !r.returnedAt
-                ).length
-                const availableQuantity = game.quantity - activeRentalsCount
                 return (
                   <option 
                     key={game.id} 
                     value={game.id}
-                    disabled={availableQuantity <= 0}
+                    disabled={game.quantity <= 0}
                   >
-                    {game.title} {availableQuantity <= 0 ? language.gameUnavailable : `(${language.gameAvailable}: ${availableQuantity} ${language.piece}.)`}
+                    {game.title} {game.quantity <= 0 ? language.gameUnavailable : `(${language.gameAvailable}: ${game.quantity} ${language.piece}.)`}
                   </option>
                 )
               })}

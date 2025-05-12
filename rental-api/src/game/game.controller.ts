@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Sse } from '@nestjs/common';
 import { GameService } from './game.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 import { Permission } from 'src/decorators/permissions.decorator';
 import { Perms } from 'src/enums/permissions.enum';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { Game } from './entities/game.entity';
+import { from, map, Observable } from 'rxjs';
 
 @Controller('game')
 export class GameController {
@@ -16,6 +18,12 @@ export class GameController {
   create(@Body() createGameDto: CreateGameDto) {
     return this.gameService.create(createGameDto);
   }
+
+  @Sse('/stream-games')
+  subscribeGames(): Observable<{data: Game[]}> {
+    return from(this.gameService.findAll()).pipe(map((games)=>({ data: games })))
+  }
+
 
   @Get("/games")
   findAll() {

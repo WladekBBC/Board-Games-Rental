@@ -5,7 +5,7 @@ import { useGames } from './GamesContext'
 import { useLang } from '@/contexts/LanguageContext'
 import { IRental } from '@/interfaces/rental'
 import { RentalsContextType } from '@/types/rentalContext'
-import { Method, request } from '@/interfaces/api'
+import { Method, request, stream } from '@/interfaces/api'
 import { useAuth } from './AuthContext'
 
 /**
@@ -30,41 +30,17 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if(JWT) {
-      getRentals()
+      stream('http://localhost:3001/rental/stream-rentals', setRentals, {"token": `${JWT}`, "permissions": permissions})
     }
     setLoading(false)
   }, [JWT, permissions])
 
-  const getRentals = () => {
-    request<IRental[]>('http://localhost:3001/rental/rentals', Method.GET, {"token": `${JWT}`, "permissions": permissions})
-      .then((res: IRental[]) => {
-        setRentals(res)
-        setLoading(false)
-      })
-      .catch((error) => {
-        setError(error.message)
-        setLoading(false)
-      })
-  }
-
   const addRental = async (rental: Partial<IRental>) =>{
-    setLoading(true)
-
     return request<null>('http://localhost:3001/rental/add', Method.POST, {"token": `${JWT}`, "permissions": permissions}, JSON.stringify(rental))
-    .finally(()=>{
-      getRentals()
-      setLoading(false)
-    })
   }
 
   const returnGame = async (id: number) =>{
-    setLoading(true)
-
     return request('http://localhost:3001/rental/return/'+id, Method.PATCH, {"token": `${JWT}`, "permissions": permissions})
-    .finally(()=>{
-      getRentals()
-      setLoading(false)
-    })
   }
 
   return (
