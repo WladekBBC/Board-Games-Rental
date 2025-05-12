@@ -31,6 +31,7 @@ export function AddGameForm({ onClose }: AddGameFormProps) {
     description: '',
     imageUrl: '',
     quantity: 1,
+    amount: 1,
     category: '',
     isAvailable: true
   })

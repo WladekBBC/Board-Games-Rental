@@ -1,4 +1,10 @@
+import { IsNumber, Min } from 'class-validator';
+
 export class ChangeQuantity {
-    id:number;
+    @IsNumber()
+    id: number;
+
+    @IsNumber()
+    @Min(0)
     quantity: number;
 }

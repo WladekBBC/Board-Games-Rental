@@ -48,8 +48,9 @@ export function BoardGameList({ games, isAdmin, onEdit, onDelete }: BoardGameLis
    * @param {string} id - ID game to delete
    */
   const handleDelete = (id: number) => {
-    if (window.confirm(language.confirmDelete)) {
-      onDelete(id)
+    const gameToDelete = games.find(game => game.id === id)
+    if (gameToDelete) {
+      setDeletingGame(gameToDelete)
     }
   }
 
@@ -74,9 +75,10 @@ export function BoardGameList({ games, isAdmin, onEdit, onDelete }: BoardGameLis
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden"
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden relative"
+            style={{ zIndex: 1 }}
           >
-            <div className="relative h-48">
+            <div className="relative h-48 z-0">
               <Image
                 loader={imageLoader}
                 src={game.imageUrl}
@@ -158,7 +160,7 @@ export function BoardGameList({ games, isAdmin, onEdit, onDelete }: BoardGameLis
               transition={{ duration: 0.2 }}
               className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full"
             >
-              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Підтвердження видалення</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">{language.confirmDelete}</h3>
               <div className="text-gray-600 dark:text-gray-300 mb-6">
                 {language.confirmDelete} {deletingGame.title}?
               </div>

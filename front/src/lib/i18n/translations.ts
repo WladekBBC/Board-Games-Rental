@@ -27,6 +27,7 @@ export const translations = {
     register: "Rejestracja",
     email: "Email",
     userUpdated: "Dane użytkownika zaktualizowane pomyślnie",
+    loading: "Ładowanie...",
     // Formularze
     gameTitle: 'Tytuł Gry',
     gameDesc: 'Opis',
@@ -59,7 +60,7 @@ export const translations = {
     available: 'Dostępne',
     unknownGame: 'Nieznana gra',
     // Komunikaty
-    confirmDelete: 'Czy na pewno chcesz usunąć tę grę?',
+    confirmDelete: 'Czy na pewno chcesz usunąć tę grę',
     addGameError: 'Błąd podczas dodawania gry',
     editGameError: 'Błąd podczas edycji gry',
     deleteGameError: 'Błąd podczas usuwania gry',
@@ -146,7 +147,7 @@ export const translations = {
     usersManagement: 'Управління Користувачами',
     permissions: 'Права доступу',
     loginFailed: 'Не вдалося увійти',
-    
+    loading: "Завантаження...",
     // Форми
     gameTitle: 'Назва Гри',
     gameDesc: 'Опис',
@@ -174,7 +175,7 @@ export const translations = {
     unknownGame: 'Невідома гра',
 
     // Повідомлення
-    confirmDelete: 'Ви впевнені, що хочете видалити цю гру?',
+    confirmDelete: 'Ви впевнені, що хочете видалити цю гру ',
     addGameError: 'Помилка при додаванні гри',
     editGameError: 'Помилка при редагуванні гри',
     deleteGameError: 'Помилка при видаленні гри',

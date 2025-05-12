@@ -6,4 +6,5 @@ export type GamesContextType = {
     addGame: (game: Partial<IGame>) => void
     updateGame: (id: number, updates: Partial<IGame>) => Promise<void>
     deleteGame: (id: number) => void
+    changeQuantity: (id: number, quantity: number) => Promise<void>
 }
