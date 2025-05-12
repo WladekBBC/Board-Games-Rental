@@ -12,7 +12,7 @@ import { hash } from 'bcrypt';
  * LoginPage component that handles user authentication
  */
 export default function LoginPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading } = useAuth();
   const { language } = useLang();
   const router = useRouter();
 
@@ -22,7 +22,7 @@ export default function LoginPage() {
     }
   }, [user, router]);
 
-  if (authLoading) return <Spinner />;
+  if (loading) return <Spinner />;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
@@ -54,7 +54,7 @@ export default function LoginPage() {
 function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signIn, error, loading: authLoading } = useAuth();
+  const { signIn, error, loading } = useAuth();
   const { language } = useLang();
 
   const handleSignIn = (ev:FormEvent<HTMLFormElement>) =>{
@@ -102,10 +102,10 @@ function SignInForm() {
       <div className="space-y-4">
         <button
           type="submit"
-          disabled={authLoading}
+          disabled={loading}
           className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 dark:focus:ring-offset-gray-800"
         >
-          {authLoading ? language.loginLoading : language.login}
+          {loading ? language.loginLoading : language.login}
         </button>
       </div>
 

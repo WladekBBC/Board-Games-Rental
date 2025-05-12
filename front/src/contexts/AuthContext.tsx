@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register = async (data: LoginDataType) => {
-    request<IUserApi>('http://localhost:3001/auth/register', Method.POST, {}, JSON.stringify(data))
+    return request<IUserApi>('http://localhost:3001/auth/register', Method.POST, {}, JSON.stringify(data))
       .then((data: IUserApi)=>{
         handleAuthSuccess(data)
       }).catch((error: Error)=>{
@@ -91,7 +91,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     clearLocalUser();
-    setLoading(true);
     setError(null);
     setUser(null);
     router.push('/')
