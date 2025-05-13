@@ -42,27 +42,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
    * @param {string} url - URL img to validate
    * @returns {Promise<boolean>} Whether the image is valid
    */
-  const validateImageUrl = async (url: string): Promise<boolean> => {
-    return new Promise((resolve) => {
-      const img = document.createElement('img')
-      img.onload = async () => {
-        try {
-          const response = await fetch(url)
-          const blob = await response.blob()
-          if (blob.size > MAX_IMAGE_SIZE) {
-            resolve(false)
-            setError(language.invalidImageUrl)
-            return
-          }
-          resolve(true)
-        } catch (error) {
-          resolve(false)
-        }
-      }
-      img.onerror = () => resolve(false)
-      img.src = url
-    })
-  }
+  
 
   /**
    * Handles form submission
@@ -88,7 +68,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
     }
 
     setIsValidating(true)
-    const isValid = await validateImageUrl(formData.imageUrl)
+    const isValid = true
     setIsValidating(false)
     
     if (!isValid) {
@@ -103,7 +83,6 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
     }
 
     try {
-      // Спочатку оновлюємо загальні дані гри
       await updateGame(game.id, {
         title: formData.title,
         description: formData.description,
@@ -112,7 +91,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
         amount: formData.amount
       })
 
-      // Потім окремо оновлюємо кількість
+      
       await changeQuantity(game.id, formData.quantity)
       
       onClose()
@@ -131,7 +110,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
     setFormData(prev => ({ ...prev, imageUrl: url }))
     if (url) {
       setIsValidating(true)
-      const isValid = await validateImageUrl(url)
+      const isValid = true
       setIsValidating(false)
       setIsImageValid(isValid)
     } else {
