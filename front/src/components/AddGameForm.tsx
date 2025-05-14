@@ -45,23 +45,46 @@ export function AddGameForm({ onClose }: AddGameFormProps) {
    * @returns {Promise<boolean>} Whether the image is valid
    */
   const validateImageUrl = async (url: string): Promise<boolean> => {
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      setError(language.notHTTPorHTTPS)
+      return false
+    }
+
     return new Promise((resolve) => {
       const img = document.createElement('img')
       img.onload = async () => {
         try {
           const response = await fetch(url)
-          const blob = await response.blob()
-          if (blob.size > MAX_IMAGE_SIZE) {
+          if (!response.ok) {
+            setError(language.cannotDownloadImage)
             resolve(false)
-            setError(language.invalidImageUrl)
             return
           }
+
+          const contentType = response.headers.get('content-type')
+          if (!contentType || !contentType.startsWith('image/')) {
+            setError(language.imageURLNotImage)
+            resolve(false)
+            return
+          }
+
+          const blob = await response.blob()
+          if (blob.size > MAX_IMAGE_SIZE) {
+            setError(language.imageTooLarge)
+            resolve(false)
+            return
+          }
+
           resolve(true)
         } catch (error) {
+          setError(language.cannotDownloadImage)
           resolve(false)
         }
       }
-      img.onerror = () => resolve(false)
+      img.onerror = () => {
+        setError(language.cannotDownloadImage)
+        resolve(false)
+      }
       img.src = url
     })
   }

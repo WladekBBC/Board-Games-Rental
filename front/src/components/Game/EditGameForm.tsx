@@ -42,7 +42,50 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
    * @param {string} url - URL img to validate
    * @returns {Promise<boolean>} Whether the image is valid
    */
-  
+  const validateImageUrl = async (url: string): Promise<boolean> => {
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      setError(language.notHTTPorHTTPS)
+      return false
+    }
+
+    return new Promise((resolve) => {
+      const img = document.createElement('img')
+      img.onload = async () => {
+        try {
+          const response = await fetch(url)
+          if (!response.ok) {
+            setError(language.cannotDownloadImage)
+            resolve(false)
+            return
+          }
+
+          const contentType = response.headers.get('content-type')
+          if (!contentType || !contentType.startsWith('image/')) {
+            setError(language.imageURLNotImage)
+            resolve(false)
+            return
+          }
+
+          const blob = await response.blob()
+          if (blob.size > MAX_IMAGE_SIZE) {
+            setError(language.imageTooLarge)
+            resolve(false)
+            return
+          }
+
+          resolve(true)
+        } catch (error) {
+          setError(language.cannotDownloadImage)
+          resolve(false)
+        }
+      }
+      img.onerror = () => {
+        setError(language.cannotDownloadImage)
+        resolve(false)
+      }
+      img.src = url
+    })
+  }
 
   /**
    * Handles form submission
@@ -68,11 +111,10 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
     }
 
     setIsValidating(true)
-    const isValid = true
+    const isValid = await validateImageUrl(formData.imageUrl)
     setIsValidating(false)
     
     if (!isValid) {
-      setError(language.invalidImageUrl)
       setIsImageValid(false)
       return
     }
@@ -104,13 +146,12 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
    * Handles img URL change
    * @param {React.ChangeEvent<HTMLInputElement>} e - Event input
    */
-
   const handleImageUrlChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value
     setFormData(prev => ({ ...prev, imageUrl: url }))
     if (url) {
       setIsValidating(true)
-      const isValid = true
+      const isValid = await validateImageUrl(url)
       setIsValidating(false)
       setIsImageValid(isValid)
     } else {

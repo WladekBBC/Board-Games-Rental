@@ -83,6 +83,10 @@ export const translations = {
     enterImageUrl: 'Proszę dodać link do obrazka',
     invalidImageUrl: 'Nieprawidłowy link do obrazka lub rozmiar przekracza 5MB',
     invalidQuantity: 'Ilość nie może być ujemna',
+    notHTTPorHTTPS: 'Link musi zaczynać się od http:// lub https://',
+    cannotDownloadImage: 'Nie można pobrać obrazu',
+    imageURLNotImage: 'Podany URL nie jest obrazem',
+    imageTooLarge: 'Rozmiar obrazu przekracza 5MB',
     
     // Menu
     home: 'Strona Główna',
@@ -199,6 +203,10 @@ export const translations = {
     enterImageUrl: 'Будь ласка, додайте посилання на зображення',
     invalidImageUrl: 'Неправильне посилання на зображення або розмір перевищує 5MB',
     invalidQuantity: 'Кількість не може бути від\'ємною',
+    notHTTPorHTTPS: 'Посилання має починатися з http:// або https://',
+    cannotDownloadImage: 'Не вдалося завантажити зображення',
+    imageURLNotImage: 'Вказане посилання не є зображенням',
+    imageTooLarge: 'Розмір зображення перевищує 5MB',
     
     // Меню
     home: 'Головна',
