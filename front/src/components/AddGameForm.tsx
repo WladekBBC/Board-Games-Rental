@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { imageLoader } from '@/lib/utils/imageLoader'
 import { useLang } from '@/contexts/LanguageContext'
+import { validateImageUrl } from '@/lib/utils/imageUrlValidator'
 
 interface AddGameFormProps 
 {
@@ -40,56 +41,6 @@ export function AddGameForm({ onClose }: AddGameFormProps) {
   const [isValidating, setIsValidating] = useState(false)
 
   /**
-   * Image size and URL validation
-   * @param {string} url - URL image to validate
-   * @returns {Promise<boolean>} Whether the image is valid
-   */
-  const validateImageUrl = async (url: string): Promise<boolean> => {
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      setError(language.notHTTPorHTTPS)
-      return false
-    }
-
-    return new Promise((resolve) => {
-      const img = document.createElement('img')
-      img.onload = async () => {
-        try {
-          const response = await fetch(url)
-          if (!response.ok) {
-            setError(language.cannotDownloadImage)
-            resolve(false)
-            return
-          }
-
-          const contentType = response.headers.get('content-type')
-          if (!contentType || !contentType.startsWith('image/')) {
-            setError(language.imageURLNotImage)
-            resolve(false)
-            return
-          }
-
-          const blob = await response.blob()
-          if (blob.size > MAX_IMAGE_SIZE) {
-            setError(language.imageTooLarge)
-            resolve(false)
-            return
-          }
-
-          resolve(true)
-        } catch (error) {
-          setError(language.cannotDownloadImage)
-          resolve(false)
-        }
-      }
-      img.onerror = () => {
-        setError(language.cannotDownloadImage)
-        resolve(false)
-      }
-      img.src = url
-    })
-  }
-
-  /**
    * Handles form submission
    * @param {React.FormEvent} e - Event form
    */
@@ -113,11 +64,11 @@ export function AddGameForm({ onClose }: AddGameFormProps) {
     }
 
     setIsValidating(true)
-    const isValid = await validateImageUrl(formData.imageUrl)
+    const validationResult = await validateImageUrl(formData.imageUrl)
     setIsValidating(false)
     
-    if (!isValid) {
-      setError(language.invalidImageUrl)
+    if (!validationResult.isValid) {
+      setError(language[validationResult.error as keyof typeof language])
       setIsImageValid(false)
       return
     }
@@ -147,11 +98,15 @@ export function AddGameForm({ onClose }: AddGameFormProps) {
     setFormData(prev => ({ ...prev, imageUrl: url }))
     if (url) {
       setIsValidating(true)
-      const isValid = await validateImageUrl(url)
+      const validationResult = await validateImageUrl(url)
       setIsValidating(false)
-      setIsImageValid(isValid)
+      setIsImageValid(validationResult.isValid)
+      if (!validationResult.isValid) {
+        setError(language[validationResult.error as keyof typeof language])
+      }
     } else {
       setIsImageValid(true)
+      setError(null)
     }
   }
 
@@ -223,7 +178,7 @@ export function AddGameForm({ onClose }: AddGameFormProps) {
             </div>
             {!isImageValid && (
               <p className="mt-1 text-sm text-red-600">
-                {language.invalidImageUrl}
+                {error}
               </p>
             )}
             {formData.imageUrl && isImageValid && (

@@ -87,6 +87,8 @@ export const translations = {
     cannotDownloadImage: 'Nie można pobrać obrazu',
     imageURLNotImage: 'Podany URL nie jest obrazem',
     imageTooLarge: 'Rozmiar obrazu przekracza 5MB',
+    imageUrlRequired: 'Link do obrazka jest wymagany',
+    invalidUrlFormat: 'Nieprawidłowy format URL',
     
     // Menu
     home: 'Strona Główna',
@@ -207,6 +209,8 @@ export const translations = {
     cannotDownloadImage: 'Не вдалося завантажити зображення',
     imageURLNotImage: 'Вказане посилання не є зображенням',
     imageTooLarge: 'Розмір зображення перевищує 5MB',
+    imageUrlRequired: 'Посилання на зображення обов\'язкове',
+    invalidUrlFormat: 'Неправильний формат URL',
     
     // Меню
     home: 'Головна',
