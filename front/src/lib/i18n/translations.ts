@@ -46,6 +46,9 @@ export const translations = {
     invalidAlbumNumberFormat: 'Nieprawidłowy format numeru albumu',
     inStock: 'Dostępne',
     pcs: 'szt.',
+    searchByIndex: 'Szukaj po numerze indeksu',
+    searchByTitle: 'Szukaj po tytule gry',
+    searchByDate: 'Szukaj po dacie',
     // Przyciski
     addGame: 'Dodaj Grę',
     editGame: 'Edytuj',
@@ -59,6 +62,7 @@ export const translations = {
     gameUnavailable: 'Niedostępna',
     available: 'Dostępne',
     unknownGame: 'Nieznana gra',
+    deletedGame: 'Usunięto zapis o wypożyczeniu',
     // Komunikaty
     confirmDelete: 'Czy na pewno chcesz usunąć tę grę',
     addGameError: 'Błąd podczas dodawania gry',
@@ -166,6 +170,9 @@ export const translations = {
     userUpdated: 'Дані користувача оновлено успішно',
     inStock: 'В наявності',
     pcs: 'шт.',
+    searchByIndex: 'Пошук по номеру індексу',
+    searchByTitle: 'Пошук по назві гри',
+    searchByDate: 'Пошук по даті',
     // Кнопки
     addGame: 'Додати Гру',
     editGame: 'Редагувати',
@@ -179,7 +186,7 @@ export const translations = {
     gameUnavailable: 'Недоступна',
     available: 'Доступно',
     unknownGame: 'Невідома гра',
-
+    deletedGame: 'Видалено запис про оренду гри',
     // Повідомлення
     confirmDelete: 'Ви впевнені, що хочете видалити цю гру ',
     addGameError: 'Помилка при додаванні гри',

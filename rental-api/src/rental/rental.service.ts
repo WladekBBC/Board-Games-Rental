@@ -32,6 +32,10 @@ export class RentalService {
     return this.rentalRepo.findOneBy({id});
   }
 
+  remove(id: number) {
+    return this.rentalRepo.delete({id});
+  }
+
   async return(id: number) {
     const rental = await this.findOne(id)
     if(rental && !rental.returnedAt && rental.game.quantity != rental.game.amount){
