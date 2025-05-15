@@ -11,6 +11,7 @@ import SuccessField from '@/components/Messages/SuccessField'
 import { Spinner } from '@/components/Messages/Spinner'
 import { Perms } from '@/interfaces/perms'
 import { Rent } from '@/types/rentalContext'
+import { AdminProtected } from '@/components/AdminProtected'
 
 /**
  * Rentals page
@@ -289,15 +290,16 @@ export default function RentalsPage() {
                       {language.return}
                     </button>
                   )}
-                  <button
+
+                  {permissions.includes(Perms.A) && (<button
                     onClick={() => handleDeleteRental(rental.id)}
                     disabled={isProcessing}
                     className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50"
                   >
-                    {language.deleteGame}
-                  </button>
+                      {language.deleteGame}
+                    </button>)}
+                    
                 </td>
-
               </tr>
             ))}
           </tbody>
