@@ -43,7 +43,7 @@ export function Navbar() {
               onClick={() => setLanguage(currentLang === 'pl' ? 'ua' : 'pl')}
               className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
-              {currentLang === 'pl' ? 'UA' : 'PL'}
+              {currentLang === 'pl' ? 'PL' : 'UA'}
             </button>
             <button
               onClick={toggleTheme}
