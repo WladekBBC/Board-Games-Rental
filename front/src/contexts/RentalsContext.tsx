@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useGames } from './GamesContext'
-import { useLang } from '@/contexts/LanguageContext'
 import { IRental } from '@/interfaces/rental'
 import { RentalsContextType, SortConfig, SearchType } from '@/types/rentalContext'
 import { Method, request, stream } from '@/interfaces/api'

@@ -54,7 +54,23 @@ export function Navbar() {
               </div>
             </div>
           </div>
+<<<<<<< HEAD
           <div className="absolute inset-y-3 right-0 flex items-center pr-2 hidden sm:ml-6 sm:block">
+=======
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => setLanguage(currentLang === 'pl' ? 'ua' : 'pl')}
+              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              {currentLang === 'pl' ? 'PL' : 'UA'}
+            </button>
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              {theme === 'dark' ? '🌞' : '🌙'}
+            </button>
+>>>>>>> 570628ea8bb73563fd0f6a471d37efdfba24de30
             <div className="flex items-center space-x-2">
               <UiNavElements/>
               {user ? <UserButton /> : <RouterLink link='/login' text={language.login}/>
