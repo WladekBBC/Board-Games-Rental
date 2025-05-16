@@ -7,15 +7,16 @@ export const UserButton = () => {
 
     return (
         <>
-            <span className="text-sm text-gray-700 dark:text-gray-300">
+            <span className="flex text-sm text-gray-700 dark:text-gray-300 sm:items-stretch space-x-4 ">
                 {user?.email}
-            </span>
-            <button
+                <button
                 onClick={signOut}
-                className="text-sm text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-            >
-            {language.logout}
-            </button>
+                className="flex text-sm text-red-600 hover:text-red-900 sm:items-stretch dark:text-red-400 dark:hover:text-red-300 space-x-4 sm:ml-2"
+                >
+                {language.logout}
+                </button>
+            </span>
+            
         </>
     );
 }

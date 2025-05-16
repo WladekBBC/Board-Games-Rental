@@ -7,6 +7,7 @@ import { useLang } from '@/contexts/LanguageContext'
 import { SingleGame } from '@/components/Game/SingleGame'
 import { useAuth } from '@/contexts/AuthContext'
 import { Perms } from '@/interfaces/perms'
+import { SearchBar } from '@/components/SearchBar'
 
 export default function GamesPage() {
   const router = useRouter()
@@ -141,25 +142,18 @@ export default function GamesPage() {
             </button>
           </form>
         </div>
-        <div className="flex gap-4 mb-4">
-            <select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value as 'title' | 'category' )}
-              className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="title">{language.searchByTitle}</option>
-              <option value="category">{language.searchByCategory}</option>
-            </select>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={
-                searchType === 'title' ? language.searchByTitle : language.searchByCategory 
-              }
-              className="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+        <SearchBar
+          options={[
+            { value: 'title', label: language.searchByTitle },
+            { value: 'category', label: language.searchByCategory }
+          ]}
+          value={searchQuery}
+          onValueChange={setSearchQuery}
+          selected={searchType}
+          onSelectChange={val => setSearchType(val as typeof searchType)}
+          placeholder={searchType === 'title' ? language.searchByTitle : language.searchByCategory}
+          className="mb-4"
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {SearchedGames.map(game => (
             <SingleGame game={game} actions={true} key={game.id}/>
