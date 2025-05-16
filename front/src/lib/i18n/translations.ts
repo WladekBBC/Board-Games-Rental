@@ -63,6 +63,7 @@ export const translations = {
     available: 'Dostępne',
     unknownGame: 'Nieznana gra',
     deletedGame: 'Usunięto zapis o wypożyczeniu',
+
     // Komunikaty
     confirmDelete: 'Czy na pewno chcesz usunąć tę grę',
     addGameError: 'Błąd podczas dodawania gry',
@@ -126,6 +127,9 @@ export const translations = {
     users: 'Użytkownicy',
     newPassword: 'Nowe hasło',
     userDeleted: 'Użytkownik został usunięty pomyślnie',
+    searchByCategory: 'Szukaj po kategorii',
+    searchByEmail: 'Szukaj po email',
+    searchByPerm: 'Szukaj po uprawnieniach',
   },
   ua: {
     // Заголовки
@@ -250,5 +254,8 @@ export const translations = {
     confirmDeleteUser: 'Ви впевнені, що хочете видалити цього користувача?',
     users: 'Користувачі',
     userDeleted: 'Користувач видалено успішно',
+    searchByCategory: 'Пошук по категорії',
+    searchByEmail: 'Пошук по email',
+    searchByPerm: 'Пошук по правам доступу',
   }
 } as const; 

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useAuth } from './AuthContext';
-import { GamesContextType } from '@/types/gameContext';
+import { GamesContextType, SearchType } from '@/types/gameContext';
 import { IGame } from '@/interfaces/game';
 import { stream } from '@/interfaces/api';
 
@@ -12,12 +12,28 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   const {JWT, permissions} = useAuth()
   const [games, setGames] = useState<IGame[]>([])
   const [loading, setLoading] = useState(true)
-
+  const [searchType, setSearchType] = useState<SearchType>('title')
+  const [searchQuery, setSearchQuery] = useState('')
+  
   useEffect(() => {
     stream('http://localhost:3001/game/stream-games', setGames)
     setLoading(false)
   }, [])
 
+  const SearchedGames = [...games]
+    .filter(game => {
+    if (!searchQuery) return true;
+    
+    const searchLower = searchQuery.toLowerCase();
+    
+    switch (searchType) {
+      case 'title':
+        return game.title.toLowerCase().includes(searchLower)
+      case 'category':
+        return game.category.toLowerCase().includes(searchLower)
+    }
+  })
+  
   const addGame = (game: Partial<IGame>) => {
     fetch('http://localhost:3001/game/add', {
       method: 'POST', 
@@ -84,7 +100,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <GamesContext.Provider value={{ games, loading, addGame, updateGame, deleteGame, changeQuantity }}>
+    <GamesContext.Provider value={{ games, loading, addGame, updateGame, deleteGame, changeQuantity, searchType, setSearchType, searchQuery, setSearchQuery, SearchedGames }}>
       {children}
     </GamesContext.Provider>
   )

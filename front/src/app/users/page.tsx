@@ -4,23 +4,14 @@ import { useLang } from '@/contexts/LanguageContext';
 import { AdminProtected } from '@/components/AdminProtected';
 import { Dialog } from '@headlessui/react';
 import { useUsers } from '@/contexts/UsersContext';
-/**
- * @interface User
- * @property {number} id - The user's ID.
- * @property {string} email - The user's email.
- * @property {string} permissions - The user's permissions.
- */
-interface User {
-  id: number;
-  email: string;
-  permissions: string;
-}
+
 
 /**
  * @function UsersPage
  * @description This is the main component for the users page.
  * @returns {JSX.Element} The users page.
  */
+
 export default function UsersPage() {
   const { language } = useLang();
   const {
@@ -33,7 +24,12 @@ export default function UsersPage() {
     setEditing,
     setUserToDelete,
     handleUpdateUser,
-    handleDeleteUser
+    handleDeleteUser,
+    searchType,
+    setSearchType,
+    searchQuery,
+    setSearchQuery,
+    SearchedUsers
   } = useUsers();
 
   const handleEditChange = (userId: number, field: 'email' | 'permissions' | 'password', value: string) => {
@@ -70,6 +66,26 @@ export default function UsersPage() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
           </div>
         ) : (
+          <>
+          <div className="flex gap-4 mb-4">
+            <select
+              value={searchType}
+              onChange={(e) => setSearchType(e.target.value as 'email' | 'permissions' )}
+              className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="email">{language.searchByEmail}</option>
+              <option value="permissions">{language.searchByPerm}</option>
+            </select>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={
+                searchType === 'email' ? language.searchByEmail: language.searchByPerm 
+              }
+              className="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-700">
@@ -88,8 +104,9 @@ export default function UsersPage() {
                   </th>
                 </tr>
               </thead>
+          
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {users.map((user) => (
+                {SearchedUsers.map((user) => (
                   <tr key={user.id}>
                     <td className="px-6 py-4 text-sm">
                       <input
@@ -142,6 +159,7 @@ export default function UsersPage() {
               </tbody>
             </table>
           </div>
+        </>
         )}
 
         {/* Modal confirm */}
