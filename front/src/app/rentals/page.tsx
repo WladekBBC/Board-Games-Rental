@@ -11,6 +11,7 @@ import SuccessField from '@/components/Messages/SuccessField'
 import { Spinner } from '@/components/Messages/Spinner'
 import { Perms } from '@/interfaces/perms'
 import { Rent } from '@/types/rentalContext'
+import { AdminProtected } from '@/components/AdminProtected'
 
 /**
  * Rentals page
@@ -19,12 +20,39 @@ import { Rent } from '@/types/rentalContext'
 export default function RentalsPage() {
   const router = useRouter()
   const { permissions, user, loading: authLoading } = useAuth()
-  const { rentals, addRental, returnGame, loading: rentalsLoading } = useRentals()
+  const { 
+    rentals, 
+    addRental, 
+    returnGame, 
+    removeRental, 
+    loading: rentalsLoading,
+    sortConfig,
+    setSortConfig,
+    searchQuery,
+    setSearchQuery,
+    searchType,
+    setSearchType,
+    filteredAndSortedRentals
+  } = useRentals()
   const { games, loading: gamesLoading } = useGames()
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const { language } = useLang()
+
+  const handleSort = (key: 'rentedAt' | 'title' | 'index') => {
+    if (sortConfig.key === key) {
+      setSortConfig({
+        key,
+        direction: sortConfig.direction === 'asc' ? 'desc' : 'asc'
+      });
+    } else {
+      setSortConfig({
+        key,
+        direction: 'asc'
+      });
+    }
+  };
 
   const handleSuccess = (successMessage: string) =>{
     setSuccess(successMessage);
@@ -73,7 +101,7 @@ export default function RentalsPage() {
     const form = new FormData(e.currentTarget)
     if (!form) return
 
-    const idPersonRegex = /^(?:\d{6}|SD\d{4}|\+48\d{9})$/;
+    const idPersonRegex = /^(?:\d{6}|SD\d{4}|\+?[0-9]{7,15})$/;
     if (!idPersonRegex.test(form.get('personId') as string)) {
       setError(language.invalidAlbumNumberFormat);
       setIsProcessing(false);
@@ -115,6 +143,16 @@ export default function RentalsPage() {
     setIsProcessing(false)
   }
 
+  const handleDeleteRental = async (id: number) => {
+    resetFields()
+
+    removeRental(id).then(()=>{
+      handleSuccess(language.deletedGame)
+    }).catch((err: Error)=>{
+      setError(err.cause == 406 ? language.deleteGameError : language.serverError)
+    })
+    setIsProcessing(false)
+  }
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">{language.manageRent}</h1>
@@ -174,17 +212,50 @@ export default function RentalsPage() {
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex gap-4 mb-4">
+            <select
+              value={searchType}
+              onChange={(e) => setSearchType(e.target.value as 'index' | 'title' | 'date')}
+              className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="index">{language.searchByIndex}</option>
+              <option value="title">{language.searchByTitle}</option>
+              <option value="date">{language.searchByDate}</option>
+            </select>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={
+                searchType === 'index' ? language.searchByIndex :
+                searchType === 'title' ? language.searchByTitle :
+                language.searchByDate
+              }
+              className="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-700">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                {language.indexNumber}
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                onClick={() => handleSort('index')}
+              >
+                {language.indexNumber} {sortConfig.key === 'index' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                {language.gameTitle}
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                onClick={() => handleSort('title')}
+              >
+                {language.gameTitle} {sortConfig.key === 'title' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                {language.rentDate}
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                onClick={() => handleSort('rentedAt')}
+              >
+                {language.rentDate} {sortConfig.key === 'rentedAt' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 {language.returnDate}
@@ -195,7 +266,7 @@ export default function RentalsPage() {
             </tr>
           </thead>
           <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            {rentals.map(rental => (
+            {filteredAndSortedRentals.map(rental => (
               <tr key={rental.id}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                   {rental.index}
@@ -219,6 +290,15 @@ export default function RentalsPage() {
                       {language.return}
                     </button>
                   )}
+
+                  {permissions.includes(Perms.A) && (<button
+                    onClick={() => handleDeleteRental(rental.id)}
+                    disabled={isProcessing}
+                    className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50"
+                  >
+                      {language.deleteGame}
+                    </button>)}
+                    
                 </td>
               </tr>
             ))}

@@ -11,7 +11,15 @@ import { Perms } from '@/interfaces/perms'
 export default function GamesPage() {
   const router = useRouter()
   const { permissions, user, loading } = useAuth()
-  const { games, addGame, loading: gamesLoading } = useGames()
+  const { games,
+      addGame,
+      loading: gamesLoading, 
+      searchType,
+      setSearchType,
+      searchQuery,
+      setSearchQuery,
+      SearchedGames
+      } = useGames()
   const [isProcessing, setIsProcessing] = useState(false)
   const { language } = useLang()
 
@@ -133,9 +141,27 @@ export default function GamesPage() {
             </button>
           </form>
         </div>
-
+        <div className="flex gap-4 mb-4">
+            <select
+              value={searchType}
+              onChange={(e) => setSearchType(e.target.value as 'title' | 'category' )}
+              className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="title">{language.searchByTitle}</option>
+              <option value="category">{language.searchByCategory}</option>
+            </select>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={
+                searchType === 'title' ? language.searchByTitle : language.searchByCategory 
+              }
+              className="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {games.map(game => (
+          {SearchedGames.map(game => (
             <SingleGame game={game} actions={true} key={game.id}/>
           ))}
         </div>

@@ -2,34 +2,9 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { useAuth } from './AuthContext';
 import { Method, request } from '@/interfaces/api';
 import { useLang } from './LanguageContext';
-
-interface User {
-  id: number;
-  email: string;
-  permissions: string;
-}
-
-interface UserUpdate {
-  email?: string;
-  permissions?: string;
-  password?: string;
-}
-
-interface UsersContextType {
-  users: User[];
-  loading: boolean;
-  error: string | null;
-  success: string | null;
-  editing: { [key: number]: UserUpdate };
-  userToDelete: User | null;
-  setEditing: React.Dispatch<React.SetStateAction<{ [key: number]: UserUpdate }>>;
-  setUserToDelete: (user: User | null) => void;
-  handleUpdateUser: (id: number) => Promise<void>;
-  handleDeleteUser: () => Promise<void>;
-  setSuccess: (message: string | null) => void;
-  setError: (message: string | null) => void;
-}
-
+import { UsersContextType, User, UserUpdate, SearchType } from '@/types/usersContext';
+import { IUser} from '@/interfaces/user'
+ 
 const UsersContext = createContext<UsersContextType | undefined>(undefined);
 
 export function UsersProvider({ children }: { children: ReactNode }) {
@@ -41,12 +16,28 @@ export function UsersProvider({ children }: { children: ReactNode }) {
   const [success, setSuccess] = useState<string | null>(null);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const { language } = useLang();
+  const [searchType, setSearchType] = useState<SearchType>('email');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     if (JWT) {
       fetchUsers();
     }
   }, [JWT]);
+
+  const SearchedUsers = [...users]
+    .filter(user => {
+    if (!searchQuery) return true;
+    
+    const searchLower = searchQuery.toLowerCase();
+    
+    switch (searchType) {
+      case 'email':
+        return user.email.toLowerCase().includes(searchLower)
+      case 'permissions':
+        return user.permissions.toLowerCase().includes(searchLower)
+    }
+  })
 
   const fetchUsers = async () => {
     request<User[]>('http://localhost:3001/auth/users', Method.GET, {"token": `${JWT}`, "permissions": permissions}).then((data: User[])=>{
@@ -125,7 +116,7 @@ export function UsersProvider({ children }: { children: ReactNode }) {
     setLoading(false);
   };
 
-  const value = {
+  const value: UsersContextType = {
     users,
     loading,
     error,
@@ -138,6 +129,11 @@ export function UsersProvider({ children }: { children: ReactNode }) {
     handleDeleteUser,
     setSuccess,
     setError,
+    searchType,
+    setSearchType,
+    searchQuery,
+    setSearchQuery,
+    SearchedUsers
   };
 
   return <UsersContext.Provider value={value}>{children}</UsersContext.Provider>;

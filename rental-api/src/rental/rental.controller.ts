@@ -37,4 +37,9 @@ export class RentalController {
   update(@Param('id') id: number) {
     return this.rentalService.return(id);
   }
+
+  @Delete('/delete/:id')
+  remove(@Param('id') id: number) {
+    return this.rentalService.remove(id);
+  }
 }

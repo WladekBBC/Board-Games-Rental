@@ -7,8 +7,9 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { imageLoader } from '@/lib/utils/imageLoader'
 import { useLang } from '@/contexts/LanguageContext'
+import { validateImageUrl } from '@/lib/utils/imageUrlValidator'
 
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
+const MAX_IMAGE_SIZE = 10 * 2048 * 2048 // 5MB
 
 interface EditGameFormProps {
   game: IGame
@@ -23,45 +24,19 @@ interface EditGameFormProps {
  * @returns {JSX.Element} Komponent formularza
  */
 export function EditGameForm({ game, onClose }: EditGameFormProps) {
-  const { updateGame } = useGames()
+  const { updateGame, changeQuantity } = useGames()
   const { language } = useLang()
   const [formData, setFormData] = useState({
     title: game.title,
     description: game.description,
     imageUrl: game.imageUrl,
     quantity: game.quantity,
+    amount: game.amount,
     category: game.category,
   })
   const [error, setError] = useState<string | null>(null)
   const [isImageValid, setIsImageValid] = useState(true)
   const [isValidating, setIsValidating] = useState(false)
-
-  /**
-   * Image size and URL validation
-   * @param {string} url - URL img to validate
-   * @returns {Promise<boolean>} Whether the image is valid
-   */
-  const validateImageUrl = async (url: string): Promise<boolean> => {
-    return new Promise((resolve) => {
-      const img = document.createElement('img')
-      img.onload = async () => {
-        try {
-          const response = await fetch(url)
-          const blob = await response.blob()
-          if (blob.size > MAX_IMAGE_SIZE) {
-            resolve(false)
-            setError(language.invalidImageUrl)
-            return
-          }
-          resolve(true)
-        } catch (error) {
-          resolve(false)
-        }
-      }
-      img.onerror = () => resolve(false)
-      img.src = url
-    })
-  }
 
   /**
    * Handles form submission
@@ -87,11 +62,11 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
     }
 
     setIsValidating(true)
-    const isValid = await validateImageUrl(formData.imageUrl)
+    const validationResult = await validateImageUrl(formData.imageUrl)
     setIsValidating(false)
     
-    if (!isValid) {
-      setError(language.invalidImageUrl)
+    if (!validationResult.isValid) {
+      setError(language[validationResult.error as keyof typeof language])
       setIsImageValid(false)
       return
     }
@@ -101,12 +76,21 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
       return
     }
 
-    updateGame(game.id, formData).then(()=>{
-      onClose()
-    }).catch(()=>{
-      setError(language.editGameError)
+    try {
+      await updateGame(game.id, {
+        title: formData.title,
+        description: formData.description,
+        imageUrl: formData.imageUrl,
+        category: formData.category,
+        amount: formData.amount
+      })
 
-    })
+      await changeQuantity(game.id, formData.quantity)
+      
+      onClose()
+    } catch (error) {
+      setError(language.editGameError)
+    }
   }
 
   /**
@@ -118,16 +102,21 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
     setFormData(prev => ({ ...prev, imageUrl: url }))
     if (url) {
       setIsValidating(true)
-      const isValid = await validateImageUrl(url)
+      const validationResult = await validateImageUrl(url)
       setIsValidating(false)
-      setIsImageValid(isValid)
+      setIsImageValid(validationResult.isValid)
+      if (!validationResult.isValid) {
+        setError(language[validationResult.error as keyof typeof language])
+      }
     } else {
       setIsImageValid(true)
+      setError(null)
     }
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
+    style={{ zIndex: 1000 }}>
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">{language.editGame}</h2>
@@ -141,7 +130,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="title" className="block text-sm font-medium text-white-700">
               {language.gameTitle}
             </label>
             <input
@@ -149,12 +138,12 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
               id="title"
               value={formData.title}
               onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="description" className="block text-sm font-medium text-white-700">
               {language.gameDesc}
             </label>
             <textarea
@@ -162,12 +151,12 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               rows={3}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
 
           <div>
-            <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="imageUrl" className="block text-sm font-medium text-white-700">
               {language.gameImageUrl}
             </label>
             <div className="relative">
@@ -176,7 +165,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
                 id="imageUrl"
                 value={formData.imageUrl}
                 onChange={handleImageUrlChange}
-                className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 text-gray-900 ${
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
                   isImageValid 
                     ? 'border-gray-300 focus:border-blue-500' 
                     : 'border-red-300 focus:border-red-500'
@@ -194,7 +183,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
             </div>
             {!isImageValid && (
               <p className="mt-1 text-sm text-red-600">
-                {language.invalidImageUrl}
+                {error}
               </p>
             )}
             {formData.imageUrl && isImageValid && (
@@ -212,7 +201,7 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
           </div>
 
           <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="category" className="block text-sm font-medium text-white-700">
               {language.gameCategory}
             </label>
             <input
@@ -220,12 +209,12 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
               id="category"
               value={formData.category}
               onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
 
           <div>
-            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="quantity" className="block text-sm font-medium text-white-700">
               {language.gameNumber}
             </label>
             <input
@@ -238,7 +227,24 @@ export function EditGameForm({ game, onClose }: EditGameFormProps) {
                 quantity: parseInt(e.target.value) || 0,
                 isAvailable: parseInt(e.target.value) > 0
               }))}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="amount" className="block text-sm font-medium text-white-700">
+              Łączna liczba egzemplarzy
+            </label>
+            <input
+              type="number"
+              id="amount"
+              min="0"
+              value={formData.amount}
+              onChange={(e) => setFormData(prev => ({ 
+                ...prev, 
+                amount: parseInt(e.target.value) || 0
+              }))}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
 

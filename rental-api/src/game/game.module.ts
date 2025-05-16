@@ -6,7 +6,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    GameModule,
     TypeOrmModule.forFeature([Game])
   ],
   controllers: [GameController],

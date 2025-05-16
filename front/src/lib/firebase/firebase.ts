@@ -4,12 +4,12 @@ import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBEJG9xlU7y2idSv_KR8fIbSn1fbnGnHzE",
-  authDomain: "boardgamerentalsample.firebaseapp.com",
-  projectId: "boardgamerentalsample",
-  storageBucket: "boardgamerentalsample.appspot.com",
-  messagingSenderId: "810966980445",
-  appId: "1:810966980445:web:d10ea58f0a344d17117ab4"
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
 }
 
 // Initialize Firebase

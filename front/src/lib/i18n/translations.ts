@@ -27,6 +27,7 @@ export const translations = {
     register: "Rejestracja",
     email: "Email",
     userUpdated: "Dane użytkownika zaktualizowane pomyślnie",
+    loading: "Ładowanie...",
     // Formularze
     gameTitle: 'Tytuł Gry',
     gameDesc: 'Opis',
@@ -45,6 +46,9 @@ export const translations = {
     invalidAlbumNumberFormat: 'Nieprawidłowy format numeru albumu',
     inStock: 'Dostępne',
     pcs: 'szt.',
+    searchByIndex: 'Szukaj po numerze indeksu',
+    searchByTitle: 'Szukaj po tytule gry',
+    searchByDate: 'Szukaj po dacie',
     // Przyciski
     addGame: 'Dodaj Grę',
     editGame: 'Edytuj',
@@ -58,8 +62,10 @@ export const translations = {
     gameUnavailable: 'Niedostępna',
     available: 'Dostępne',
     unknownGame: 'Nieznana gra',
+    deletedGame: 'Usunięto zapis o wypożyczeniu',
+
     // Komunikaty
-    confirmDelete: 'Czy na pewno chcesz usunąć tę grę?',
+    confirmDelete: 'Czy na pewno chcesz usunąć tę grę',
     addGameError: 'Błąd podczas dodawania gry',
     editGameError: 'Błąd podczas edycji gry',
     deleteGameError: 'Błąd podczas usuwania gry',
@@ -82,6 +88,12 @@ export const translations = {
     enterImageUrl: 'Proszę dodać link do obrazka',
     invalidImageUrl: 'Nieprawidłowy link do obrazka lub rozmiar przekracza 5MB',
     invalidQuantity: 'Ilość nie może być ujemna',
+    notHTTPorHTTPS: 'Link musi zaczynać się od http:// lub https://',
+    cannotDownloadImage: 'Nie można pobrać obrazu',
+    imageURLNotImage: 'Podany URL nie jest obrazem',
+    imageTooLarge: 'Rozmiar obrazu przekracza 5MB',
+    imageUrlRequired: 'Link do obrazka jest wymagany',
+    invalidUrlFormat: 'Nieprawidłowy format URL',
     
     // Menu
     home: 'Strona Główna',
@@ -115,6 +127,9 @@ export const translations = {
     users: 'Użytkownicy',
     newPassword: 'Nowe hasło',
     userDeleted: 'Użytkownik został usunięty pomyślnie',
+    searchByCategory: 'Szukaj po kategorii',
+    searchByEmail: 'Szukaj po email',
+    searchByPerm: 'Szukaj po uprawnieniach',
   },
   ua: {
     // Заголовки
@@ -146,7 +161,7 @@ export const translations = {
     usersManagement: 'Управління Користувачами',
     permissions: 'Права доступу',
     loginFailed: 'Не вдалося увійти',
-    
+    loading: "Завантаження...",
     // Форми
     gameTitle: 'Назва Гри',
     gameDesc: 'Опис',
@@ -159,6 +174,9 @@ export const translations = {
     userUpdated: 'Дані користувача оновлено успішно',
     inStock: 'В наявності',
     pcs: 'шт.',
+    searchByIndex: 'Пошук по номеру індексу',
+    searchByTitle: 'Пошук по назві гри',
+    searchByDate: 'Пошук по даті',
     // Кнопки
     addGame: 'Додати Гру',
     editGame: 'Редагувати',
@@ -172,9 +190,9 @@ export const translations = {
     gameUnavailable: 'Недоступна',
     available: 'Доступно',
     unknownGame: 'Невідома гра',
-
+    deletedGame: 'Видалено запис про оренду гри',
     // Повідомлення
-    confirmDelete: 'Ви впевнені, що хочете видалити цю гру?',
+    confirmDelete: 'Ви впевнені, що хочете видалити цю гру ',
     addGameError: 'Помилка при додаванні гри',
     editGameError: 'Помилка при редагуванні гри',
     deleteGameError: 'Помилка при видаленні гри',
@@ -198,6 +216,12 @@ export const translations = {
     enterImageUrl: 'Будь ласка, додайте посилання на зображення',
     invalidImageUrl: 'Неправильне посилання на зображення або розмір перевищує 5MB',
     invalidQuantity: 'Кількість не може бути від\'ємною',
+    notHTTPorHTTPS: 'Посилання має починатися з http:// або https://',
+    cannotDownloadImage: 'Не вдалося завантажити зображення',
+    imageURLNotImage: 'Вказане посилання не є зображенням',
+    imageTooLarge: 'Розмір зображення перевищує 5MB',
+    imageUrlRequired: 'Посилання на зображення обов\'язкове',
+    invalidUrlFormat: 'Неправильний формат URL',
     
     // Меню
     home: 'Головна',
@@ -230,5 +254,8 @@ export const translations = {
     confirmDeleteUser: 'Ви впевнені, що хочете видалити цього користувача?',
     users: 'Користувачі',
     userDeleted: 'Користувач видалено успішно',
+    searchByCategory: 'Пошук по категорії',
+    searchByEmail: 'Пошук по email',
+    searchByPerm: 'Пошук по правам доступу',
   }
 } as const; 
