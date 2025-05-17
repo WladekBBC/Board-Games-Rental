@@ -31,23 +31,14 @@ export class GameService {
   }
 
   async changeQuantity(changeQuantityDto: ChangeQuantity) {
-    this.logger.debug(`Received change quantity request: ${JSON.stringify(changeQuantityDto)}`);
-    
-    const game = await this.gameRepo.findOneBy({id: changeQuantityDto.id});
-    this.logger.debug(`Found game: ${JSON.stringify(game)}`);
-    
+    const game = await this.gameRepo.findOneBy({id: changeQuantityDto.id});    
     if (!game) {
-      this.logger.error(`Game not found with id: ${changeQuantityDto.id}`);
       throw new NotAcceptableException('Game not found');
     }
-    
     if (changeQuantityDto.quantity < 0 || changeQuantityDto.quantity > game.amount) {
-      this.logger.error(`Invalid quantity: ${changeQuantityDto.quantity}. Game amount: ${game.amount}`);
       throw new NotAcceptableException('Invalid quantity');
     }
-    
     const result = await this.gameRepo.update(changeQuantityDto.id, {quantity: changeQuantityDto.quantity});
-    this.logger.debug(`Update result: ${JSON.stringify(result)}`);
     return result;
   }
 

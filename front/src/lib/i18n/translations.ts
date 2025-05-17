@@ -59,6 +59,7 @@ export const translations = {
     
     // Status
     gameAvailable: 'Dostępna',
+    gameAvailableNumber: 'Ilość dostępnych sztuk',
     gameUnavailable: 'Niedostępna',
     available: 'Dostępne',
     unknownGame: 'Nieznana gra',
@@ -187,6 +188,7 @@ export const translations = {
     
     // Статус
     gameAvailable: 'Доступна',
+    gameAvailableNumber: "TODO",
     gameUnavailable: 'Недоступна',
     available: 'Доступно',
     unknownGame: 'Невідома гра',

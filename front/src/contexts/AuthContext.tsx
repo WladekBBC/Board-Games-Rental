@@ -22,6 +22,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     getLocalUser()
+  
+    if(user?.exp && Date.now() > user.exp * 1000)
+      signOut();
+    
     setLoading(false);
   }, []);
 

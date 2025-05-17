@@ -1,157 +1,102 @@
 import { useGames } from "@/contexts/GamesContext"
 import { useLang } from "@/contexts/LanguageContext"
 import { IGame } from "@/interfaces/game"
-import { useState } from "react"
+import { validateImageUrl } from "@/lib/utils/imageUrlValidator"
+import { useEffect, useState } from "react"
+import { GameInput } from "./GameInput"
+import { imageLoader } from "@/lib/utils/imageLoader"
+import Image from 'next/image'
 
 type GameFormType = {
     game?: IGame
+    onClose?: ()=>void
 }
 
-export const GameForm = ({ game }:GameFormType) =>{
+const defaultGame: Omit<IGame, 'id' | 'isAvailable'> = {
+    title: "",
+    description: "",
+    imageUrl: "",
+    quantity: 1,
+    amount: 1,
+    category: "",
+}
 
+export const GameForm = ({ game, onClose }:GameFormType) =>{
     const { addGame } = useGames()
     const [isProcessing, setIsProcessing] = useState(false)
     const { updateGame, changeQuantity } = useGames()
     const { language } = useLang()
-    const [formData, setFormData] = useState({
-        title: game ? game.title : "",
-        description: game ? game.description : "",
-        imageUrl: game ? game.imageUrl : "",
-        quantity: game ? game.quantity : 1,
-        amount: game ? game.amount : 1,
-        category: game ? game.category : "",
-    })
-    const [error, setError] = useState<string | null>(null)
+    const [formData, setFormData] = useState<Omit<IGame, 'id' | 'isAvailable'>>(game || defaultGame)
     const [isImageValid, setIsImageValid] = useState(true)
-    const [isValidating, setIsValidating] = useState(false)
+    const [error, setError] = useState<string>()
 
-    const validate = () =>{
-        setIsValidating(true)
-        setError(null)
+    useEffect(()=>{
+        if(formData.imageUrl)
+            validatePhoto()
+    })
 
-        if (!formData.title.trim()) {
-          setError(language.enterTitle)
-        }
-    
-        else if (!formData.description || !formData.description.trim()) {
-          setError(language.enterDesc)
-        }
-    
-        else if (!formData.imageUrl.trim()) {
-          setError(language.enterImageUrl)
-        }
-
-        else if (formData.quantity < 0) {
-          setError(language.invalidQuantity)
-        }
-
-        const validationResult = await validateImageUrl(formData.imageUrl)
-        
-        else if (!validationResult.isValid) {
-          setError(language[validationResult.error as keyof typeof language])
-          setIsImageValid(false)
-        }
-        
+    const validatePhoto = () =>{
+        validateImageUrl(formData.imageUrl).then((res)=>{
+            setIsImageValid(res.isValid)
+            setError(language[res.error as keyof typeof language])
+        })
     }
 
-    /**
-     * Handles img URL change
-     * @param {React.ChangeEvent<HTMLInputElement>} e - Event input
-     */
-    const handleImageUrlChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const url = e.target.value
-        setFormData(prev => ({ ...prev, imageUrl: url }))
-        if (url) {
-        setIsValidating(true)
-        const validationResult = await validateImageUrl(url)
-        setIsValidating(false)
-        setIsImageValid(validationResult.isValid)
-        if (!validationResult.isValid) {
-            setError(language[validationResult.error as keyof typeof language])
-        }
-        } else {
-        setIsImageValid(true)
-        setError(null)
-        }
-    }
-
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-    
-    
-        try {
-          await updateGame(game.id, {
-            title: formData.title,
-            description: formData.description,
-            imageUrl: formData.imageUrl,
-            category: formData.category,
-            amount: formData.amount
-          })
-    
-          await changeQuantity(game.id, formData.quantity)
-          
-          onClose()
-        } catch (error) {
-          setError(language.editGameError)
+        setIsProcessing(true)
+
+        if(game){
+            updateGame(game.id, formData).then(()=>{
+                changeQuantity(game.id, formData.quantity)
+            }).catch(()=>{
+                setError(language.editGameError)
+            })
+        }else{
+            addGame(formData).then(()=>{
+                setFormData(defaultGame);
+            }).catch(()=>{
+                setError(language.editGameError)
+            })
         }
-      }
-    
+
+        setIsProcessing(false) 
+        if(onClose)
+            onClose()
+    }
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {language.gameTitle}
-                </label>
-                <input type="text" id="title" name="title" required value={formData.title}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
-            </div>
-            <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {language.gameDesc}
-                </label>
-                <textarea id="description" name="description" required rows={3} value={formData.description}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
-            </div>
-            <div>
-                <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {language.gameImageUrl}
-                </label>
-                <input type="url" id="imageUrl" name="imageUrl" required value={formData.imageUrl}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
-            </div>
-            <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {language.gameCategory}
-                </label>
-                <input type="text" id="category" name="category" required value={formData.category}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
-            </div>
-            <div>
-                <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {language.gameNumber}
-                </label>
-                <input type="number" id="quantity" name="quantity" min="0" required value={formData.quantity}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
-            </div>
+            <GameInput name="title" label={language.gameTitle} type="text" value={formData.title} changeHandler={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}/>
+            <GameInput name="description" label={language.gameDesc} type="textarea" value={formData.description} changeHandler={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}/>
+            <GameInput name="imageUrl" label={language.gameImageUrl} type="url" value={formData.imageUrl} changeHandler={(e) => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))}/>
+            {formData.imageUrl && isImageValid && (
+              <div className="mt-2 relative h-48 w-full">
+                <Image
+                  loader={imageLoader}
+                  src={formData.imageUrl}
+                  alt="Podgląd obrazu"
+                  width={800}
+                  height={400}
+                  className="object-cover w-full h-full rounded-md"
+                />
+              </div>
+            )}
+            {!isImageValid && (
+              <p className="mt-1 text-sm text-red-600">
+                {error}
+              </p>
+            )}
+            <GameInput name="category" label={language.gameCategory} type="text" value={formData.category} changeHandler={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}/>
+            <GameInput name="amount" label={language.gameNumber} type="number" min={1} value={formData.amount} changeHandler={(e) => setFormData(prev => ({ ...prev, amount: +e.target.value }))}/>
             {game && (
-                <div>
-                    <label htmlFor="amount" className="block text-sm font-medium text-white-700">
-                        Łączna liczba egzemplarzy
-                    </label>
-                    <input type="number" id="amount" min="0" value={formData.amount}
-                        onChange={(e) => setFormData(prev => ({ 
-                            ...prev, 
-                            amount: parseInt(e.target.value) || 0
-                        }))}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
-                </div>
+                <GameInput name="quantity" label={language.gameAvailableNumber} type="number" min={0} max={formData.amount} value={formData.quantity} changeHandler={(e) => setFormData(prev => ({ ...prev, quantity: +e.target.value }))}/>
             )}
             <button
                 type="submit"
-                disabled={isProcessing}
+                disabled={isProcessing || !isImageValid || !formData.title || !formData.category || !formData.imageUrl || !formData.description || formData.amount < 1 || formData.quantity > formData.amount}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
-                {isProcessing ? language.gameAdding : (game ? language.addGame : language.save)}
+                {game ? language.save : language.addGame}
             </button>
         </form>
     );

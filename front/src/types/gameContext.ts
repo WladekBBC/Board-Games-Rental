@@ -6,7 +6,7 @@ export type SearchType = 'title' | 'category';
 export type GamesContextType = {
     games: IGame[]
     loading: boolean
-    addGame: (game: Partial<IGame>) => void
+    addGame: (game: Partial<IGame>) => Promise<void>
     updateGame: (id: number, updates: Partial<IGame>) => Promise<void>
     deleteGame: (id: number) => void
     changeQuantity: (id: number, quantity: number) => Promise<void>

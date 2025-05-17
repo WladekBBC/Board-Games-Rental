@@ -34,7 +34,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
     }
   })
   
-  const addGame = (game: Partial<IGame>) => {
+  const addGame = async (game: Partial<IGame>) => {
     fetch('http://localhost:3001/game/add', {
       method: 'POST', 
       headers: { 
