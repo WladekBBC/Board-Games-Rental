@@ -60,3 +60,4 @@ rental-api/src/env.ts
 rental-api/src/env.ts
 
 .vscode
+.gitignore

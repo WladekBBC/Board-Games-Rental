@@ -17,9 +17,7 @@ export default function Home() {
     <main className="container mx-auto px-4 py-8">
 
       <h1 className="text-3xl font-bold mb-8">{language.appTitle}</h1>
-      
-      {user && !authLoading ? <HomeUserPanel /> : <></>}
-<HomeUserPanel />
+      <HomeUserPanel />
       <GameList />
     </main>
   )
