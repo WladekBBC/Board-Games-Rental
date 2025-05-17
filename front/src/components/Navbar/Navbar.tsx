@@ -25,11 +25,11 @@ export function Navbar() {
     <Disclosure as="nav" className="bg-white dark:bg-gray-800 light:bg-white sticky top-0 z-50">
       {({ open, close }) => (
         <>
-          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 w-full">
+          <div className="mx-auto max-w-7xl px-2 min-[950px]:px-6 lg:px-8 w-full">
             <div className="relative flex h-16 items-center justify-between w-full">
               {/* Mobile menu button */}
-              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+              <div className="absolute inset-y-0 left-0 flex items-center min-[950px]:hidden">
+                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-min-[950px] p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open main menu</span>
                   {open ? (
@@ -41,13 +41,13 @@ export function Navbar() {
               </div>
 
               {/* Logo and desktop navigation */}
-              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+              <div className="flex flex-1 items-center justify-center min-[950px]:items-stretch min-[950px]:justify-start">
                 <div className="flex flex-shrink-0 items-center">
                   <Link href="/" className="text-xl font-bold text-grey dark:text-white-800 transition-colors">
                     Board Game Rental
                   </Link>
                 </div>
-                <div className="hidden sm:ml-6 sm:block">
+                <div className="hidden min-[950px]:ml-6 min-[950px]:block">
                   <div className="flex space-x-4">
                     {user && (
                       <>
@@ -60,24 +60,8 @@ export function Navbar() {
                   </div>
                 </div>
               </div>
-
-              {/* Right side elements - always visible (lang/theme), then user/login */}
-              <div className="flex items-center space-x-0.3 sm:ml-0">
-                <button
-                  onClick={() => setLanguage(currentLang === 'pl' ? 'ua' : 'pl')}
-                  className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  {currentLang === 'pl' ? 'UA' : 'PL'}
-                </button>
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  {theme === 'dark' ? '🌞' : '🌙'}
-                </button>
-                <div className="hidden lg:block">
-                  {user ? <UserButton /> : <RouterLink link='/login' text={language.login}/>} 
-                </div>
+              <div className='absolute inset-y-0 right-0 flex items-center'>
+                <UiNavElements/>
               </div>
             </div>
           </div>

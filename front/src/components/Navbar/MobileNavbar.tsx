@@ -4,6 +4,7 @@ import { DisclosurePanel } from "@headlessui/react";
 import { MobileRouterLink } from "./MobileRouterLink";
 import { Perms } from "@/interfaces/perms";
 import { UiNavElements } from "./UiNavElements";
+import { LogoutButton } from "./LogoutButton";
 
 interface MobileNavProps {
   onLinkClick?: () => void;
@@ -14,7 +15,7 @@ export const MobileNav = ({ onLinkClick }: MobileNavProps) => {
     const { language } = useLang()
     
     return (
-        <DisclosurePanel className="sm:hidden dark:bg-gray-800 light:bg-white">
+        <DisclosurePanel className="min-[950px]:hidden dark:bg-gray-800 light:bg-white">
             <div className="space-y-1 px-2 pt-2 pb-3">
                 {user ? (
                     <>
@@ -29,10 +30,8 @@ export const MobileNav = ({ onLinkClick }: MobileNavProps) => {
                             <MobileRouterLink link='/users' text={language.users} onClick={onLinkClick} />
                         )}
                         <div className="pt-4 pb-3 border-t border-gray-700">
-                            <div className="flex items-center px-5">
-                                <div className="flex-shrink-0">
-                                    <UiNavElements />
-                                </div>
+                            <div className="flex items-center px-3">
+                                    <LogoutButton/>
                             </div>
                         </div>
                     </>
