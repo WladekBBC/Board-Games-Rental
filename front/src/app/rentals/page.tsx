@@ -11,7 +11,7 @@ import SuccessField from '@/components/Messages/SuccessField'
 import { Spinner } from '@/components/Messages/Spinner'
 import { Perms } from '@/interfaces/perms'
 import { Rent } from '@/types/rentalContext'
-import { AdminProtected } from '@/components/AdminProtected'
+import { SearchBar } from '@/components/SearchBar'
 
 /**
  * Rentals page
@@ -40,6 +40,10 @@ export default function RentalsPage() {
   const [success, setSuccess] = useState<string | null>(null)
   const { language } = useLang()
 
+  /**
+   * Handle sort
+   * @param {string} key - Key
+   */
   const handleSort = (key: 'rentedAt' | 'title' | 'index') => {
     if (sortConfig.key === key) {
       setSortConfig({
@@ -54,6 +58,10 @@ export default function RentalsPage() {
     }
   };
 
+  /**
+   * Handle success message
+   * @param {string} successMessage - Success message
+   */
   const handleSuccess = (successMessage: string) =>{
     setSuccess(successMessage);
     setTimeout(() => setSuccess(null), 3000);
@@ -143,6 +151,10 @@ export default function RentalsPage() {
     setIsProcessing(false)
   }
 
+  /**
+   * Handle deleting a rental
+   * @param {number} id - Rental ID
+   */
   const handleDeleteRental = async (id: number) => {
     resetFields()
 
@@ -211,94 +223,80 @@ export default function RentalsPage() {
         </form>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex gap-4 mb-4">
-            <select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value as 'index' | 'title' | 'date')}
-              className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="index">{language.searchByIndex}</option>
-              <option value="title">{language.searchByTitle}</option>
-              <option value="date">{language.searchByDate}</option>
-            </select>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={
-                searchType === 'index' ? language.searchByIndex :
-                searchType === 'title' ? language.searchByTitle :
-                language.searchByDate
-              }
-              className="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+      <SearchBar
+            options={[
+              { value: 'index', label: language.searchByIndex },
+              { value: 'title', label: language.searchByTitle },
+              { value: 'date', label: language.searchByDate }
+            ]}
+            value={searchQuery}
+            onValueChange={setSearchQuery}
+            selected={searchType}
+            onSelectChange={val => setSearchType(val as typeof searchType)}
+            placeholder={
+              searchType === 'index' ? language.searchByIndex :
+              searchType === 'title' ? language.searchByTitle :
+              language.searchByDate
+            }
+            className="mb-4"
+          />
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-x-auto">
+      
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
           <thead className="bg-gray-50 dark:bg-gray-700">
             <tr>
               <th 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                className="px-2 sm:px-6 py-3 text-left font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer whitespace-nowrap"
                 onClick={() => handleSort('index')}
               >
                 {language.indexNumber} {sortConfig.key === 'index' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
               </th>
               <th 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                className="px-2 sm:px-6 py-3 text-left font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer whitespace-nowrap"
                 onClick={() => handleSort('title')}
               >
                 {language.gameTitle} {sortConfig.key === 'title' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
               </th>
               <th 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                className="px-2 sm:px-6 py-3 text-left font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer whitespace-nowrap hidden xs:table-cell"
                 onClick={() => handleSort('rentedAt')}
               >
                 {language.rentDate} {sortConfig.key === 'rentedAt' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              <th className="px-2 sm:px-6 py-3 text-left font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider whitespace-nowrap hidden md:table-cell">
                 {language.returnDate}
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              <th className="px-2 sm:px-6 py-3 text-right font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider whitespace-nowrap">
                 {language.actions}
               </th>
             </tr>
           </thead>
           <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
             {filteredAndSortedRentals.map(rental => (
-              <tr key={rental.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                  {rental.index}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                  {games.find(g => g.id === rental.game.id)?.title || language.unknownGame}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                  {new Date(rental.rentedAt).toLocaleDateString()}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                  {rental.returnedAt ? new Date(rental.returnedAt).toLocaleDateString() : '-'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <tr key={rental.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td className="px-2 sm:px-6 py-4 align-top max-w-[120px] truncate">{rental.index}</td>
+                <td className="px-2 sm:px-6 py-4 align-top max-w-[180px] truncate">{games.find(g => g.id === rental.game.id)?.title || language.unknownGame}</td>
+                <td className="px-2 sm:px-6 py-4 align-top hidden xs:table-cell">{new Date(rental.rentedAt).toLocaleDateString()}</td>
+                <td className="px-2 sm:px-6 py-4 align-top hidden md:table-cell">{rental.returnedAt ? new Date(rental.returnedAt).toLocaleDateString() : '-'}</td>
+                <td className="px-2 sm:px-6 py-4 align-top text-right space-x-2">
                   {!rental.returnedAt && (
                     <button
                       onClick={() => handleReturnGame(rental.id)}
                       disabled={isProcessing}
-                      className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-4 disabled:opacity-50"
+                      className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-2 disabled:opacity-50 text-xs sm:text-sm"
                     >
                       {language.return}
                     </button>
                   )}
-
-                  {permissions.includes(Perms.A) && (<button
-                    onClick={() => handleDeleteRental(rental.id)}
-                    disabled={isProcessing}
-                    className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50"
-                  >
+                  {permissions.includes(Perms.A) && (
+                    <button
+                      onClick={() => handleDeleteRental(rental.id)}
+                      disabled={isProcessing}
+                      className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 text-xs sm:text-sm"
+                    >
                       {language.deleteGame}
-                    </button>)}
-                    
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

@@ -4,6 +4,7 @@ import { useLang } from '@/contexts/LanguageContext';
 import { AdminProtected } from '@/components/AdminProtected';
 import { Dialog } from '@headlessui/react';
 import { useUsers } from '@/contexts/UsersContext';
+import { SearchBar } from '@/components/SearchBar';
 
 
 /**
@@ -67,39 +68,32 @@ export default function UsersPage() {
           </div>
         ) : (
           <>
-          <div className="flex gap-4 mb-4">
-            <select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value as 'email' | 'permissions' )}
-              className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="email">{language.searchByEmail}</option>
-              <option value="permissions">{language.searchByPerm}</option>
-            </select>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={
-                searchType === 'email' ? language.searchByEmail: language.searchByPerm 
-              }
-              className="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          <SearchBar
+            options={[
+              { value: 'email', label: language.searchByEmail },
+              { value: 'permissions', label: language.searchByPerm }
+            ]}
+            value={searchQuery}
+            onValueChange={setSearchQuery}
+            selected={searchType}
+            onSelectChange={val => setSearchType(val as typeof searchType)}
+            placeholder={searchType === 'email' ? language.searchByEmail : language.searchByPerm}
+            className="mb-4"
+          />
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider ">
                     {language.email}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider ">
                     {language.permissions}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider ">
                     {language.newPassword}
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider ">
                     {language.actions}
                   </th>
                 </tr>
@@ -108,7 +102,7 @@ export default function UsersPage() {
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {SearchedUsers.map((user) => (
                   <tr key={user.id}>
-                    <td className="px-6 py-4 text-sm">
+                    <td className="px-2 py-4 text-sm">
                       <input
                         type="email"
                         value={editing[user.id]?.email ?? user.email}
@@ -116,7 +110,7 @@ export default function UsersPage() {
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       />
                     </td>
-                    <td className="px-6 py-4 text-sm">
+                    <td className="px-2 py-4 text-sm">
                       <select
                         value={editing[user.id]?.permissions ?? user.permissions}
                         onChange={(e) => handleEditChange(user.id, 'permissions', e.target.value)}
@@ -127,7 +121,7 @@ export default function UsersPage() {
                         <option value="User">User</option>
                       </select>
                     </td>
-                    <td className="px-6 py-4 text-sm">
+                    <td className="px-2 py-4 text-sm">
                       <input
                         type="password"
                         placeholder={language.newPassword}
@@ -136,7 +130,7 @@ export default function UsersPage() {
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       />
                     </td>
-                    <td className="px-6 py-4 text-right text-sm font-medium space-x-2">
+                    <td className="px-2 py-4 text-center text-sm font-medium space-x-2">
                       {(editing[user.id]?.email !== user.email ||
                         editing[user.id]?.permissions !== user.permissions ||
                         editing[user.id]?.password) && (

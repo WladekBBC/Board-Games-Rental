@@ -5,6 +5,7 @@ import { useRentals } from '@/contexts/RentalsContext'
 import { useLang } from '@/contexts/LanguageContext'
 import { useAuth } from '@/contexts/AuthContext'
 import Link from 'next/link'
+import { Perms } from '@/interfaces/perms'
 
 /**
  * Home page
@@ -51,7 +52,7 @@ export default function HomeUserPanel(){
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                <Link href="/games" className="block h-full">
+                <Link href={[Perms.A, Perms.R].includes(permissions) ? '/games' : '/'} className="block h-full">
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow h-full flex flex-col">
                     <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">{language.games}</h2>
                     <div className="text-gray-600 dark:text-gray-300 flex-grow">
@@ -61,7 +62,7 @@ export default function HomeUserPanel(){
                     </div>
                     </div>
                 </Link>
-                <Link href={permissions == "Admin" ? "/rentals" : "/my-rentals"} className="block h-full">
+                <Link href={[Perms.A, Perms.R].includes(permissions) ? '/rentals' : '/'} className="block h-full">
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow h-full flex flex-col">
                     <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">{language.rentals}</h2>
                     <div className="text-gray-600 dark:text-gray-300 flex-grow">
@@ -76,14 +77,16 @@ export default function HomeUserPanel(){
                     </div>
                     </div>
                 </Link>
-                <Link href="/users" className="block h-full">
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow h-full flex flex-col">
-                    <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">{language.profile}</h2>
-                    <div className="text-gray-600 dark:text-gray-300 flex-grow">
-                        {user!.email}
-                    </div>
-                    </div>
-                </Link>
+                {user && (
+                    <Link href="/users" className="block h-full">
+                        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow h-full flex flex-col">
+                        <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">{language.profile}</h2>
+                        <div className="text-gray-600 dark:text-gray-300 flex-grow">
+                            {user!.email}
+                        </div>
+                        </div>
+                    </Link>
+                )}
             </div>
         </>
     )

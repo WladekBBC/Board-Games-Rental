@@ -16,7 +16,6 @@ interface AddGameFormProps
 
 type FormData = Omit<IGame, 'id'>
 
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
 
 /**
  * Adding new game form

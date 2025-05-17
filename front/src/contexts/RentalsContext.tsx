@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useGames } from './GamesContext'
-import { useLang } from '@/contexts/LanguageContext'
 import { IRental } from '@/interfaces/rental'
 import { RentalsContextType, SortConfig, SearchType } from '@/types/rentalContext'
 import { Method, request, stream } from '@/interfaces/api'
@@ -24,13 +23,11 @@ const RentalsContext = createContext<RentalsContextType | undefined>(undefined)
 export function RentalsProvider({ children }: { children: ReactNode }) {
   const [rentals, setRentals] = useState<IRental[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'rentedAt', direction: 'desc' })
   const [searchQuery, setSearchQuery] = useState('')
   const [searchType, setSearchType] = useState<SearchType>('index')
 
   const { JWT, permissions } = useAuth()
-  const { games } = useGames()
 
   useEffect(() => {
     if(JWT) {
@@ -44,13 +41,12 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
       if (!searchQuery) return true;
       
       const searchLower = searchQuery.toLowerCase();
-      const game = games.find(g => g.id === rental.game.id);
       
       switch (searchType) {
         case 'index':
           return rental.index.toLowerCase().includes(searchLower);
         case 'title':
-          return game?.title.toLowerCase().includes(searchLower) || false;
+          return rental.game.title.toLowerCase().includes(searchLower);
         case 'date':
           const rentDate = new Date(rental.rentedAt).toLocaleDateString();
           const returnDate = rental.returnedAt ? new Date(rental.returnedAt).toLocaleDateString() : '';
@@ -59,13 +55,11 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
           return true;
       }
     })
-    .sort((a, b) => {
+    .sort((a: IRental, b) => {
       if (sortConfig.key === 'title') {
-        const titleA = games.find(g => g.id === a.game.id)?.title || '';
-        const titleB = games.find(g => g.id === b.game.id)?.title || '';
         return sortConfig.direction === 'asc' 
-          ? titleA.localeCompare(titleB)
-          : titleB.localeCompare(titleA);
+          ? a.game.title.localeCompare(b.game.title)
+          : b.game.title.localeCompare(a.game.title);
       }
       
       if (sortConfig.key === 'rentedAt') {

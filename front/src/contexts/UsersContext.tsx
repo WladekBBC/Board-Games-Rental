@@ -44,7 +44,7 @@ export function UsersProvider({ children }: { children: ReactNode }) {
       setUsers(data);
       setLoading(false);
     }).catch((err: Error)=>{
-      setError(err.message);
+      handleError(err.message);
     })
   };
 
@@ -52,6 +52,11 @@ export function UsersProvider({ children }: { children: ReactNode }) {
     fetchUsers();
     setSuccess(successMessage);
     setTimeout(() => setSuccess(null), 3000);
+  }
+
+  const handleError = (errorMessage: string) =>{
+    setError(errorMessage);
+    setTimeout(() => setError(null), 3000);
   }
 
   const handleUpdateUser = async (id: number) => {
@@ -95,7 +100,7 @@ export function UsersProvider({ children }: { children: ReactNode }) {
         return newState;
       });
     }).catch((err: Error)=>{
-      setError(err.message);
+      handleError(err.message);
     })
 
     setLoading(false);
@@ -110,7 +115,7 @@ export function UsersProvider({ children }: { children: ReactNode }) {
       handleSuccess(language.userDeleted);
       setUserToDelete(null);
     }).catch((err:Error)=>{
-      setError(err.message);
+      handleError(err.message);
     })
 
     setLoading(false);

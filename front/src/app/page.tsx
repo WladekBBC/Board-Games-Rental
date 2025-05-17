@@ -19,7 +19,7 @@ export default function Home() {
       <h1 className="text-3xl font-bold mb-8">{language.appTitle}</h1>
       
       {user && !authLoading ? <HomeUserPanel /> : <></>}
-
+<HomeUserPanel />
       <GameList />
     </main>
   )
