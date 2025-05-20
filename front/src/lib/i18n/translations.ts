@@ -149,7 +149,7 @@ export const translations = {
     loginWithGoogle: 'Увійти через Google',
     loginGoogleError: 'Не вдалося увійти через google',
     loginLoading: 'Вхід...',
-    serverError: "TODO",
+    serverError: "Помилка серверу",
     passwordTooShort: "Пароль закороткий",
     invalidEmail: "Не правильно введений email",
     userAlreadyExists: "Користувач з цією поштою вже існує",
@@ -189,7 +189,7 @@ export const translations = {
     
     // Статус
     gameAvailable: 'Доступна',
-    gameAvailableNumber: "TODO",
+    gameAvailableNumber: "Кількість доступних штук",
     gameUnavailable: 'Недоступна',
     available: 'Доступно',
     unknownGame: 'Невідома гра',
@@ -197,7 +197,7 @@ export const translations = {
     // Повідомлення
     confirmDelete: 'Ви впевнені, що хочете видалити цю гру ',
     addGameError: 'Помилка при додаванні гри',
-    gameExistError: "Gra już istnieje!",
+    gameExistError: "Гра вже існує!",
     editGameError: 'Помилка при редагуванні гри',
     deleteGameError: 'Помилка при видаленні гри',
     rentGameError: 'Помилка при оренді гри',
