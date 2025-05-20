@@ -53,7 +53,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
    * @param {Partial<Game>} updates - Partial data to update
    */
   const updateGame = async (id: number, updates: Partial<IGame>) => {
-      fetch(`http://localhost:3001/game/update/${id}`, {
+      return fetch(`http://localhost:3001/game/update/${id}`, {
         method: 'PATCH', 
         headers: { 
           'Content-Type': 'application/json',
@@ -61,9 +61,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
           "permissions": permissions
       }, body: JSON.stringify(updates)}).then((res)=>{
         if(!res.ok)
-          return Promise.reject(new Error(res.statusText, {cause: res.status}))
-      }).catch((error)=>{
-        throw new error
+          return Promise.reject(res.status)
       })
   }
 
