@@ -68,6 +68,7 @@ export const translations = {
     // Komunikaty
     confirmDelete: 'Czy na pewno chcesz usunąć tę grę',
     addGameError: 'Błąd podczas dodawania gry',
+    gameExistError: "Gra już istnieje!",
     editGameError: 'Błąd podczas edycji gry',
     deleteGameError: 'Błąd podczas usuwania gry',
     rentGameError: 'Błąd podczas wypożyczania gry',
@@ -196,6 +197,7 @@ export const translations = {
     // Повідомлення
     confirmDelete: 'Ви впевнені, що хочете видалити цю гру ',
     addGameError: 'Помилка при додаванні гри',
+    gameExistError: "Gra już istnieje!",
     editGameError: 'Помилка при редагуванні гри',
     deleteGameError: 'Помилка при видаленні гри',
     rentGameError: 'Помилка при оренді гри',

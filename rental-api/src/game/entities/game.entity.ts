@@ -5,7 +5,7 @@ export class Game {
     @PrimaryGeneratedColumn()
     id:number;
 
-    @Column()
+    @Column({unique: true})
     title: string;
 
     @Column()

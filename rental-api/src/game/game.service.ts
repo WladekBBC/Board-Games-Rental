@@ -1,4 +1,4 @@
-import { Injectable, NotAcceptableException, Logger } from '@nestjs/common';
+import { Injectable, NotAcceptableException, Logger, BadRequestException } from '@nestjs/common';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 import { Repository } from 'typeorm';
@@ -15,7 +15,7 @@ export class GameService {
     private readonly gameRepo: Repository<Game>,
   ){}
   create(createGameDto: CreateGameDto) {
-    return this.gameRepo.save(createGameDto);
+    return this.gameRepo.save(createGameDto).catch(()=>{throw new BadRequestException});
   }
 
   findAll() {
@@ -27,7 +27,7 @@ export class GameService {
   }
 
   update(id: number, updateGameDto: UpdateGameDto) {
-    return this.gameRepo.update(id, updateGameDto);
+    return this.gameRepo.update(id, updateGameDto).catch(()=>{throw new BadRequestException});
   }
 
   async changeQuantity(changeQuantityDto: ChangeQuantity) {

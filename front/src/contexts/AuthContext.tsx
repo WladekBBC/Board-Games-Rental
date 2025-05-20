@@ -21,11 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { language } = useLang()
 
   useEffect(() => {
-    getLocalUser()
-  
-    if(user?.exp && Date.now() > user.exp * 1000)
-      signOut();
-    
+    getLocalUser()    
     setLoading(false);
   }, []);
 
@@ -49,6 +45,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const loggedUser = jwtDecode<LoggedUserType>(data.token)
     const perms = toPerms(data.permissions);
 
+    if(user?.exp && Date.now() > user.exp * 1000){
+      signOut();
+      return
+    }
+    
     setUser(loggedUser);
     setJWT(data.token);
     setPermissions(perms);

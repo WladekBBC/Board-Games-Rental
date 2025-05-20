@@ -12,24 +12,20 @@ type GameFormType = {
     onClose?: () => void
 }
 
-
-const defaultGame = (): Omit<IGame, 'id' | 'isAvailable'> => {
-    const initialAmount = 1; 
-    return { 
+const defaultGame = { 
         title: "",
         description: "",
         imageUrl: "",
-        amount: initialAmount,
-        quantity: initialAmount, 
+        amount: 1,
+        quantity: 1, 
         category: "",
-    };
 };
 
 export const GameForm = ({ game, onClose }: GameFormType) => {
-    const { addGame, updateGame, changeQuantity: contextChangeQuantity } = useGames() 
+    const { addGame, updateGame } = useGames() 
     const [isProcessing, setIsProcessing] = useState(false)
     const { language } = useLang()
-    const [formData, setFormData] = useState<Omit<IGame, 'id' | 'isAvailable'>>(game || defaultGame())
+    const [formData, setFormData] = useState<Omit<IGame, 'id' | 'isAvailable'>>(game || defaultGame)
     const [isImageValid, setIsImageValid] = useState(true)
     const [error, setError] = useState<string>()
 
@@ -54,21 +50,22 @@ export const GameForm = ({ game, onClose }: GameFormType) => {
         setIsProcessing(true)
         setError(undefined); 
 
-        try {
-            if (game) {
-                await updateGame(game.id, formData);
-            } else {
-                await addGame(formData);
-                setFormData(defaultGame()); 
-            }
-            if (onClose) {
-                onClose()
-            }
-        } catch (err) {
-            setError(language.editGameError); 
-        } finally {
-            setIsProcessing(false)
+        if (game) {
+            updateGame(game.id, formData).catch(()=>{setError(language.editGameError)});
+        } else {
+            formData.quantity = formData.amount
+            addGame(formData).then(()=>setFormData(defaultGame)).catch((err)=>{
+                if(err == 400)
+                    setError(language.gameExistError)
+                else
+                    setError(language.addGameError)
+            });
         }
+        if (onClose) {
+            onClose()
+        }
+        setIsProcessing(false)
+
     }
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

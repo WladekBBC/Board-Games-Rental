@@ -35,7 +35,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   })
   
   const addGame = async (game: Partial<IGame>) => {
-    fetch('http://localhost:3001/game/add', {
+    return fetch('http://localhost:3001/game/add', {
       method: 'POST', 
       headers: { 
         'Content-Type': 'application/json',
@@ -43,9 +43,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
         "permissions": permissions
       }, body: JSON.stringify(game)}).then((res)=>{
         if(!res.ok)
-          return Promise.reject(new Error(res.statusText, {cause: res.status}))
-      }).catch((error)=>{
-        throw new error
+          return Promise.reject(res.status)
       })
   }
 
