@@ -47,7 +47,6 @@ export default function HomeUserPanel(){
      * @returns {Rental[]} List of active rentals
      **/
     const activeRentals = rentals.filter(rental => !rental.returnedAt)
-    const userActiveRentals = activeRentals.filter(rental => rental.index === user!.email)
 
     return (
         <>
@@ -71,9 +70,7 @@ export default function HomeUserPanel(){
                         : language.yourActiveRentals}
                     </div>
                     <div className="text-sm text-blue-600 dark:text-blue-400">
-                        {permissions == "Admin" 
-                        ? `${activeRentals.length}`
-                        : `${userActiveRentals.length}`}
+                         {activeRentals.length}
                     </div>
                     </div>
                 </Link>
