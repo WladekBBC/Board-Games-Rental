@@ -45,11 +45,10 @@ export const LoginForm = ({isRegister}: LoginFormType) => {
         .catch((err: Error)=>{
           setError(err.cause == 400 ? language.loginError : language.serverError)
         })
-    console.log(error)
   }
 
   return (
-    <form onSubmit={(e)=>handleSubmit(e)} className="mt-8 space-y-6">
+    <form onSubmit={handleSubmit} className="mt-8 space-y-6">
       <div className="space-y-4">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">

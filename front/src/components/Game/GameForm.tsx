@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { GameInput } from "./GameInput"
 import { imageLoader } from "@/lib/utils/imageLoader"
 import Image from 'next/image'
+import ErrorField from "../Messages/ErrorField"
 
 type GameFormType = {
     game?: IGame
@@ -122,7 +123,7 @@ export const GameForm = ({ game, onClose }: GameFormType) => {
                 <GameInput name="quantity" label={language.gameAvailableNumber} type="number" min={0} max={formData.amount} value={formData.quantity} changeHandler={(e) => setFormData(prev => ({ ...prev, quantity: +e.target.value }))} />
             )}
 
-            {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+            <ErrorField error={error} />
 
             <button
                 type="submit"
