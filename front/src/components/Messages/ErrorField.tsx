@@ -2,7 +2,7 @@
  * Error prop
  * @param {string|null} error - error message
  */
-type ErrorProp = {error: string|null}
+type ErrorProp = {error: string | undefined}
 
 /**
  * Error message area

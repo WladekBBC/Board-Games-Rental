@@ -12,8 +12,7 @@ export type AuthContextType = {
     signOut: () => Promise<void>;
 }
 
-export type LoggedUserType = Pick<IUser, "id" | "email" | 'exp' | 'iat'> & {
-}
+export type LoggedUserType = Pick<IUser, "id" | "email" | 'exp' | 'permissions'>
 
 export type LoginDataType = Pick<IUser, "email" | "password">
 

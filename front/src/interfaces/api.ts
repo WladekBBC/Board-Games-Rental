@@ -3,7 +3,6 @@ import { EventSource } from 'eventsource'
 
 export interface IUserApi{
   token: string,
-  permissions: string,
 }
 
 export enum Method{

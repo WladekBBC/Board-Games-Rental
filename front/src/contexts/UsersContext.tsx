@@ -3,7 +3,6 @@ import { useAuth } from './AuthContext';
 import { Method, request } from '@/interfaces/api';
 import { useLang } from './LanguageContext';
 import { UsersContextType, User, UserUpdate, SearchType } from '@/types/usersContext';
-import { IUser} from '@/interfaces/user'
  
 const UsersContext = createContext<UsersContextType | undefined>(undefined);
 
