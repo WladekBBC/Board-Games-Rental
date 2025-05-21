@@ -1,7 +1,6 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { useAuth } from './AuthContext';
 import { GamesContextType, SearchType } from '@/types/gameContext';
 import { IGame } from '@/interfaces/game';
 import { Method, request, stream } from '@/interfaces/api';
@@ -9,7 +8,6 @@ import { Method, request, stream } from '@/interfaces/api';
 const GamesContext = createContext<GamesContextType | undefined>(undefined)
 
 export function GamesProvider({ children }: { children: ReactNode }) {
-  const {JWT, permissions} = useAuth()
   const [games, setGames] = useState<IGame[]>([])
   const [loading, setLoading] = useState(true)
   const [searchType, setSearchType] = useState<SearchType>('title')
@@ -35,7 +33,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   })
   
   const addGame = async (game: Partial<IGame>) => {
-    return request<undefined>('http://localhost:3001/game/add', Method.POST, {"token": `${JWT}`, "permissions": permissions }, JSON.stringify(game))
+    return request<void>('http://localhost:3001/game/add', Method.POST, JSON.stringify(game))
   }
 
   /**
@@ -44,15 +42,15 @@ export function GamesProvider({ children }: { children: ReactNode }) {
    * @param {Partial<Game>} updates - Partial data to update
    */
   const updateGame = async (id: number, updates: Partial<IGame>) => {
-    return request<undefined>(`http://localhost:3001/game/update/${id}`, Method.PATCH, {"token": `${JWT}`, "permissions": permissions}, JSON.stringify(updates))
+    return request<void>(`http://localhost:3001/game/update/${id}`, Method.PATCH, JSON.stringify(updates))
   }
 
   const changeQuantity = async (id: number, quantity: number) => {
-    return request<undefined>(`http://localhost:3001/game/change-quantity`, Method.PATCH, {"token": `${JWT}`, "permissions": permissions}, JSON.stringify({ id, quantity }))
+    return request<void>(`http://localhost:3001/game/change-quantity`, Method.PATCH, JSON.stringify({ id, quantity }))
   }
 
   const deleteGame = (id: number) => {
-    return request<undefined>(`http://localhost:3001/game/delete/${id}`, Method.DELETE, {"token": `${JWT}`, "permissions": permissions})
+    return request<void>(`http://localhost:3001/game/delete/${id}`, Method.DELETE)
   }
 
   return (

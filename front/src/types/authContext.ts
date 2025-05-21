@@ -2,6 +2,7 @@ import { Perms } from "@/interfaces/perms";
 import { IUser } from "@/interfaces/user";
 
 export type AuthContextType = {
+    loading: boolean;
     user: LoggedUserType | null;
     JWT: string | null;
     permissions: Perms;

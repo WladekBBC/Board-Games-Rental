@@ -21,7 +21,6 @@ export default function RentalsPage() {
   const router = useRouter()
   const { permissions, user, loading: authLoading } = useAuth()
   const { 
-    rentals, 
     addRental, 
     returnGame, 
     removeRental, 
@@ -169,7 +168,7 @@ export default function RentalsPage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">{language.manageRent}</h1>
 
-      <ErrorField error={error}/>
+      <ErrorField error={`${error}`}/>
 
       <SuccessField success={success}/>
 

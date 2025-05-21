@@ -18,9 +18,10 @@ export class PermsGuard implements CanActivate {
     if (!requiredPerms) {
       return true;
     }
-
+    
     const request:Request = context.switchToHttp().getRequest();
     const perms = this.jwtService.decode(`${request.headers.authorization}`)
+
     return requiredPerms.some((perm) => perms?.permissions.includes(perm));
   }
 }

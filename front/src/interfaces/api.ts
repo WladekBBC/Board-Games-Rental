@@ -13,7 +13,7 @@ export enum Method{
   DELETE = "DELETE"
 }
 
-export const request = async <T> (url: string, method: Method, headers?: {[x:string]: string}, body?: string): Promise<T> =>{
+export const request = async <T> (url: string, method: Method, body?: string, headers?: {[x:string]: string}): Promise<T> =>{
   return fetch(url, {
     method: method, 
     headers: {
@@ -36,6 +36,7 @@ export const stream = (url: string, setter: Dispatch<SetStateAction<any>>, heade
       fetch(input, {
         ...init,
         headers: {
+          "Authorization": `${(await getCookie('Authorization'))?.value}`,
           ...init.headers,
           ...headers
         },

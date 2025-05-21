@@ -11,6 +11,7 @@ import { chechCookie, deleteCookie, getCookie, setCookie } from '@/app/actions';
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<LoggedUserType | null>(null);
   const [JWT, setJWT] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<Perms>(Perms.U);
@@ -19,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     getLocalUser()    
+    setLoading(false)
   }, []);
 
   const getLocalUser = async () =>{
@@ -48,21 +50,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setJWT(token);
     setPermissions(perms);
 
-    if(!(await chechCookie('Authorization')) || !(await chechCookie('Permissions'))){
+    if(!(await chechCookie('Authorization'))){
       await saveLocalUser(token, loggedUser.exp)
       router.push('/')
     }
   };
 
   const register = async (data: LoginDataType) => {
-    return request<IUserApi>('http://localhost:3001/auth/register', Method.POST, {}, JSON.stringify(data))
+    return request<IUserApi>('http://localhost:3001/auth/register', Method.POST, JSON.stringify(data))
       .then(({token})=>{
         handleAuthSuccess(token)
       })
   };
   
   const signIn = async (data: LoginDataType) => {
-    return request<IUserApi>('http://localhost:3001/auth/login', Method.POST, {}, JSON.stringify(data))
+    return request<IUserApi>('http://localhost:3001/auth/login', Method.POST, JSON.stringify(data))
       .then(({token})=>{
         handleAuthSuccess(token)
       })
@@ -75,6 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const contextValue = {
+    loading,
     user,
     JWT,
     permissions,
