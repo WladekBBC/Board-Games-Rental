@@ -1,31 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
 import { useLang } from '@/contexts/LanguageContext';
-import ErrorField from '@/components/Messages/ErrorField';
 import { LoginForm } from '@/components/Login/LoginForm';
+import router from 'next/router';
+import { useAuth } from '@/contexts/AuthContext';
 
 const RegisterPage = () => {
-  const router = useRouter();
-  const { register } = useAuth();
   const { language } = useLang();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    
-    register({email: email, password: password}).catch((err: Error)=>{
-      setError(language.userAlreadyExists)
-    })
-
-
-  }
+  useEffect(() => {
+    if (user) {
+      router.push('/');
+    }
+  }, [user, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
