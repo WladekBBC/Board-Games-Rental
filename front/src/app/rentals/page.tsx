@@ -258,7 +258,7 @@ export default function RentalsPage() {
                 {language.gameTitle} {sortConfig.key === 'title' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
               </th>
               <th 
-                className="px-2 sm:px-6 py-3 text-left font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer whitespace-nowrap hidden xs:table-cell"
+                className="px-2 sm:px-6 py-3 text-left font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer whitespace-nowrap hidden sm:table-cell"
                 onClick={() => handleSort('rentedAt')}
               >
                 {language.rentDate} {sortConfig.key === 'rentedAt' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
@@ -276,7 +276,7 @@ export default function RentalsPage() {
               <tr key={rental.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td className="px-2 sm:px-6 py-4 align-top max-w-[120px] truncate">{rental.index}</td>
                 <td className="px-2 sm:px-6 py-4 align-top max-w-[180px] truncate">{games.find(g => g.id === rental.game.id)?.title || language.unknownGame}</td>
-                <td className="px-2 sm:px-6 py-4 align-top hidden xs:table-cell">{new Date(rental.rentedAt).toLocaleDateString()}</td>
+                <td className="px-2 sm:px-6 py-4 align-top hidden sm:table-cell">{new Date(rental.rentedAt).toLocaleDateString()}</td>
                 <td className="px-2 sm:px-6 py-4 align-top hidden md:table-cell">{rental.returnedAt ? new Date(rental.returnedAt).toLocaleDateString() : '-'}</td>
                 <td className="px-2 sm:px-6 py-4 align-top text-right space-x-2">
                   {!rental.returnedAt && (
