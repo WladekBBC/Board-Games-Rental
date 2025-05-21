@@ -19,7 +19,7 @@ export default function RootLayoutClient({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pl" className="light">
+    <html lang="en" className="light">
       <body className={`${inter.className} transition-colors duration-200`}>
         <Providers>
           <Navbar />

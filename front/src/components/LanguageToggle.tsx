@@ -32,6 +32,26 @@ export function LanguageToggle() {
       >
         UA
       </button>
+      <button
+        onClick={() => setLanguage('en')}
+        className={`px-2 py-1 rounded ${
+          currentLang === 'en'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+        }`}
+      >
+        EN
+      </button>
+      <button
+        onClick={() => setLanguage('ja')}
+        className={`px-2 py-1 rounded ${
+          currentLang === 'ja'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+        }`}
+      >
+        日本語
+      </button>
     </div>
   )
 } 
