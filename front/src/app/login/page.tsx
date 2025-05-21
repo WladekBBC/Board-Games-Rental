@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLang } from '@/contexts/LanguageContext';
-import { Spinner } from '@/components/Messages/Spinner';
 import { LoginForm } from '@/components/Login/LoginForm';
 import Link from 'next/link';
 
@@ -12,7 +11,7 @@ import Link from 'next/link';
  * LoginPage component that handles user authentication
  */
 export default function LoginPage() {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const { language } = useLang();
   const router = useRouter();
 
@@ -21,8 +20,6 @@ export default function LoginPage() {
       router.push('/');
     }
   }, [user, router]);
-
-  if (loading) return <Spinner />;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">

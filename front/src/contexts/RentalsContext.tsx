@@ -31,7 +31,7 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if(JWT) {
-      stream('http://localhost:3001/rental/stream-rentals', setRentals, {"token": `${JWT}`, "permissions": permissions})
+      stream('http://localhost:3001/rental/stream-rentals', setRentals, {"Authorization": `${JWT}`})
     }
     setLoading(false)
   }, [JWT, permissions])

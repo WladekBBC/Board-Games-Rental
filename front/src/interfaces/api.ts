@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { EventSource } from 'eventsource'
+import { getCookie } from "@/app/actions";
 
 export interface IUserApi{
   token: string,
@@ -17,6 +18,7 @@ export const request = async <T> (url: string, method: Method, headers?: {[x:str
     method: method, 
     headers: {
         "Content-Type": "application/json",
+        "Authorization": `${(await getCookie('Authorization'))?.value}`,
         ...headers
     }, 
     body: body, 
@@ -30,7 +32,7 @@ export const request = async <T> (url: string, method: Method, headers?: {[x:str
 
 export const stream = (url: string, setter: Dispatch<SetStateAction<any>>, headers?: {[x:string]: string}) =>{
   const event = new EventSource(url, {
-    fetch: (input, init) =>
+    fetch: async (input, init) =>
       fetch(input, {
         ...init,
         headers: {

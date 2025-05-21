@@ -3,7 +3,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { jwtDecode } from "jwt-decode";
-import { useLang } from './LanguageContext';
 import { IUserApi, Method, request } from '@/interfaces/api';
 import { Perms, toPerms } from '@/interfaces/perms';
 import { AuthContextType, LoggedUserType, LoginDataType } from '@/types/authContext';
@@ -16,14 +15,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [JWT, setJWT] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<Perms>(Perms.U);
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { language } = useLang()
 
   useEffect(() => {
     getLocalUser()    
-    setLoading(false);
   }, []);
 
   const getLocalUser = async () =>{
@@ -60,37 +55,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register = async (data: LoginDataType) => {
-    setLoading(true);
-    setError(null);
-
     return request<IUserApi>('http://localhost:3001/auth/register', Method.POST, {}, JSON.stringify(data))
       .then(({token})=>{
         handleAuthSuccess(token)
-      }).finally(()=>setLoading(false))
+      })
   };
   
   const signIn = async (data: LoginDataType) => {
-    setLoading(true);
-    setError(null);
-
     return request<IUserApi>('http://localhost:3001/auth/login', Method.POST, {}, JSON.stringify(data))
       .then(({token})=>{
         handleAuthSuccess(token)
-      }).finally(()=>setLoading(false))
-
+      })
   };
 
   const signOut = async () => {
     await clearLocalUser();
-    setError(null);
     setUser(null);
     router.push('/')
   };
 
   const contextValue = {
     user,
-    loading,
-    error,
     JWT,
     permissions,
     register,

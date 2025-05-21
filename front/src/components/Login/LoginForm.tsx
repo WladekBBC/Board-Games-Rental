@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useLang } from "@/contexts/LanguageContext";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import ErrorField from "../Messages/ErrorField";
 
 type LoginFormType = {
@@ -11,40 +11,47 @@ export const LoginForm = ({isRegister}: LoginFormType) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string>('');
-  const { signIn, register, loading } = useAuth();
-  const { language } = useLang();
+  const [loading, setLoading] = useState<boolean>(false);
 
+  const { signIn, register } = useAuth();
+  const { language } = useLang();
+  
   const validate = () =>{
     setError('');
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError(language.invalidEmail);
-      return;
+      return false;
     }
 
     if (password.length < 6) {
       setError(language.passwordTooShort);
-      return;
+      return false;
     }
+
+    return true
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) =>{
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) =>{
     e.preventDefault()
+    setLoading(true)
 
-    validate()
-
-    if(error)
+    if(!validate()){
+      setLoading(false)
       return;
+    }
 
     if(isRegister)
-      await register({email: email, password: password})
+      register({email: email, password: password})
         .catch((err: Error)=>setError(err.cause == 400 ? language.userAlreadyExists : language.serverError))
     else
-      await signIn({email: email, password: password})
+      signIn({email: email, password: password})
         .catch((err: Error)=>{
           setError(err.cause == 400 ? language.loginError : language.serverError)
         })
+
+    setLoading(false)
   }
 
   return (
