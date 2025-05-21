@@ -29,14 +29,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
    */
   useEffect(() => {
     const savedLang = localStorage.getItem('language') as Language
-    if (savedLang && (savedLang === 'pl' || savedLang === 'ua')) {
+    if (savedLang && (savedLang === 'pl' || savedLang === 'ua' || savedLang === 'en' || savedLang === 'ja')) {
       setCurrentLang(savedLang)
     }
   }, [])
 
   /**
    * Sets the new language of the application
-   * @param {Language} lang - New language ('pl' or 'ua')
+   * @param {Language} lang - New language ('pl', 'ua', 'en' or 'ja')
    */
   const setLanguage = (lang: Language) => {
     setCurrentLang(lang)
@@ -46,7 +46,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   return (
     <LanguageContext.Provider 
       value={{
-        language: translations[currentLang],
+        language: translations[currentLang] as typeof translations.pl,
         currentLang,
         setLanguage
       }}
