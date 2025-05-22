@@ -75,7 +75,7 @@ export default function HomeUserPanel(){
                     </div>
                 </Link>
                 {user && (
-                    <Link href="/users" className="block h-full">
+                    <Link href={permissions == Perms.A ? "/users" : "/"} className="block h-full">
                         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow h-full flex flex-col">
                         <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">{language.profile}</h2>
                         <div className="text-gray-600 dark:text-gray-300 flex-grow">
