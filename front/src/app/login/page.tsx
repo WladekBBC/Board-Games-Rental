@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLang } from '@/contexts/LanguageContext';
 import { LoginForm } from '@/components/Login/LoginForm';
 import Link from 'next/link';
-
+import { getCookie } from '../actions'
 /**
  * LoginPage component that handles user authentication
  */
@@ -16,10 +16,8 @@ export default function LoginPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
-      router.push('/');
-    }
-  }, [user, router]);
+    getCookie('Authorization').then((res) => {if (!res?.value) router.push("/")})
+  }, [user])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">

@@ -6,6 +6,7 @@ import { useLang } from '@/contexts/LanguageContext';
 import { LoginForm } from '@/components/Login/LoginForm';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+import { getCookie } from '../actions'
 
 const RegisterPage = () => {
   const { language } = useLang();
@@ -13,10 +14,8 @@ const RegisterPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
-      router.push('/');
-    }
-  }, [user, router]);
+    getCookie('Authorization').then((res) => {if (!res?.value) router.push("/")})
+  }, [user])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">

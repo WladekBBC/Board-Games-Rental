@@ -12,6 +12,7 @@ import { Spinner } from '@/components/Messages/Spinner'
 import { Perms } from '@/interfaces/perms'
 import { Rent } from '@/types/rentalContext'
 import { SearchBar } from '@/components/SearchBar'
+import { getCookie } from '../actions' 
 
 /**
  * Rentals page
@@ -35,10 +36,14 @@ export default function RentalsPage() {
   } = useRentals()
   const { games, loading: gamesLoading } = useGames()
   const [isProcessing, setIsProcessing] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string>('')
   const [success, setSuccess] = useState<string | null>(null)
   const { language } = useLang()
 
+  useEffect(() => {
+    getCookie('Authorization').then((res) => {if (!res?.value) router.push("/")})
+  }, [user])
+  
   /**
    * Handle sort
    * @param {string} key - Key
@@ -65,14 +70,6 @@ export default function RentalsPage() {
     setSuccess(successMessage);
     setTimeout(() => setSuccess(null), 3000);
   }
-  /**
-   * Redirect to login page if user is not authenticated
-   */
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.replace('/')
-    }
-  }, [user, authLoading, router])
 
   /**
    * Render loading state if data is still loading
@@ -93,7 +90,7 @@ export default function RentalsPage() {
 
   const resetFields = () =>{
     setIsProcessing(true)
-    setError(null)
+    setError("")
     setSuccess(null)
   }
 
