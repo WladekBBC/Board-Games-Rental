@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLang } from '@/contexts/LanguageContext';
 import { LoginForm } from '@/components/Login/LoginForm';
 import Link from 'next/link';
-import { getCookie } from '../actions'
+import { chechCookie, getCookie } from '../actions'
 /**
  * LoginPage component that handles user authentication
  */
@@ -16,7 +16,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   useEffect(() => {
-    getCookie('Authorization').then((res) => {if (!res?.value) router.push("/")})
+    chechCookie('Authorization').then((res) => {if (res) router.push("/")})
   }, [user])
 
   return (

@@ -12,7 +12,7 @@ import { Spinner } from '@/components/Messages/Spinner'
 import { Perms } from '@/interfaces/perms'
 import { Rent } from '@/types/rentalContext'
 import { SearchBar } from '@/components/SearchBar'
-import { getCookie } from '../actions' 
+import { chechCookie, getCookie } from '../actions' 
 
 /**
  * Rentals page
@@ -41,7 +41,7 @@ export default function RentalsPage() {
   const { language } = useLang()
 
   useEffect(() => {
-    getCookie('Authorization').then((res) => {if (!res?.value) router.push("/")})
+    chechCookie('Authorization').then((res) => {if (!res) router.push("/")})
   }, [user])
   
   /**
