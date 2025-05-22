@@ -6,7 +6,7 @@ import { useLang } from '@/contexts/LanguageContext';
 import { LoginForm } from '@/components/Login/LoginForm';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import { getCookie } from '../actions'
+import { chechCookie } from '../actions'
 
 const RegisterPage = () => {
   const { language } = useLang();
@@ -14,7 +14,7 @@ const RegisterPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    getCookie('Authorization').then((res) => {if (!res?.value) router.push("/")})
+    chechCookie('Authorization').then((res) => {if (res) router.push("/")})
   }, [user])
 
   return (

@@ -30,7 +30,7 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if(JWT) {
-      stream('http://localhost:3001/rental/stream-rentals', setRentals, {})
+      stream('rental/stream-rentals', setRentals, {})
     }
     setLoading(false)
   }, [JWT])
@@ -73,15 +73,15 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
     });
 
   const addRental = async (rental: Partial<IRental>) =>{
-    return request<null>('http://localhost:3001/rental/add', Method.POST, JSON.stringify(rental))
+    return request<null>('rental/add', Method.POST, JSON.stringify(rental))
   }
 
   const returnGame = async (id: number) =>{
-    return request('http://localhost:3001/rental/return/'+id, Method.PATCH)
+    return request('rental/return/'+id, Method.PATCH)
   }
 
   const removeRental = async (id: number) =>{
-    return request('http://localhost:3001/rental/delete/'+id, Method.DELETE)
+    return request('rental/delete/'+id, Method.DELETE)
   }
 
   return (

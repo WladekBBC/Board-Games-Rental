@@ -4,7 +4,7 @@ import { useLang } from '@/contexts/LanguageContext';
 import { Dialog } from '@headlessui/react';
 import { useUsers } from '@/contexts/UsersContext';
 import { SearchBar } from '@/components/SearchBar';
-import { getCookie } from '../actions' 
+import { chechCookie, getCookie } from '../actions' 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
@@ -39,8 +39,8 @@ export default function UsersPage() {
   }
 
   useEffect(() => {
-    getCookie('Authorization').then((res) => {if (!res?.value) router.push("/")})
-  }, [authUser, router]);
+    chechCookie('Authorization').then((res) => {if (!res) router.push("/")})
+  }, [authUser]);
   
   const handleEditChange = (userId: number, field: 'email' | 'permissions' | 'password', value: string) => {
     setEditing((prev) => ({

@@ -2,6 +2,8 @@ import { Dispatch, SetStateAction } from "react";
 import { EventSource } from 'eventsource'
 import { getCookie } from "@/app/actions";
 
+const API_URL = 'http://localhost:3001/'
+
 export interface IUserApi{
   token: string,
 }
@@ -14,7 +16,7 @@ export enum Method{
 }
 
 export const request = async <T> (url: string, method: Method, body?: string, headers?: {[x:string]: string}): Promise<T> =>{
-  return fetch(url, {
+  return fetch(API_URL+url, {
     method: method, 
     headers: {
         "Content-Type": "application/json",
