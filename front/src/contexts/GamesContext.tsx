@@ -14,7 +14,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('')
   
   useEffect(() => {
-    stream('http://localhost:3001/game/stream-games', setGames)
+    stream('game/stream-games', setGames)
     setLoading(false)
   }, [])
 
@@ -33,7 +33,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   })
   
   const addGame = async (game: Partial<IGame>) => {
-    return request<void>('http://localhost:3001/game/add', Method.POST, JSON.stringify(game))
+    return request<void>('game/add', Method.POST, JSON.stringify(game))
   }
 
   /**
@@ -42,15 +42,15 @@ export function GamesProvider({ children }: { children: ReactNode }) {
    * @param {Partial<Game>} updates - Partial data to update
    */
   const updateGame = async (id: number, updates: Partial<IGame>) => {
-    return request<void>(`http://localhost:3001/game/update/${id}`, Method.PATCH, JSON.stringify(updates))
+    return request<void>(`game/update/${id}`, Method.PATCH, JSON.stringify(updates))
   }
 
   const changeQuantity = async (id: number, quantity: number) => {
-    return request<void>(`http://localhost:3001/game/change-quantity`, Method.PATCH, JSON.stringify({ id, quantity }))
+    return request<void>(`game/change-quantity`, Method.PATCH, JSON.stringify({ id, quantity }))
   }
 
   const deleteGame = (id: number) => {
-    return request<void>(`http://localhost:3001/game/delete/${id}`, Method.DELETE)
+    return request<void>(`game/delete/${id}`, Method.DELETE)
   }
 
   return (

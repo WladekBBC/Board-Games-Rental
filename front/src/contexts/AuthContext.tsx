@@ -57,14 +57,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register = async (data: LoginDataType) => {
-    return request<IUserApi>('http://localhost:3001/auth/register', Method.POST, JSON.stringify(data))
+    return request<IUserApi>('auth/register', Method.POST, JSON.stringify(data))
       .then(({token})=>{
         handleAuthSuccess(token)
       })
   };
   
   const signIn = async (data: LoginDataType) => {
-    return request<IUserApi>('http://localhost:3001/auth/login', Method.POST, JSON.stringify(data))
+    return request<IUserApi>('auth/login', Method.POST, JSON.stringify(data))
       .then(({token})=>{
         handleAuthSuccess(token)
       })

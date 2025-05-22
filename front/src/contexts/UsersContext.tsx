@@ -39,7 +39,7 @@ export function UsersProvider({ children }: { children: ReactNode }) {
   })
 
   const fetchUsers = async () => {
-    request<User[]>('http://localhost:3001/auth/users', Method.GET).then((data: User[])=>{
+    request<User[]>('auth/users', Method.GET).then((data: User[])=>{
       setUsers(data);
       setLoading(false);
     }).catch((err: Error)=>{
@@ -86,7 +86,7 @@ export function UsersProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    request(`http://localhost:3001/auth/update/${id}`, Method.PATCH, JSON.stringify(updateData)).then(()=>{
+    request(`auth/update/${id}`, Method.PATCH, JSON.stringify(updateData)).then(()=>{
       handleSuccess(language.userUpdated);
       setEditing((prev) => {
         const newState = { ...prev };
@@ -105,7 +105,7 @@ export function UsersProvider({ children }: { children: ReactNode }) {
 
     setLoading(true);
 
-    request(`http://localhost:3001/auth/delete/${userToDelete.id}`, Method.DELETE).then(()=>{
+    request(`auth/delete/${userToDelete.id}`, Method.DELETE).then(()=>{
       handleSuccess(language.userDeleted);
       setUserToDelete(null);
     }).catch((err:Error)=>{
