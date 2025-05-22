@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { EventSource } from 'eventsource'
 import { getCookie } from "@/app/actions";
 
-const API_URL = 'http://localhost:3001/'
+export const API_URL = 'http://localhost:3001/'
 
 export interface IUserApi{
   token: string,
@@ -16,7 +16,7 @@ export enum Method{
 }
 
 export const request = async <T> (url: string, method: Method, body?: string, headers?: {[x:string]: string}): Promise<T> =>{
-  return fetch(API_URL+url, {
+  return fetch(API_URL + url, {
     method: method, 
     headers: {
         "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export const request = async <T> (url: string, method: Method, body?: string, he
 }
 
 export const stream = (url: string, setter: Dispatch<SetStateAction<any>>, headers?: {[x:string]: string}) =>{
-  const event = new EventSource(url, {
+  const event = new EventSource(API_URL + url, {
     fetch: async (input, init) =>
       fetch(input, {
         ...init,
