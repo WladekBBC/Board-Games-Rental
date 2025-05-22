@@ -36,7 +36,7 @@ export default function RentalsPage() {
   } = useRentals()
   const { games, loading: gamesLoading } = useGames()
   const [isProcessing, setIsProcessing] = useState(false)
-  const [error, setError] = useState<string>('')
+  const [error, setError] = useState<string | null>('')
   const [success, setSuccess] = useState<string | null>(null)
   const { language } = useLang()
 
@@ -62,13 +62,22 @@ export default function RentalsPage() {
     }
   };
 
+  
   /**
    * Handle success message
    * @param {string} successMessage - Success message
    */
   const handleSuccess = (successMessage: string) =>{
     setSuccess(successMessage);
-    setTimeout(() => setSuccess(null), 3000);
+    setTimeout(() => setSuccess(null), 5000);
+  }
+  /**
+   * Handle error message
+   * @param {string} errorMessage - Error message 
+   */
+  const handleError = (errorMessage: string) =>{
+    setError(errorMessage);
+    setTimeout(() => setError(null), 5000);
   }
 
   /**
@@ -107,7 +116,7 @@ export default function RentalsPage() {
 
     const idPersonRegex = /^(?:\d{6}|SD\d{4}|\+?[0-9]{7,15})$/;
     if (!idPersonRegex.test(form.get('personId') as string)) {
-      setError(language.invalidAlbumNumberFormat);
+      handleError(language.invalidAlbumNumberFormat);
       setIsProcessing(false);
       return;
     }
@@ -125,7 +134,7 @@ export default function RentalsPage() {
       handleSuccess(language.gameRented)
     }).catch((err: Error)=>{
       console.log(err)
-      setError(err.cause == 406 ? language.rentGameError : language.serverError)
+      handleError(err.cause == 406 ? language.rentGameError : language.serverError)
     })
       
     setIsProcessing(false)
@@ -141,7 +150,7 @@ export default function RentalsPage() {
     returnGame(id).then(()=>{
       handleSuccess(language.gameReturned)
     }).catch((err: Error)=>{
-      setError(err.cause == 406 ? language.returnGameError : language.fetchError)
+      handleError(err.cause == 406 ? language.returnGameError : language.fetchError)
     })
 
     setIsProcessing(false)
@@ -157,7 +166,7 @@ export default function RentalsPage() {
     removeRental(id).then(()=>{
       handleSuccess(language.deletedGame)
     }).catch((err: Error)=>{
-      setError(err.cause == 406 ? language.deleteGameError : language.serverError)
+      handleError(err.cause == 406 ? language.deleteGameError : language.serverError)
     })
     setIsProcessing(false)
   }
@@ -165,10 +174,10 @@ export default function RentalsPage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">{language.manageRent}</h1>
 
-      <ErrorField error={`${error}`}/>
+      {error && (<ErrorField error={`${error}`}/>)}
 
-      <SuccessField success={success}/>
-
+      {success && (<SuccessField success={`${success}`}/>
+)}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">{language.addRent}</h2>
         <form onSubmit={handleAddRental} className="space-y-4">
@@ -272,8 +281,8 @@ export default function RentalsPage() {
               <tr key={rental.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td className="px-2 sm:px-6 py-4 align-top max-w-[120px] truncate">{rental.index}</td>
                 <td className="px-2 sm:px-6 py-4 align-top max-w-[180px] truncate">{games.find(g => g.id === rental.game.id)?.title || language.unknownGame}</td>
-                <td className="px-2 sm:px-6 py-4 align-top hidden sm:table-cell">{new Date(rental.rentedAt).toLocaleDateString()}</td>
-                <td className="px-2 sm:px-6 py-4 align-top hidden md:table-cell">{rental.returnedAt ? new Date(rental.returnedAt).toLocaleDateString() : '-'}</td>
+                <td className="px-2 sm:px-6 py-4 align-top hidden md:table-cell">{new Date(rental.rentedAt).toLocaleDateString()}</td>
+                <td className="px-2 sm:px-6 py-4 align-top hidden lg:table-cell">{rental.returnedAt ? new Date(rental.returnedAt).toLocaleDateString() : '-'}</td>
                 <td className="px-2 sm:px-6 py-4 align-top text-right space-x-2">
                   {!rental.returnedAt && (
                     <button
