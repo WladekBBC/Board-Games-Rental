@@ -5,6 +5,7 @@ import { IRental } from '@/interfaces/rental'
 import { RentalsContextType, SortConfig, SearchType } from '@/types/rentalContext'
 import { Method, request, stream } from '@/interfaces/api'
 import { useAuth } from './AuthContext'
+import { chechCookie } from '@/app/actions'
 
 /**
  * Rentals context type
@@ -29,11 +30,18 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
   const { JWT } = useAuth()
 
   useEffect(() => {
-    if(JWT) {
-      stream('rental/stream-rentals', setRentals, {})
-    }
-    setLoading(false)
+    getRentals();
+    setLoading(false);
   }, [JWT])
+
+  const getRentals = async () =>{
+    let connection = () => {};
+    if(await chechCookie('Authorization'))
+      connection = stream('rental/stream-rentals', setRentals);
+    else
+      connection()
+      setRentals([])
+  }
 
   const filteredAndSortedRentals = [...rentals]
     .filter(rental => {

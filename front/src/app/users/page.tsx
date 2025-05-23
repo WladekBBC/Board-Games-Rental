@@ -131,6 +131,7 @@ export default function UsersPage() {
                     <tr key={currentUser.id}>
                       <td className="px-2 py-4 text-sm">
                         <input
+                          maxLength={255}
                           type="email"
                           value={editing[currentUser.id]?.email ?? currentUser.email}
                           onChange={(e) => handleEditChange(currentUser.id, 'email', e.target.value)}
@@ -150,6 +151,7 @@ export default function UsersPage() {
                       </td>
                       <td className="px-2 py-4 text-sm">
                         <input
+                          maxLength={255}
                           type="password"
                           placeholder={language.newPassword}
                           value={editing[currentUser.id]?.password ?? ''}

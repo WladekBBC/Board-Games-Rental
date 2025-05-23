@@ -42,10 +42,11 @@ export const stream = (url: string, setter: Dispatch<SetStateAction<any>>, heade
           ...init.headers,
           ...headers
         },
-      }),
+      })
   })
   event.onmessage = ({ data }) =>{
     setter(JSON.parse(data))
   }
+
   return () => event.close();
 }

@@ -15,10 +15,10 @@ export const GameInput = ({ name, label, value, type, min, max, changeHandler}: 
                 {label}
             </label>
             {type == 'textarea' ? 
-            <textarea rows={3} id={name} name={name} value={value} onChange={changeHandler}
+            <textarea rows={3} id={name} name={name} value={value} onChange={changeHandler} maxLength={255}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required/>
             : 
-            <input type={type} id={name} name={name} value={value} onChange={changeHandler} min={min} max={max}
+            <input type={type} id={name} name={name} value={value} onChange={changeHandler} min={min} max={max} maxLength={255}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required/>
             }
 

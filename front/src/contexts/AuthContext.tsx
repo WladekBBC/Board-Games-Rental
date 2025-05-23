@@ -45,15 +45,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signOut();
       return
     }
-    
-    setUser(loggedUser);
-    setJWT(token);
-    setPermissions(perms);
 
     if(!(await chechCookie('Authorization'))){
       await saveLocalUser(token, loggedUser.exp)
       router.push('/')
     }
+
+    setUser(loggedUser);
+    setJWT(token);
+    setPermissions(perms);
   };
 
   const register = async (data: LoginDataType) => {

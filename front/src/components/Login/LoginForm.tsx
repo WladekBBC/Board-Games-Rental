@@ -65,6 +65,7 @@ export const LoginForm = ({isRegister}: LoginFormType) => {
             id="email"
             name="email"
             type="email"
+            maxLength={255}
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -80,6 +81,7 @@ export const LoginForm = ({isRegister}: LoginFormType) => {
             id="password"
             name="password"
             type="password"
+            maxLength={255}
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}

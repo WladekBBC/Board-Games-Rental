@@ -3,6 +3,7 @@ import { useAuth } from './AuthContext';
 import { Method, request } from '@/interfaces/api';
 import { useLang } from './LanguageContext';
 import { UsersContextType, User, UserUpdate, SearchType } from '@/types/usersContext';
+import { chechCookie } from '@/app/actions';
  
 const UsersContext = createContext<UsersContextType | undefined>(undefined);
 
@@ -19,9 +20,7 @@ export function UsersProvider({ children }: { children: ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    if (JWT) {
-      fetchUsers();
-    }
+    fetchUsers();
   }, [JWT]);
 
   const SearchedUsers = [...users]
@@ -39,12 +38,16 @@ export function UsersProvider({ children }: { children: ReactNode }) {
   })
 
   const fetchUsers = async () => {
-    request<User[]>('auth/users', Method.GET).then((data: User[])=>{
-      setUsers(data);
-      setLoading(false);
-    }).catch((err: Error)=>{
-      handleError(err.message);
-    })
+    if(await chechCookie('Authorization')){
+      request<User[]>('auth/users', Method.GET).then((data: User[])=>{
+        setUsers(data);
+        setLoading(false);
+      }).catch((err: Error)=>{
+        handleError(err.message);
+      })
+    }else{
+      setUsers([])
+    }
   };
 
   const handleSuccess = (successMessage: string) =>{
