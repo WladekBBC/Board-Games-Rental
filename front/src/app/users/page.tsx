@@ -1,16 +1,16 @@
 'use client';
 import { Spinner } from '@/components/Messages/Spinner';
 import { useLang } from '@/contexts/LanguageContext';
-import { Dialog } from '@headlessui/react';
 import { useUsers } from '@/contexts/UsersContext';
 import { SearchBar } from '@/components/SearchBar';
-import { chechCookie, getCookie } from '../actions' 
+import { chechCookie } from '../actions' 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import ErrorField from '@/components/Messages/ErrorField';
 import SuccessField from '@/components/Messages/SuccessField';
-
+import DeleteDialog from '@/components/DeleteDialog';
+  
 export default function UsersPage() {
   const { language } = useLang();
   const router = useRouter();
@@ -29,13 +29,19 @@ export default function UsersPage() {
     searchQuery,
     setSearchQuery,
     SearchedUsers,
-    setError
+    setError,
+    setSuccess
   } = useUsers();
   const { user: authUser } = useAuth();
 
   const handleError = (errorMessage: string) =>{
     setError(errorMessage);
     setTimeout(() => setError(null), 3000);
+  }
+
+  const handleSuccess = (message: string) => {
+    setSuccess(message)
+    setTimeout(() => setSuccess(null), 5000)
   }
 
   useEffect(() => {
@@ -51,6 +57,18 @@ export default function UsersPage() {
       }
     }));
   };
+
+  const handleDeleteUserClick = async () => {
+    if (!userToDelete) return
+
+    try {
+      await handleDeleteUser()
+      handleSuccess(language.userDeleted)
+      setUserToDelete(null)
+    } catch (err: any) {
+      handleError(language.fetchError)
+    }
+  }
 
   const handleSaveAttempt = (userIdToUpdate: number, originalUser: typeof SearchedUsers[0]) => {
     if (setError) setError(''); 
@@ -183,32 +201,16 @@ export default function UsersPage() {
         </>
         )}
 
-        <Dialog open={!!userToDelete} onClose={() => setUserToDelete(null)} className="fixed z-50 inset-0 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen px-4">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 z-50 max-w-sm mx-auto">
-              <Dialog.Title className="text-lg font-medium text-gray-900 dark:text-white">
-                {language.confirmDeleteUser}
-              </Dialog.Title>
-              <Dialog.Description className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                {userToDelete?.email}
-              </Dialog.Description>
-              <div className="mt-4 flex justify-end gap-3">
-                <button
-                  onClick={() => setUserToDelete(null)}
-                  className="px-4 py-2 rounded bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white"
-                >
-                  {language.cancel}
-                </button>
-                <button
-                  onClick={handleDeleteUser}
-                  className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
-                >
-                  {language.deleteUser}
-                </button>
-              </div>
-            </div>
-          </div>
-        </Dialog>
+      <DeleteDialog
+        isOpen={!!userToDelete}
+        onClose={() => setUserToDelete(null)}
+        onConfirm={handleDeleteUserClick}
+        title={language.confirmDeleteUser}
+        description={userToDelete?.email ?? ''}
+        confirmText={language.deleteUser}
+        cancelText={language.cancel}
+        isProcessing={loading}
+      />
       </div>
   );
 }
