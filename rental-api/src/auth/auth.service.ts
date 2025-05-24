@@ -25,9 +25,8 @@ export class AuthService {
     if(!user || !await bcrypt.compare(loginData.password, user.password))
       throw new BadRequestException;
     
-    const payload = { id: user.id, email: user.email };
+    const payload = { id: user.id, email: user.email, permissions:  user.permissions };
     return {
-      permissions:  user.permissions,
       token: this.jwtService.sign(payload, {secret: jwtConstants.secret, expiresIn: '30 days'}),
     };
   }
@@ -46,9 +45,8 @@ export class AuthService {
         password: await bcrypt.hash(newUser.password, 10), 
       })
 
-    const payload = { id: user.id, email: user.email };
+    const payload = { id: user.id, email: user.email, permissions: user.permissions};
     return {
-      permissions: user.permissions,
       token: this.jwtService.sign(payload, {secret: jwtConstants.secret, expiresIn: '30 days'})
     };
   }

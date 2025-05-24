@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { GameInput } from "./GameInput"
 import { imageLoader } from "@/lib/utils/imageLoader"
 import Image from 'next/image'
+import ErrorField from "../Messages/ErrorField"
 
 type GameFormType = {
     game?: IGame
@@ -51,21 +52,22 @@ export const GameForm = ({ game, onClose }: GameFormType) => {
         setError(undefined); 
 
         if (game) {
-            updateGame(game.id, formData).catch(()=>{setError(language.editGameError)});
+            updateGame(game.id, formData).then(()=>{if (onClose) onClose()}).catch((err: Error)=>{
+                if(err.cause == 400)
+                    setError(language.gameExistError)
+                else
+                    setError(language.editGameError)
+            });
         } else {
             formData.quantity = formData.amount
-            addGame(formData).then(()=>setFormData(defaultGame)).catch((err)=>{
-                if(err == 400)
+            addGame(formData).then(()=>setFormData(defaultGame)).catch((err: Error)=>{
+                if(err.cause == 400)
                     setError(language.gameExistError)
                 else
                     setError(language.addGameError)
             });
         }
-        if (onClose) {
-            onClose()
-        }
         setIsProcessing(false)
-
     }
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -89,7 +91,6 @@ export const GameForm = ({ game, onClose }: GameFormType) => {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
             <GameInput name="title" label={language.gameTitle} type="text" value={formData.title} changeHandler={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))} />
             <GameInput name="description" label={language.gameDesc} type="textarea" value={formData.description} changeHandler={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} />
             <GameInput name="imageUrl" label={language.gameImageUrl} type="url" value={formData.imageUrl} changeHandler={(e) => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))} />
@@ -121,6 +122,9 @@ export const GameForm = ({ game, onClose }: GameFormType) => {
             {game && (
                 <GameInput name="quantity" label={language.gameAvailableNumber} type="number" min={0} max={formData.amount} value={formData.quantity} changeHandler={(e) => setFormData(prev => ({ ...prev, quantity: +e.target.value }))} />
             )}
+
+            <ErrorField error={error} />
+
             <button
                 type="submit"
                 disabled={

@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Perms } from '@/interfaces/perms'
 import { SearchBar } from '@/components/SearchBar'
 import { GameForm } from '@/components/Game/GameForm'
+import { chechCookie } from '../actions'
 
 export default function GamesPage() {
   const router = useRouter()
@@ -24,10 +25,8 @@ export default function GamesPage() {
   const { language } = useLang()
 
   useEffect(() => {
-    if (!loading && permissions != Perms.A) {
-      router.push('/')
-    }
-  }, [user, loading, router])
+    chechCookie('Authorization').then((res) => {if (!res) router.push("/")})
+  }, [user])
 
   if (loading || gamesLoading) {
     return (

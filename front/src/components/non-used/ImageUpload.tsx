@@ -73,6 +73,7 @@ export default function ImageUpload({ onImageChange }: ImageUploadProps) {
         type="file"
         id="image"
         accept="image/*"
+        maxLength={255}
         onChange={handleImageChange}
         className="hidden"
         ref={fileInputRef}

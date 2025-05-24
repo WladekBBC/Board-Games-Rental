@@ -1,11 +1,11 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { useGames } from './GamesContext'
 import { IRental } from '@/interfaces/rental'
 import { RentalsContextType, SortConfig, SearchType } from '@/types/rentalContext'
 import { Method, request, stream } from '@/interfaces/api'
 import { useAuth } from './AuthContext'
+import { chechCookie } from '@/app/actions'
 
 /**
  * Rentals context type
@@ -27,14 +27,21 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchType, setSearchType] = useState<SearchType>('index')
 
-  const { JWT, permissions } = useAuth()
+  const { JWT } = useAuth()
 
   useEffect(() => {
-    if(JWT) {
-      stream('http://localhost:3001/rental/stream-rentals', setRentals, {"token": `${JWT}`, "permissions": permissions})
-    }
-    setLoading(false)
-  }, [JWT, permissions])
+    getRentals();
+    setLoading(false);
+  }, [JWT])
+
+  const getRentals = async () =>{
+    let connection = () => {};
+    if(await chechCookie('Authorization'))
+      connection = stream('rental/stream-rentals', setRentals);
+    else
+      connection()
+      setRentals([])
+  }
 
   const filteredAndSortedRentals = [...rentals]
     .filter(rental => {
@@ -74,15 +81,15 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
     });
 
   const addRental = async (rental: Partial<IRental>) =>{
-    return request<null>('http://localhost:3001/rental/add', Method.POST, {"token": `${JWT}`, "permissions": permissions}, JSON.stringify(rental))
+    return request<null>('rental/add', Method.POST, JSON.stringify(rental))
   }
 
   const returnGame = async (id: number) =>{
-    return request('http://localhost:3001/rental/return/'+id, Method.PATCH, {"token": `${JWT}`, "permissions": permissions})
+    return request('rental/return/'+id, Method.PATCH)
   }
 
   const removeRental = async (id: number) =>{
-    return request('http://localhost:3001/rental/delete/'+id, Method.DELETE, {"token": `${JWT}`, "permissions": permissions})
+    return request('rental/delete/'+id, Method.DELETE)
   }
 
   return (

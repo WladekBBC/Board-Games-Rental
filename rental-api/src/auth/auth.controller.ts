@@ -51,8 +51,8 @@ export class AuthController {
    */
   @UseGuards(AuthGuard)
   @Get('user/:id')
-  getUser(@Param('id') id:number, @Headers() headers: Record <string, string> ) {
-    return this.userService.findOneById(id, headers.permissions, headers.token);
+  getUser(@Param('id') id:number) {
+    return this.userService.findOneById(id);
   }
 
   /**
@@ -63,8 +63,8 @@ export class AuthController {
    */
   @UseGuards(AuthGuard)
   @Patch('update/:id')
-  editUser(@Param('id') id:number, @Headers() headers: Record <string, string>, @Body() updateUser: UpdateUserDto ) {
-    return this.userService.update(id, headers.permissions, headers.token, updateUser);
+  editUser(@Param('id') id:number, @Body() updateUser: UpdateUserDto ) {
+    return this.userService.update(id, updateUser);
   }
 
   /**
@@ -74,7 +74,7 @@ export class AuthController {
    */
   @UseGuards(AuthGuard)
   @Delete('delete/:id')
-  deleteUser(@Param('id') id:number, @Headers() headers: Record <string, string> ) {
-    return this.userService.remove(id, headers.permissions, headers.token);
+  deleteUser(@Param('id') id:number) {
+    return this.userService.remove(id);
   }
 }

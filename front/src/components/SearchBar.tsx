@@ -102,6 +102,7 @@ export function SearchBar({
         value={value}
         onChange={e => onValueChange(e.target.value)}
         placeholder={placeholder}
+        maxLength={255}
       />
     </div>
   );

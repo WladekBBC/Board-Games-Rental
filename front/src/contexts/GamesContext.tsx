@@ -1,22 +1,20 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { useAuth } from './AuthContext';
 import { GamesContextType, SearchType } from '@/types/gameContext';
 import { IGame } from '@/interfaces/game';
-import { stream } from '@/interfaces/api';
+import { Method, request, stream } from '@/interfaces/api';
 
 const GamesContext = createContext<GamesContextType | undefined>(undefined)
 
 export function GamesProvider({ children }: { children: ReactNode }) {
-  const {JWT, permissions} = useAuth()
   const [games, setGames] = useState<IGame[]>([])
   const [loading, setLoading] = useState(true)
   const [searchType, setSearchType] = useState<SearchType>('title')
   const [searchQuery, setSearchQuery] = useState('')
   
   useEffect(() => {
-    stream('http://localhost:3001/game/stream-games', setGames)
+    stream('game/stream-games', setGames)
     setLoading(false)
   }, [])
 
@@ -35,16 +33,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   })
   
   const addGame = async (game: Partial<IGame>) => {
-    return fetch('http://localhost:3001/game/add', {
-      method: 'POST', 
-      headers: { 
-        'Content-Type': 'application/json',
-        "token": `${JWT}`,
-        "permissions": permissions
-      }, body: JSON.stringify(game)}).then((res)=>{
-        if(!res.ok)
-          return Promise.reject(res.status)
-      })
+    return request<void>('game/add', Method.POST, JSON.stringify(game))
   }
 
   /**
@@ -53,46 +42,15 @@ export function GamesProvider({ children }: { children: ReactNode }) {
    * @param {Partial<Game>} updates - Partial data to update
    */
   const updateGame = async (id: number, updates: Partial<IGame>) => {
-      return fetch(`http://localhost:3001/game/update/${id}`, {
-        method: 'PATCH', 
-        headers: { 
-          'Content-Type': 'application/json',
-          "token": `${JWT}`,
-          "permissions": permissions
-      }, body: JSON.stringify(updates)}).then((res)=>{
-        if(!res.ok)
-          return Promise.reject(res.status)
-      })
+    return request<void>(`game/update/${id}`, Method.PATCH, JSON.stringify(updates))
   }
 
   const changeQuantity = async (id: number, quantity: number) => {
-    fetch(`http://localhost:3001/game/change-quantity`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        "token": `${JWT}`,
-        "permissions": permissions
-      },
-      body: JSON.stringify({ id, quantity })
-    }).then((res) => {
-      if(!res.ok)
-        return Promise.reject(new Error(res.statusText, {cause: res.status}))
-    }).catch((error) => {
-      throw new error
-    })
+    return request<void>(`game/change-quantity`, Method.PATCH, JSON.stringify({ id, quantity }))
   }
 
   const deleteGame = (id: number) => {
-    fetch(`http://localhost:3001/game/delete/${id}`, {
-      method: 'DELETE', 
-      headers: { 
-        'Content-Type': 'application/json',
-        "token": `${JWT}`,
-        "permissions": permissions
-    }}).then((res)=>{
-      if(!res.ok)
-        return Promise.reject(new Error(res.statusText, {cause: res.status}))
-    })
+    return request<void>(`game/delete/${id}`, Method.DELETE)
   }
 
   return (

@@ -5,6 +5,6 @@ export interface IUser {
     email: string,
     password: string
     permissions: Perms
-    iat?: number
-    exp?: number
+    iat: number
+    exp: number
 }

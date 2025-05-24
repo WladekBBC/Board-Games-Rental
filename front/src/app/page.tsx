@@ -1,6 +1,5 @@
 'use client'
 
-import { useAuth } from '@/contexts/AuthContext'
 import { useLang } from '@/contexts/LanguageContext'
 import HomeUserPanel from '@/components/HomePage/HomeUserPanel'
 import GameList from '@/components/HomePage/GameList'
@@ -10,7 +9,6 @@ import GameList from '@/components/HomePage/GameList'
  * @returns {React.ReactNode}
  */
 export default function Home() {
-  const { user, loading: authLoading } = useAuth()
   const { language } = useLang()
 
   return (

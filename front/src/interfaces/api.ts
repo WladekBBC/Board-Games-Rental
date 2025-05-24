@@ -1,9 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
 import { EventSource } from 'eventsource'
+import { getCookie } from "@/app/actions";
+
+export const API_URL = 'http://localhost:3001/'
 
 export interface IUserApi{
   token: string,
-  permissions: string,
 }
 
 export enum Method{
@@ -13,11 +15,12 @@ export enum Method{
   DELETE = "DELETE"
 }
 
-export const request = async <T> (url: string, method: Method, headers?: {[x:string]: string}, body?: string): Promise<T> =>{
-  return fetch(url, {
+export const request = async <T> (url: string, method: Method, body?: string, headers?: {[x:string]: string}): Promise<T> =>{
+  return fetch(API_URL + url, {
     method: method, 
     headers: {
         "Content-Type": "application/json",
+        "Authorization": `${(await getCookie('Authorization'))?.value}`,
         ...headers
     }, 
     body: body, 
@@ -30,18 +33,20 @@ export const request = async <T> (url: string, method: Method, headers?: {[x:str
 }
 
 export const stream = (url: string, setter: Dispatch<SetStateAction<any>>, headers?: {[x:string]: string}) =>{
-  const event = new EventSource(url, {
-    fetch: (input, init) =>
+  const event = new EventSource(API_URL + url, {
+    fetch: async (input, init) =>
       fetch(input, {
         ...init,
         headers: {
+          "Authorization": `${(await getCookie('Authorization'))?.value}`,
           ...init.headers,
           ...headers
         },
-      }),
+      })
   })
   event.onmessage = ({ data }) =>{
     setter(JSON.parse(data))
   }
+
   return () => event.close();
 }

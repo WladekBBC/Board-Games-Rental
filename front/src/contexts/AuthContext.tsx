@@ -3,108 +3,82 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { jwtDecode } from "jwt-decode";
-import { useLang } from './LanguageContext';
 import { IUserApi, Method, request } from '@/interfaces/api';
 import { Perms, toPerms } from '@/interfaces/perms';
 import { AuthContextType, LoggedUserType, LoginDataType } from '@/types/authContext';
+import { chechCookie, deleteCookie, getCookie, setCookie } from '@/app/actions';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<LoggedUserType | null>(null);
   const [JWT, setJWT] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<Perms>(Perms.U);
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { language } = useLang()
 
   useEffect(() => {
     getLocalUser()    
-    setLoading(false);
+    setLoading(false)
   }, []);
 
-  const getLocalUser = () =>{
-    if(localStorage.getItem('JWT') && localStorage.getItem('perms') ){
-      handleAuthSuccess({token: `${localStorage.getItem('JWT')}`, permissions: `${localStorage.getItem('perms')}`})
+  const getLocalUser = async () =>{
+    if(await chechCookie('Authorization')){
+      await handleAuthSuccess(`${(await getCookie('Authorization'))?.value}`)
     }
   }
 
-  const saveLocalUser = (data: IUserApi) =>{
-    localStorage.setItem('JWT', data.token)
-    localStorage.setItem('perms', data.permissions)
+  const saveLocalUser = async (token: string, exp: number) =>{
+    await setCookie('Authorization', token, exp)
   }
 
-  const clearLocalUser = () =>{
-    localStorage.removeItem('JWT')
-    localStorage.removeItem('perms')
+  const clearLocalUser = async () =>{
+    await deleteCookie('Authorization')
   }
 
-  const handleAuthSuccess = async (data: IUserApi) => {
-    const loggedUser = jwtDecode<LoggedUserType>(data.token)
-    const perms = toPerms(data.permissions);
+  const handleAuthSuccess = async (token: string) => {
+    const loggedUser = jwtDecode<LoggedUserType>(token)
+    const perms = toPerms(loggedUser.permissions);
 
-    if(user?.exp && Date.now() > user.exp * 1000){
+    if(Date.now() > loggedUser.exp * 1000){
       signOut();
       return
     }
-    
-    setUser(loggedUser);
-    setJWT(data.token);
-    setPermissions(perms);
-    saveLocalUser(data)
-    router.push('/')
-  };
 
-  const handleAuthError = (err: Error) => {
-    let errorMessage = 'Unknown error'
-    if(err instanceof Error)
-      switch(err.cause){
-        case (400): 
-          errorMessage = language.loginError
-          break;
-        case (500):
-          errorMessage = language.serverError
-      }
-    setError(errorMessage);
-    throw err;
+    if(!(await chechCookie('Authorization'))){
+      await saveLocalUser(token, loggedUser.exp)
+      router.push('/')
+    }
+
+    setUser(loggedUser);
+    setJWT(token);
+    setPermissions(perms);
   };
 
   const register = async (data: LoginDataType) => {
-    return request<IUserApi>('http://localhost:3001/auth/register', Method.POST, {}, JSON.stringify(data))
-      .then((data: IUserApi)=>{
-        handleAuthSuccess(data)
-      }).catch((error: Error)=>{
-        throw error
+    return request<IUserApi>('auth/register', Method.POST, JSON.stringify(data))
+      .then(({token})=>{
+        handleAuthSuccess(token)
       })
   };
   
   const signIn = async (data: LoginDataType) => {
-    setLoading(true);
-    setError(null);
-
-    request<IUserApi>('http://localhost:3001/auth/login', Method.POST, {}, JSON.stringify(data))
-      .then((data: IUserApi)=>{
-        handleAuthSuccess(data)
-      }).catch((error: Error)=>{
-        handleAuthError(error)
+    return request<IUserApi>('auth/login', Method.POST, JSON.stringify(data))
+      .then(({token})=>{
+        handleAuthSuccess(token)
       })
-
-    setLoading(false);
   };
 
   const signOut = async () => {
-    clearLocalUser();
-    setError(null);
+    await clearLocalUser();
     setUser(null);
     router.push('/')
   };
 
   const contextValue = {
-    user,
     loading,
-    error,
+    user,
     JWT,
     permissions,
     register,

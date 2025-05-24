@@ -3,7 +3,7 @@ import { useAuth } from './AuthContext';
 import { Method, request } from '@/interfaces/api';
 import { useLang } from './LanguageContext';
 import { UsersContextType, User, UserUpdate, SearchType } from '@/types/usersContext';
-import { IUser} from '@/interfaces/user'
+import { chechCookie } from '@/app/actions';
  
 const UsersContext = createContext<UsersContextType | undefined>(undefined);
 
@@ -20,9 +20,7 @@ export function UsersProvider({ children }: { children: ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    if (JWT) {
-      fetchUsers();
-    }
+    fetchUsers();
   }, [JWT]);
 
   const SearchedUsers = [...users]
@@ -40,12 +38,16 @@ export function UsersProvider({ children }: { children: ReactNode }) {
   })
 
   const fetchUsers = async () => {
-    request<User[]>('http://localhost:3001/auth/users', Method.GET, {"token": `${JWT}`, "permissions": permissions}).then((data: User[])=>{
-      setUsers(data);
-      setLoading(false);
-    }).catch((err: Error)=>{
-      handleError(err.message);
-    })
+    if(await chechCookie('Authorization')){
+      request<User[]>('auth/users', Method.GET).then((data: User[])=>{
+        setUsers(data);
+        setLoading(false);
+      }).catch((err: Error)=>{
+        handleError(err.message);
+      })
+    }else{
+      setUsers([])
+    }
   };
 
   const handleSuccess = (successMessage: string) =>{
@@ -87,12 +89,7 @@ export function UsersProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    request(
-      `http://localhost:3001/auth/update/${id}`, 
-      Method.PATCH, 
-      {"token": `${JWT}`, "permissions": permissions}, 
-      JSON.stringify(updateData)
-    ).then(()=>{
+    request(`auth/update/${id}`, Method.PATCH, JSON.stringify(updateData)).then(()=>{
       handleSuccess(language.userUpdated);
       setEditing((prev) => {
         const newState = { ...prev };
@@ -111,7 +108,7 @@ export function UsersProvider({ children }: { children: ReactNode }) {
 
     setLoading(true);
 
-    request(`http://localhost:3001/auth/delete/${userToDelete.id}`, Method.DELETE, {"token": `${JWT}`, "permissions": permissions}).then(()=>{
+    request(`auth/delete/${userToDelete.id}`, Method.DELETE).then(()=>{
       handleSuccess(language.userDeleted);
       setUserToDelete(null);
     }).catch((err:Error)=>{
