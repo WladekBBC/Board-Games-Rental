@@ -61,3 +61,8 @@ rental-api/src/env.ts
 
 .vscode
 .gitignore
+.DS_Store
+rental-api/.DS_Store
+.DS_Store
+rental-api/.DS_Store
+
