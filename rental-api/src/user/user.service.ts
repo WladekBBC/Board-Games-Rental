@@ -3,18 +3,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { Perms } from '../enums/permissions.enum';
 import { JwtService } from '@nestjs/jwt';
+import { OnModuleInit } from '@nestjs/common';
 
 @Injectable()
-export class UserService {
+export class UserService implements OnModuleInit{
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ){}
   
+  async onModuleInit() {
+    await this.createAdminIfNotExists()
+  }
+
   /**
    * Creating new user
    * @param createUserDto - email, hashed password and perms of new user
@@ -74,8 +79,8 @@ export class UserService {
 
 
   async createAdminIfNotExists() {
-    const adminEmail = 'admin@example.com';
-    const adminPassword = '123456';
+    const adminEmail = 'admin@rwss.com';
+    const adminPassword = 'K0chamAlg3br3';
     const adminUser = await this.findOne(adminEmail);
     
     if (!adminUser) {
