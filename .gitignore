@@ -42,22 +42,15 @@ rental-api/node_modules
 rental-api/dist
 front/package-lock.json
 rental-api/package-lock.json
-rental-api/.prettierrc 2
-rental-api/eslint.config 2.mjs
-rental-api/package 2.json
-rental-api/package-lock 2.json
 front/package-lock.json
 rental-api/package-lock.json
 front/paths/.DS_Store
 rental-api/.DS_Store
 rental-api/.DS_Store
 rental-api/.DS_Store
-rental-api/src/env.ts
-rental-api/src/env.ts
+rental-api/src/.env.ts
 front/package-lock.json
 front/package.json
-rental-api/src/env.ts
-rental-api/src/env.ts
 
 .vscode
 .gitignore
