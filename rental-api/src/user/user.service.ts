@@ -5,15 +5,14 @@ import { Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { Perms } from '../enums/permissions.enum';
-import { JwtService } from '@nestjs/jwt';
+import { config } from 'src/env';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-    private jwtService: JwtService
-  ){}
+  ){ this.createAdminIfNotExists() }
   
   /**
    * Creating new user
@@ -74,14 +73,12 @@ export class UserService {
 
 
   async createAdminIfNotExists() {
-    const adminEmail = 'admin@example.com';
-    const adminPassword = '123456';
-    const adminUser = await this.findOne(adminEmail);
+    const adminUser = await this.findOne(config.AD_EMAIL);
     
     if (!adminUser) {
-      const hashedPassword = await bcrypt.hash(adminPassword, 10);
+      const hashedPassword = await bcrypt.hash(config.AD_PASS, 10);
       await this.create({
-        email: adminEmail,
+        email: config.AD_EMAIL,
         password: hashedPassword,
         permissions: Perms.A
       });
