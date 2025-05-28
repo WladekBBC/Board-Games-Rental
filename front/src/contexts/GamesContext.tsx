@@ -41,8 +41,8 @@ export function GamesProvider({ children }: { children: ReactNode }) {
    * @param {string} id - ID game to update
    * @param {Partial<Game>} updates - Partial data to update
    */
-  const updateGame = async (id: number, updates: IGame) => {
-    return request<void>(`game/update/${id}`, Method.PATCH, JSON.stringify(updates)).then(()=>setGames(games.map<IGame>((game)=>game.id == id ? updates : game)))
+  const updateGame = async (game: IGame) => {
+    return request<void>(`game/update/${game.id}`, Method.PATCH, JSON.stringify(game)).then(()=>setGames(games.map<IGame>((Oldgame)=>Oldgame.id == game.id ? game : Oldgame)))
   }
 
   const changeQuantity = async (id: number, quantity: number) => {

@@ -13,20 +13,21 @@ type GameFormType = {
     onClose?: () => void
 }
 
-const defaultGame = { 
-        title: "",
-        description: "",
-        imageUrl: "",
-        amount: 1,
-        quantity: 1, 
-        category: "",
+const defaultGame: Omit<IGame, 'id'> = { 
+    title: "",
+    description: "",
+    imageUrl: "",
+    amount: 1,
+    quantity: 1, 
+    category: "",
+    isAvailable: true
 };
 
 export const GameForm = ({ game, onClose }: GameFormType) => {
     const { addGame, updateGame } = useGames() 
     const [isProcessing, setIsProcessing] = useState(false)
     const { language } = useLang()
-    const [formData, setFormData] = useState<Omit<IGame, 'id' | 'isAvailable'>>(game || defaultGame)
+    const [formData, setFormData] = useState<Omit<IGame, 'id'>>(game || defaultGame)
     const [isImageValid, setIsImageValid] = useState(true)
     const [error, setError] = useState<string>()
 
@@ -52,7 +53,7 @@ export const GameForm = ({ game, onClose }: GameFormType) => {
         setError(undefined); 
 
         if (game) {
-            updateGame(game.id, formData).then(()=>{if (onClose) onClose()}).catch((err: Error)=>{
+            updateGame({id: game.id, ...formData}).then(()=>{if (onClose) onClose()}).catch((err: Error)=>{
                 if(err.cause == 400)
                     setError(language.gameExistError)
                 else
