@@ -33,7 +33,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   })
   
   const addGame = async (game: Partial<IGame>) => {
-    return request<void>('game/add', Method.POST, JSON.stringify(game))
+    return request<IGame>('game/add', Method.POST, JSON.stringify(game)).then((newGame)=>setGames([...games, newGame]))
   }
 
   /**
@@ -41,8 +41,8 @@ export function GamesProvider({ children }: { children: ReactNode }) {
    * @param {string} id - ID game to update
    * @param {Partial<Game>} updates - Partial data to update
    */
-  const updateGame = async (id: number, updates: Partial<IGame>) => {
-    return request<void>(`game/update/${id}`, Method.PATCH, JSON.stringify(updates))
+  const updateGame = async (id: number, updates: IGame) => {
+    return request<void>(`game/update/${id}`, Method.PATCH, JSON.stringify(updates)).then(()=>setGames(games.map<IGame>((game)=>game.id == id ? updates : game)))
   }
 
   const changeQuantity = async (id: number, quantity: number) => {
@@ -50,7 +50,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   }
 
   const deleteGame = (id: number) => {
-    return request<void>(`game/delete/${id}`, Method.DELETE)
+    return request<void>(`game/delete/${id}`, Method.DELETE).then(()=>setGames(games.filter((game)=> game.id !== id)))
   }
 
   return (
