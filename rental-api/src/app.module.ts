@@ -13,7 +13,8 @@ import { Game } from './game/entities/game.entity';
 import { Rental } from './rental/entities/rental.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { PermsGuard } from './guards/perms.guard';
-import { config } from './env';
+import { config } from './.env';
+import { SMTPModule } from './smtp/smtp.module';
 
 
 @Module({
@@ -36,7 +37,8 @@ import { config } from './env';
     UserModule,
     AuthModule,
     GameModule,
-    RentalModule],
+    RentalModule,
+    SMTPModule],
   controllers: [AppController],
   providers: [AppService, {provide: APP_GUARD, useClass: PermsGuard}],
 })

@@ -10,7 +10,8 @@ export const rentalTranslations = {
     rentDate: 'Data Wypożyczenia',
     returnDate: 'Data Zwrotu',
     gameDescription: 'Opis Gry',
-    
+    rentGame: 'Wypożycz',
+
     // Statystyki
     activeRentals: 'Aktywne Wypożyczenia',
     yourActiveRentals: 'Twoje Aktywne Wypożyczenia',
@@ -38,6 +39,7 @@ export const rentalTranslations = {
     rentDate: 'Дата Оренди',
     returnDate: 'Дата Повернення',
     gameDescription: 'Опис Гри',
+    rentGame: 'Випозичити',
     
     // Статистика
     activeRentals: 'Активні Оренди',
@@ -66,6 +68,7 @@ export const rentalTranslations = {
     rentDate: 'Rental Date',
     returnDate: 'Return Date',
     gameDescription: 'Game Description',
+    rentGame: 'Rent',
     
     // Statistics
     activeRentals: 'Active Rentals',
@@ -94,6 +97,7 @@ export const rentalTranslations = {
     rentDate: 'レンタル日',
     returnDate: '返却日',
     gameDescription: 'ゲーム説明',
+    rentGame: '借りる',
     
     // 統計
     activeRentals: 'アクティブなレンタル',
