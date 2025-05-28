@@ -10,6 +10,7 @@ import { Perms } from '@/interfaces/perms'
 import { SearchBar } from '@/components/SearchBar'
 import { GameForm } from '@/components/Game/GameForm'
 import { chechCookie } from '../actions'
+import { Spinner } from '@/components/Messages/Spinner'
 
 export default function GamesPage() {
   const router = useRouter()
@@ -30,9 +31,7 @@ export default function GamesPage() {
 
   if (loading || gamesLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
+      <Spinner/>
     )
   }
 
