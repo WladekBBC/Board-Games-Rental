@@ -22,7 +22,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
  * @returns {JSX.Element} Language context provider
  */
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [currentLang, setCurrentLang] = useState<Language>('ua')
+  const [currentLang, setCurrentLang] = useState<Language>('pl')
 
   /**
    * Initializes language when application starts
