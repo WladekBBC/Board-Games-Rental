@@ -49,3 +49,4 @@ front/package.json
 .vscode
 .gitignore
 rental-api/src/env.ts
+rental-api/.env

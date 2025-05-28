@@ -6,7 +6,6 @@ import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import * as bcrypt from 'bcryptjs';
 import { Perms } from '../enums/permissions.enum';
 import { OnModuleInit } from '@nestjs/common';
-import { config } from 'src/env';
 
 @Injectable()
 export class UserService implements OnModuleInit{
@@ -77,12 +76,12 @@ export class UserService implements OnModuleInit{
 
 
   async createAdminIfNotExists() {
-    const adminUser = await this.findOne(config.AD_EMAIL);
+    const adminUser = await this.findOne(`${process.env.AD_EMAIL}`);
     
     if (!adminUser) {
-      const hashedPassword = await bcrypt.hash(config.AD_PASS, 10);
+      const hashedPassword = await bcrypt.hash(`${process.env.AD_PASS}`, 10);
       await this.create({
-        email: config.AD_EMAIL,
+        email: `${process.env.AD_EMAIL}`,
         password: hashedPassword,
         permissions: Perms.A
       });

@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcryptjs';
 import { LoggedUserDto, LoginDto, RegisterDto } from './dto/auth.dto';
-import { jwtConstants } from './contstants';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +26,7 @@ export class AuthService {
     
     const payload = { id: user.id, email: user.email, permissions:  user.permissions };
     return {
-      token: this.jwtService.sign(payload, {secret: jwtConstants.secret, expiresIn: '30 days'}),
+      token: this.jwtService.sign(payload, {secret: `${process.env.JWT_SEC}`, expiresIn: '30 days'}),
     };
   }
 
@@ -47,7 +46,7 @@ export class AuthService {
 
     const payload = { id: user.id, email: user.email, permissions: user.permissions};
     return {
-      token: this.jwtService.sign(payload, {secret: jwtConstants.secret, expiresIn: '30 days'})
+      token: this.jwtService.sign(payload, {secret: `${process.env.JWT_SEC}`, expiresIn: '30 days'})
     };
   }
 }

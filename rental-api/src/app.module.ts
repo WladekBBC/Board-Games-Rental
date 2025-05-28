@@ -1,6 +1,6 @@
 
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -13,26 +13,21 @@ import { Game } from './game/entities/game.entity';
 import { Rental } from './rental/entities/rental.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { PermsGuard } from './guards/perms.guard';
-import { config } from './env';
-
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: './.env'
-    }),
+    ConfigModule.forRoot({isGlobal: true}),
     TypeOrmModule.forRoot({
       type:'mysql',
-      host: config.DB_HOST,
-      port: config.DB_PORT,
-      username: config.DB_USER,
-      password: config.DB_PASS,
-      database: config.DB_NAME,
+      host: process.env.DB_HOST,
+      port: parseInt(`${process.env.DB_PORT}`),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME,
       entities: [User, Game, Rental],
       synchronize: false,
       autoLoadEntities: true,
-    }),
+  }),
     UserModule,
     AuthModule,
     GameModule,
