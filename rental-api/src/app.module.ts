@@ -25,7 +25,7 @@ import { PermsGuard } from './guards/perms.guard';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       entities: [User, Game, Rental],
-      synchronize: false,
+      synchronize: true,
       autoLoadEntities: true,
   }),
     UserModule,
