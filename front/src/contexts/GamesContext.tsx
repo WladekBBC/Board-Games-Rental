@@ -45,8 +45,12 @@ export function GamesProvider({ children }: { children: ReactNode }) {
     return request<void>(`game/update/${game.id}`, Method.PATCH, JSON.stringify(game)).then(()=>setGames(games.map<IGame>((Oldgame)=>Oldgame.id == game.id ? game : Oldgame)))
   }
 
-  const changeQuantity = async (id: number, quantity: number) => {
-    return request<void>(`game/change-quantity`, Method.PATCH, JSON.stringify({ id, quantity }))
+  const changeQuantity = (id: number, quantity: number) => {
+    setGames(games.map((g)=>{
+      if(g.id == id) 
+        g.quantity = quantity
+      return g
+    }))
   }
 
   const deleteGame = (id: number) => {

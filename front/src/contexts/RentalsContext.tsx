@@ -27,22 +27,18 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchType, setSearchType] = useState<SearchType>('index')
 
-  const { user } = useAuth()
+  const { JWT } = useAuth()
 
   useEffect(() => {
-    getRentals();
-    setLoading(false);
-  }, [user])
-
-  const getRentals = async () =>{
-    let connection = () => {};
-    if(user)
-      connection = stream('rental/stream-rentals', setRentals);
-    else{
-      connection()
-      setRentals([])
+    const getRentals = () =>{
+      if(JWT)
+        stream('rental/stream-rentals', setRentals)
     }
-  }
+    getRentals()
+    setLoading(false);
+  }, [JWT])
+
+
 
   const filteredAndSortedRentals = [...rentals]
     .filter(rental => {

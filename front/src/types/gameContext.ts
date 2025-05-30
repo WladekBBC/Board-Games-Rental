@@ -9,7 +9,7 @@ export type GamesContextType = {
     addGame: (game: Partial<IGame>) => Promise<void>
     updateGame: (game: IGame) => Promise<void>
     deleteGame: (id: number) => void
-    changeQuantity: (id: number, quantity: number) => Promise<void>
+    changeQuantity: (id: number, quantity: number) => void
     searchType: SearchType
     setSearchType: (type: SearchType) => void
     searchQuery: string

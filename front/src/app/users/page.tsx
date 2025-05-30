@@ -10,6 +10,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import ErrorField from '@/components/Messages/ErrorField';
 import SuccessField from '@/components/Messages/SuccessField';
 import DeleteDialog from '@/components/DeleteDialog';
+import { CustomFormInput } from '@/components/Helpers/FormInput';
+import { CustomFormSelect } from '@/components/Helpers/FormSelect';
   
 export default function UsersPage() {
   const { language } = useLang();
@@ -148,34 +150,13 @@ export default function UsersPage() {
                   return (
                     <tr key={currentUser.id}>
                       <td className="px-2 py-4 text-sm">
-                        <input
-                          maxLength={255}
-                          type="email"
-                          value={editing[currentUser.id]?.email ?? currentUser.email}
-                          onChange={(e) => handleEditChange(currentUser.id, 'email', e.target.value)}
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        />
+                        <CustomFormInput type="email" value={editing[currentUser.id]?.email ?? currentUser.email} changeHandler={(e) => handleEditChange(currentUser.id, 'email', e.target.value)}/>
                       </td>
                       <td className="px-2 py-4 text-sm">
-                        <select
-                          value={editing[currentUser.id]?.permissions ?? currentUser.permissions}
-                          onChange={(e) => handleEditChange(currentUser.id, 'permissions', e.target.value)}
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        >
-                          <option value="Admin">Admin</option>
-                          <option value="RWSS">RWSS</option>
-                          <option value="User">User</option>
-                        </select>
+                        <CustomFormSelect value={editing[currentUser.id]?.permissions ?? currentUser.permissions} changeHandler={(e) => handleEditChange(currentUser.id, 'permissions', e.target.value)} options={[{v: "Admin", k: "Admin"}, {v: "RWSS", k: "RWSS"}, {v: "User", k: "User"}]}/>
                       </td>
                       <td className="px-2 py-4 text-sm">
-                        <input
-                          maxLength={255}
-                          type="password"
-                          placeholder={language.newPassword}
-                          value={editing[currentUser.id]?.password ?? ''}
-                          onChange={(e) => handleEditChange(currentUser.id, 'password', e.target.value)}
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        />
+                        <CustomFormInput type='password' name='' placeholder={language.newPassword} value={editing[currentUser.id]?.password ?? ''} changeHandler={(e) => handleEditChange(currentUser.id, 'password', e.target.value)} autoComplete='new-password'/>
                       </td>
                       <td className="px-2 py-4 text-center text-sm font-medium space-x-2">
                         <button

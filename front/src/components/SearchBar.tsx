@@ -45,7 +45,7 @@ export function SearchBar({
   return (
     <div
       ref={dropdownRef}
-      className={`flex w-full max-w-full items-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 ${className}`}
+      className={`flex w-full max-w-full items-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 overflow-hidden ${className}`}
       style={{ minWidth: 0 }}
     >
       <div className="relative flex-shrink-0">
