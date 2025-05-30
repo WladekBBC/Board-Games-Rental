@@ -48,7 +48,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if(!(await chechCookie('Authorization'))){
       await saveLocalUser(token, loggedUser.exp)
-      router.push('/')
     }
 
     setUser(loggedUser);
