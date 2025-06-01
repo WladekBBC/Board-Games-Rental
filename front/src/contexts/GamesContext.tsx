@@ -14,6 +14,7 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('')
   
   useEffect(() => {
+    setLoading(true)
     stream('game/stream-games', setGames)
     setLoading(false)
   }, [])

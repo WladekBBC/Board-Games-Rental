@@ -1,12 +1,8 @@
-import { useAuth } from "@/contexts/AuthContext"
-import { useGames } from "@/contexts/GamesContext"
 import { useLang } from "@/contexts/LanguageContext"
 import { useRentals } from "@/contexts/RentalsContext"
-import { Perms } from "@/interfaces/perms"
 import { IRental } from "@/interfaces/rental"
-import { useRouter } from "next/router"
-import { useState } from "react"
 import { SingleRental } from "./SingleRental"
+import { Spinner } from "../Messages/Spinner"
 
 type RentalListType = {
     rentals: IRental[]
@@ -15,7 +11,7 @@ type RentalListType = {
 }
 
 export const RentalList = ({handleError, handleSuccess, rentals}: RentalListType) =>{
-    const { sortConfig, setSortConfig } = useRentals()
+    const { sortConfig, setSortConfig, loading } = useRentals()
     const { language } = useLang()
 
     /**
@@ -68,9 +64,12 @@ export const RentalList = ({handleError, handleSuccess, rentals}: RentalListType
         </thead>
         
         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-          {rentals.map(rental => (
+        {loading ? 
+          <Spinner full={false}/> : 
+          rentals.map(rental => (
             <SingleRental rental={rental} handleError={handleError} handleSuccess={handleSuccess} key={rental.id}/>
-          ))}
+          ))
+        }
         </tbody>
       </table>
     )

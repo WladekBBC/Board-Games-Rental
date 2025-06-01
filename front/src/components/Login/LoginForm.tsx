@@ -1,7 +1,8 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useLang } from "@/contexts/LanguageContext";
-import { FormEvent, useEffect, useState } from "react";
+import { useState } from "react";
 import ErrorField from "../Messages/ErrorField";
+import { useRouter } from "next/navigation";
 
 type LoginFormType = {
   isRegister?: boolean
@@ -15,7 +16,8 @@ export const LoginForm = ({isRegister}: LoginFormType) => {
 
   const { signIn, register } = useAuth();
   const { language } = useLang();
-  
+  const router = useRouter();
+
   const validate = () =>{
     setError('');
 
@@ -47,10 +49,10 @@ export const LoginForm = ({isRegister}: LoginFormType) => {
         .catch((err: Error)=>setError(err.cause == 400 ? language.userAlreadyExists : language.serverError))
     else
       signIn({email: email, password: password})
-        .catch((err: Error)=>{
-          setError(err.cause == 400 ? language.loginError : language.serverError)
-        })
+        .catch((err: Error)=>setError(err.cause == 400 ? language.loginError : language.serverError))
 
+    if(!error)
+      router.push('/')
     setLoading(false)
   }
 

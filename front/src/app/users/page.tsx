@@ -3,10 +3,6 @@ import { Spinner } from '@/components/Messages/Spinner';
 import { useLang } from '@/contexts/LanguageContext';
 import { useUsers } from '@/contexts/UsersContext';
 import { SearchBar } from '@/components/SearchBar';
-import { chechCookie } from '../actions' 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
 import ErrorField from '@/components/Messages/ErrorField';
 import SuccessField from '@/components/Messages/SuccessField';
 import DeleteDialog from '@/components/DeleteDialog';
@@ -15,7 +11,6 @@ import { CustomFormSelect } from '@/components/Helpers/FormSelect';
   
 export default function UsersPage() {
   const { language } = useLang();
-  const router = useRouter();
   const {
     loading,
     error,
@@ -34,7 +29,6 @@ export default function UsersPage() {
     setError,
     setSuccess
   } = useUsers();
-  const { user: authUser } = useAuth();
 
   const handleError = (errorMessage: string) =>{
     setError(errorMessage);
@@ -45,10 +39,6 @@ export default function UsersPage() {
     setSuccess(message)
     setTimeout(() => setSuccess(null), 5000)
   }
-
-  useEffect(() => {
-    chechCookie('Authorization').then((res) => {if (!res) router.push("/")})
-  }, [authUser]);
   
   const handleEditChange = (userId: number, field: 'email' | 'permissions' | 'password', value: string) => {
     setEditing((prev) => ({

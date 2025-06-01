@@ -1,7 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { useGames } from '@/contexts/GamesContext'
 import { useLang } from '@/contexts/LanguageContext'
 import { SingleGame } from '@/components/Game/SingleGame'
@@ -9,33 +7,16 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Perms } from '@/interfaces/perms'
 import { SearchBar } from '@/components/SearchBar'
 import { GameForm } from '@/components/Game/GameForm'
-import { chechCookie } from '../actions'
 import { Spinner } from '@/components/Messages/Spinner'
+import { useLoading } from '@/contexts/LoadingContext'
 
 export default function GamesPage() {
-  const router = useRouter()
-  const { permissions, user, loading } = useAuth()
-  const {
-      loading: gamesLoading, 
-      searchType,
-      setSearchType,
-      searchQuery,
-      setSearchQuery,
-      SearchedGames
-      } = useGames()
+  const { searchType, searchQuery, SearchedGames, setSearchType, setSearchQuery } = useGames()
+  const { permissions } = useAuth()
   const { language } = useLang()
+  const { loading } = useLoading()
 
-  useEffect(() => {
-    chechCookie('Authorization').then((res) => {if (!res) router.push("/")})
-  }, [user])
-
-  if (loading || gamesLoading) {
-    return (
-      <Spinner/>
-    )
-  }
-
-  if((!loading || !gamesLoading) && permissions == Perms.A)
+  if(!loading && permissions == Perms.A)
     return (
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">{language.manageGame}</h1>
@@ -63,5 +44,5 @@ export default function GamesPage() {
         </div>
       </div>
     )
-  return null
+  return <Spinner/>
 } 

@@ -19,6 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
+    setLoading(true)
     getLocalUser()    
     setLoading(false)
   }, []);
@@ -56,22 +57,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register = async (data: LoginDataType) => {
+    setLoading(true)
+
     return request<IUserApi>('auth/register', Method.POST, JSON.stringify(data))
-      .then(({token})=>{
-        handleAuthSuccess(token)
-      })
+      .then(({token})=>{handleAuthSuccess(token)})
+      .finally(()=>{setLoading(false)})
   };
   
   const signIn = async (data: LoginDataType) => {
+    setLoading(true)
+
     return request<IUserApi>('auth/login', Method.POST, JSON.stringify(data))
-      .then(({token})=>{
-        handleAuthSuccess(token)
-      })
+      .then(({token})=>{handleAuthSuccess(token)})
+      .finally(()=>{setLoading(false)})
   };
 
   const signOut = async () => {
+    setLoading(true)
     await clearLocalUser();
     setUser(null);
+    setJWT(null);
+    setLoading(false)
     router.push('/')
   };
 

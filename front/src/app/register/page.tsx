@@ -1,39 +1,39 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useLang } from '@/contexts/LanguageContext';
 import { LoginForm } from '@/components/Login/LoginForm';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
-import { chechCookie } from '../actions'
+import { Spinner } from '@/components/Messages/Spinner';
+import { useLoading } from '@/contexts/LoadingContext';
 
-const RegisterPage = () => {
+/**
+ * Register page, if user is logged, moving to home page
+ * @returns {React.ReactNode}
+ */
+export default function RegisterPage (){
   const { language } = useLang();
-  const { user } = useAuth();
-  const router = useRouter();
+  const { JWT } = useAuth();
+  const { loading } = useLoading()
 
-  useEffect(() => {
-    chechCookie('Authorization').then((res) => {if (res) router.push("/")})
-  }, [user])
+  if(!JWT && !loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+          <h2 className="text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+            {language.register}
+          </h2>
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
-        <h2 className="text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-          {language.register}
-        </h2>
+          <LoginForm isRegister={true}/>
 
-        <LoginForm isRegister={true}/>
-
-        <div className="flex items-center justify-between">
-          <Link href="/login">
-            <div className="text-blue-500 hover:text-blue-700">{language.login}</div>
-          </Link>
+          <div className="flex items-center justify-between">
+            <Link href="/login">
+              <div className="text-blue-500 hover:text-blue-700">{language.login}</div>
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-export default RegisterPage;
+    );
+  return <Spinner/>
+}

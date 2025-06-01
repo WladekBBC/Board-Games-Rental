@@ -1,7 +1,6 @@
 'use client'
 
 import { useLang } from '@/contexts/LanguageContext'
-import { Language } from '@/lib/i18n/translations'
 
 /**
  * Component for toggling between different languages

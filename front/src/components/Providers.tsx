@@ -7,6 +7,7 @@ import { RentalsProvider } from '@/contexts/RentalsContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import { UsersProvider } from '@/contexts/UsersContext'
+import { LoadingProvider } from '@/contexts/LoadingContext'
 
 interface ProvidersProps {
   children: ReactNode
@@ -16,15 +17,17 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <AuthProvider>
-          <GamesProvider>
+        <GamesProvider>
+          <AuthProvider>
             <RentalsProvider>
               <UsersProvider>
-                {children}
+                <LoadingProvider>
+                  {children}
+                </LoadingProvider>
               </UsersProvider>
             </RentalsProvider>
-          </GamesProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </GamesProvider>
       </LanguageProvider>
     </ThemeProvider>
   )
