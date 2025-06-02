@@ -92,7 +92,7 @@ export const GameForm = ({ game, onClose }: GameFormType) => {
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <CustomFormInput name="title" label={language.gameTitle} type="text" value={formData.title} changeHandler={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))} />
-            <CustomFormInput name="description" label={language.gameDesc} type="textarea" value={formData.description} changeHandler={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} />
+            <CustomFormInput name="description" label={language.gameDesc} lenght={500} type="textarea" value={formData.description} changeHandler={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} />
             <CustomFormInput name="imageUrl" label={language.gameImageUrl} type="url" value={formData.imageUrl} changeHandler={(e) => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))} />
             {formData.imageUrl && isImageValid && (
                 <div className="mt-2 relative h-48 w-full">
