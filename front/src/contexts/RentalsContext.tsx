@@ -25,7 +25,7 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'rentedAt', direction: 'desc' })
   const [searchQuery, setSearchQuery] = useState('')
-  const [searchType, setSearchType] = useState<SearchType>('index')
+  const [searchType, setSearchType] = useState<SearchType>('title')
 
   const { JWT } = useAuth()
 

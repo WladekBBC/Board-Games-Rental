@@ -57,8 +57,8 @@ export default function RentalsPage() {
 
         <SearchBar
               options={[
-                { value: 'index', label: language.searchByIndex },
                 { value: 'title', label: language.searchByTitle },
+                { value: 'index', label: language.searchByIndex },
                 { value: 'date', label: language.searchByDate }
               ]}
               value={searchQuery}

@@ -8,7 +8,8 @@ front/.yarn/install-state.gz
 
 # testing
 front/coverage
-
+rental-api/env
+front/env
 # next.js
 front/.next/
 front/out/

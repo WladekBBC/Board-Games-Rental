@@ -65,7 +65,7 @@ export const RentalForm = ({handleError, handleSuccess, gameId}: RentalFormType)
             <form onSubmit={handleAddRental} className="space-y-4">
                 <CustomFormInput name="personId" label={language.indexNumber} value={person} type="text" changeHandler={(e) => setPerson(e.target.value)} placeholder={language.indexNumber}/>
 
-                <RentalAutocomplete games={games} label={language.gameId} value={game?.title} changeHandler={setGame}/>
+                <RentalAutocomplete games={games} label={language.gameId} value={game?.title} changeHandler={setGame} placeholder={language.gameId}/>
 
                 <button
                     type="submit"
