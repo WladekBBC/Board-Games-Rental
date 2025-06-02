@@ -30,6 +30,7 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
   const { JWT } = useAuth()
 
   useEffect(() => {
+    setLoading(true)
     const getRentals = () =>{
       if(JWT)
         stream('rental/stream-rentals', setRentals)
@@ -37,8 +38,6 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
     getRentals()
     setLoading(false);
   }, [JWT])
-
-
 
   const filteredAndSortedRentals = [...rentals]
     .filter(rental => {

@@ -1,8 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { EventSource } from 'eventsource'
 import { getCookie } from "@/app/actions";
-
-export const API_URL = 'http://localhost:3001/'
+import { API_URL } from "env";
 
 export interface IUserApi{
   token: string,

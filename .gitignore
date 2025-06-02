@@ -53,3 +53,4 @@ rental-api/src/env.ts
 rental-api/.env
 front/env.ts
 rental-api/src/.env.ts
+rental-api/.dev.env

@@ -57,19 +57,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register = async (data: LoginDataType) => {
-    setLoading(true)
-
     return request<IUserApi>('auth/register', Method.POST, JSON.stringify(data))
       .then(({token})=>{handleAuthSuccess(token)})
-      .finally(()=>{setLoading(false)})
   };
   
   const signIn = async (data: LoginDataType) => {
-    setLoading(true)
-
     return request<IUserApi>('auth/login', Method.POST, JSON.stringify(data))
       .then(({token})=>{handleAuthSuccess(token)})
-      .finally(()=>{setLoading(false)})
   };
 
   const signOut = async () => {

@@ -6,6 +6,8 @@ import { LoginForm } from '@/components/Login/LoginForm';
 import Link from 'next/link';
 import { Spinner } from '@/components/Messages/Spinner';
 import { useLoading } from '@/contexts/LoadingContext';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 /**
  * Login page, if user is logged, moving to home page
@@ -15,6 +17,12 @@ export default function LoginPage() {
   const { JWT } = useAuth();
   const { language } = useLang();
   const { loading } = useLoading()
+  const router = useRouter();
+
+  useEffect(()=>{
+    if(JWT && !loading)
+      router.push('/')
+  }, [JWT, loading])
 
   if(!JWT && !loading)
     return (

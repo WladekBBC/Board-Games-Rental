@@ -8,7 +8,7 @@ export class Game {
     @Column({unique: true})
     title: string;
 
-    @Column()
+    @Column({length: 500})
     description: string;
 
     @Column()
@@ -22,4 +22,13 @@ export class Game {
 
     @Column()
     quantity: number;
+
+    @Column()
+    ages: string;
+
+    @Column()
+    time: string;
+
+    @Column()
+    players: string;
 }

@@ -20,7 +20,6 @@ const defaultGame: Omit<IGame, 'id'> = {
     amount: 1,
     quantity: 1, 
     category: "",
-    isAvailable: true
 };
 
 export const GameForm = ({ game, onClose }: GameFormType) => {

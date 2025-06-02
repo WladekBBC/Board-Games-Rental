@@ -5,4 +5,7 @@ export class CreateGameDto {
     category: string;
     amount: number;
     quantity?: number;
+    ages?: string;
+    time?: string;
+    players?: string;
 }

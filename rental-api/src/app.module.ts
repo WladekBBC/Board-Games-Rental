@@ -1,8 +1,6 @@
 
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
@@ -25,15 +23,15 @@ import { PermsGuard } from './guards/perms.guard';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       entities: [User, Game, Rental],
-      synchronize: true,
+      synchronize: false,
       autoLoadEntities: true,
   }),
     UserModule,
     AuthModule,
     GameModule,
     RentalModule],
-  controllers: [AppController],
-  providers: [AppService, {provide: APP_GUARD, useClass: PermsGuard}],
+  controllers: [],
+  providers: [{provide: APP_GUARD, useClass: PermsGuard}],
 })
 
 export class AppModule{};

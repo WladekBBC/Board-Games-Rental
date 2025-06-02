@@ -6,5 +6,7 @@ export interface IGame {
     category: string;
     amount: number;
     quantity: number;
-    isAvailable: boolean;
+    ages?: string;
+    time?: string;
+    players?: string;
 }

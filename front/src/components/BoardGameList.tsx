@@ -96,11 +96,11 @@ export function BoardGameList({ games, isAdmin, onEdit, onDelete }: BoardGameLis
                   {language.inStock}: {game.quantity} {language.pcs}
                 </span>
                 <span className={`px-3 py-1 rounded-full text-sm ${
-                  game.isAvailable 
+                  game.quantity > 0 
                     ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
                     : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                 }`}>
-                  {game.isAvailable ? language.gameAvailable : language.gameUnavailable}
+                  {game.quantity > 0 ? language.gameAvailable : language.gameUnavailable}
                 </span>
               </div>
               {isAdmin && (
