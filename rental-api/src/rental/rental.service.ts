@@ -17,9 +17,8 @@ export class RentalService {
 
   async create(createRentalDto: CreateRentalDto) {
     const game = await this.gameRepo.findOneBy({id: createRentalDto.game.id});
-    if(game && game?.quantity > 0){
-      await this.gameRepo.update(game.id, {quantity: game.quantity-1});
-      return this.rentalRepo.save(createRentalDto);
+    if(game && game.quantity > 0){
+      return this.gameRepo.save({...game, quantity: game.quantity-1}).then((res)=>(this.rentalRepo.save({...createRentalDto, game: res})));
     }
     throw new NotAcceptableException;
   }

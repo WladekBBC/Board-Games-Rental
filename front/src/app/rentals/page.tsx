@@ -53,7 +53,11 @@ export default function RentalsPage() {
 
         {success && (<SuccessField success={`${success}`}/>)}
 
-        <RentalForm handleError={handleError} handleSuccess={handleSuccess}/>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4">{language.addRent}</h2>
+          <RentalForm handleError={handleError} handleSuccess={handleSuccess}/>
+        </div>
 
         <SearchBar
               options={[

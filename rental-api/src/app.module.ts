@@ -14,7 +14,7 @@ import { PermsGuard } from './guards/perms.guard';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal: true, envFilePath:"./.dev.env"}),
+    ConfigModule.forRoot({isGlobal: true}),
     TypeOrmModule.forRoot({
       type:'mysql',
       host: process.env.DB_HOST,

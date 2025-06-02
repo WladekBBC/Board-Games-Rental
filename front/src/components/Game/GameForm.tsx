@@ -20,6 +20,9 @@ const defaultGame: Omit<IGame, 'id'> = {
     amount: 1,
     quantity: 1, 
     category: "",
+    ages: "",
+    players: "",
+    time: ""
 };
 
 export const GameForm = ({ game, onClose }: GameFormType) => {
@@ -122,6 +125,14 @@ export const GameForm = ({ game, onClose }: GameFormType) => {
             {game && (
                 <CustomFormInput name="quantity" label={language.gameAvailableNumber} type="number" min={0} max={formData.amount} value={formData.quantity} changeHandler={(e) => setFormData(prev => ({ ...prev, quantity: +e.target.value }))} />
             )}
+
+            <div className="w-100 inline-flex flex-row flex-wrap justify-around">
+                <CustomFormInput name="ages" label={language.gameAges} type="string" value={formData.ages} changeHandler={(e) => setFormData(prev => ({ ...prev, ages: e.target.value }))} required={false}/>
+
+                <CustomFormInput name="players" label={language.gamePlayers} type="string" value={formData.players} changeHandler={(e) => setFormData(prev => ({ ...prev, players: e.target.value }))} required={false}/>
+
+                <CustomFormInput name="time" label={language.gameTime} type="string" value={formData.time} changeHandler={(e) => setFormData(prev => ({ ...prev, time: e.target.value }))} required={false}/>
+            </div>
 
             <ErrorField error={error} />
 
