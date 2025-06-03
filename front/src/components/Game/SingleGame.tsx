@@ -17,23 +17,26 @@ import { GameForm } from "./GameForm"
 type GameProp = {
     game: IGame
     actions?: boolean
+    displayFullDescription?: boolean
 }
 
-export const SingleGame = ({ game, actions }: GameProp) => {
+export const SingleGame = ({ game, actions, displayFullDescription}: GameProp) => {
     const { language } = useLang()
     const { deleteGame } = useGames()
     const { permissions } = useAuth()
-    const [showRentalModal, setShowRentalModal] = useState(false) 
+    const [showRentalModal, setShowRentalModal] = useState(false)
     const [editingGame, setEditingGame] = useState<boolean>(false)
     const [isProcessing, setIsProcessing] = useState(false)
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-    const [isGamesPage, setIsGamesPage] = useState(false);
+    const [showFullDescriptionModal, setShowFullDescriptionModal] = useState(false);
+    const [isGamesPage, setIsGamesPage] = useState(false)
+    const [showFullDescription, setShowFullDescription] = useState(false);
     const [ error, setError ] = useState<string>()
 
     useEffect(() => {
         setIsGamesPage(window.location.pathname === "/games");
     }, []);
-    
+
     const handleDeleteGame = async (id: number) => {
         setIsProcessing(true)
         deleteGame(id)
@@ -43,7 +46,7 @@ export const SingleGame = ({ game, actions }: GameProp) => {
 
     /**
    * Handle error message
-   * @param {string} errorMessage - Error message 
+   * @param {string} errorMessage - Error message
    */
   const handleError = (errorMessage: string) =>{
     setError(errorMessage);
@@ -57,6 +60,9 @@ export const SingleGame = ({ game, actions }: GameProp) => {
   const handleSuccess = (successMessage: string) =>{
     setShowRentalModal(false)
   }
+
+    const descriptionText = game.description || "";
+    const descriptionMaxLength = 255;
 
     return (
         <>
@@ -86,18 +92,31 @@ export const SingleGame = ({ game, actions }: GameProp) => {
                         </div>
                     </div>
 
-                    <div className="mt-2 mb-2 text-sm text-gray-600 dark:text-gray-300 min-h-[3em]">{game.description}</div>
+                    <div className="mt-2 mb-2 text-sm text-gray-600 dark:text-gray-300 min-h-[3em]">
+                        {displayFullDescription || descriptionText.length <= descriptionMaxLength
+                            ? descriptionText
+                            : `${descriptionText.slice(0, descriptionMaxLength)}...`}
+
+                        {!displayFullDescription && !showFullDescriptionModal && (descriptionText.length > descriptionMaxLength && (
+                            <button
+                                onClick={() => setShowFullDescriptionModal(true)}
+                                className="ml-2 text-blue-600 dark:text-blue-400 underline text-xs"
+                            >
+                                {language.showMore}
+                            </button>
+                        ))}
+                    </div>
 
                     <span className="mt-4 p-1 text-sm border-2 rounded-md border-gray-500 text-gray-500 dark:text-gray-400 dark:border-gray-400">{game.category}</span>
                     {game.ages && <span className="ml-2 mt-4 p-1 text-sm border-2 rounded-md border-gray-500 text-gray-500 dark:text-gray-400 dark:border-gray-400">{game.ages}</span>}
                     {game.players && <span className="ml-2 mt-4 p-1 text-sm border-2 rounded-md border-gray-500 text-gray-500 dark:text-gray-400 dark:border-gray-400">{game.players}</span>}
                     {game.time && <span className="ml-2 mt-4 p-1 text-sm border-2 rounded-md border-gray-500 text-gray-500 dark:text-gray-400 dark:border-gray-400">{game.time}</span>}
 
-                    <div className="inline-flex w-full">                        
+                    <div className="inline-flex w-full">
                         {!isGamesPage && (permissions === Perms.R || permissions === Perms.A) && (
                             <div className="mt-3 ml-auto space-x-2 inline-flex flex-wrap justify-end">
                                 <button
-                                    onClick={() => setShowRentalModal(true)} 
+                                    onClick={() => setShowRentalModal(true)}
                                     className="px-3 py-1 bg-green-100 text-green-600 rounded hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800"
                                 >{language.rentMainPage}
                                 </button>
@@ -120,11 +139,16 @@ export const SingleGame = ({ game, actions }: GameProp) => {
                     </div>
                 </div>
             </div>
-
+            
+            <DialogModal show={showFullDescriptionModal} title={game.title} onClose={() => setShowFullDescriptionModal(false)}>
+                <div className="prose dark:prose-invert max-w-none p-4">
+                    <SingleGame game={game} displayFullDescription={true} actions={false} /> 
+                </div>
+            </DialogModal>
+            
             <DialogModal show={editingGame} title={language.editGame} onClose={() => setEditingGame(false)}>
                 <GameForm game={game} onClose={() => setEditingGame(false)}/>
             </DialogModal>
-
             <DeleteDialog
                 isOpen={showDeleteConfirm}
                 onClose={() => setShowDeleteConfirm(false)}
@@ -143,8 +167,6 @@ export const SingleGame = ({ game, actions }: GameProp) => {
                     handleSuccess={handleSuccess}
                 />
             </DialogModal>
-
         </>
     )
 }
-
