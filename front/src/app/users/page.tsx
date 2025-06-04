@@ -2,10 +2,10 @@
 import { Spinner } from '@/components/Messages/Spinner';
 import { useLang } from '@/contexts/LanguageContext';
 import { useUsers } from '@/contexts/UsersContext';
-import { SearchBar } from '@/components/SearchBar';
+import { SearchBar } from '@/components/Helpers/SearchBar';
 import ErrorField from '@/components/Messages/ErrorField';
 import SuccessField from '@/components/Messages/SuccessField';
-import DeleteDialog from '@/components/DeleteDialog';
+import DeleteDialog from '@/components/Helpers/DeleteDialog';
 import { CustomFormInput } from '@/components/Helpers/FormInput';
 import { CustomFormSelect } from '@/components/Helpers/FormSelect';
   

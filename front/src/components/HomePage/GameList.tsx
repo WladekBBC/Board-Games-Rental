@@ -5,7 +5,7 @@ import { useLang } from '@/contexts/LanguageContext'
 import { SingleGame } from '../Game/SingleGame'
 import { SearchType } from '@/types/gameContext'
 import { useState } from 'react'
-import { SearchBar } from '../SearchBar'
+import { SearchBar } from '../Helpers/SearchBar'
 import { Spinner } from '../Messages/Spinner'
 /**
  * Home page

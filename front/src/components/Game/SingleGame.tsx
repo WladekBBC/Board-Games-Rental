@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { imageLoader } from '@/lib/utils/imageLoader'
 import { useLang } from "@/contexts/LanguageContext"
 import { useState, useEffect } from "react"
-import DeleteDialog from '@/components/DeleteDialog'
+import DeleteDialog from '@/components/Helpers/DeleteDialog'
 import { useAuth } from '@/contexts/AuthContext'
 import { Perms } from '@/interfaces/perms'
 import { RentalForm } from "../Rental/RentalForm"
