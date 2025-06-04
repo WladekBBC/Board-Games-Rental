@@ -7,7 +7,6 @@ import { Perms } from 'src/enums/permissions.enum';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { Game } from './entities/game.entity';
 import { from, map, Observable } from 'rxjs';
-import { ChangeQuantity } from './dto/change-quantity.dto';
 
 @Controller('game')
 export class GameController {
@@ -35,13 +34,6 @@ export class GameController {
   @Patch('/update/:id')
   update(@Param('id') id: number, @Body() updateGameDto: UpdateGameDto) {
     return this.gameService.update(id, updateGameDto);
-  }
-
-  @UseGuards(AuthGuard)
-  @Permission([Perms.R, Perms.A])
-  @Patch('/change-quantity')
-  changeQuantity(@Body() changeQuantityDto: ChangeQuantity) {
-    return this.gameService.changeQuantity(changeQuantityDto);
   }
 
   @UseGuards(AuthGuard)

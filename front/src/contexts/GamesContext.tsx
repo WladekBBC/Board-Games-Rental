@@ -33,8 +33,8 @@ export function GamesProvider({ children }: { children: ReactNode }) {
     }
   })
   
-  const addGame = async (game: Partial<IGame>) => {
-    return request<IGame>('game/add', Method.POST, JSON.stringify(game)).then((newGame)=>setGames([...games, newGame]))
+  const addGame = async (game: Omit<IGame, 'id'>) => {
+    return request('game/add', Method.POST, JSON.stringify(game)).then((response: any)=>setGames([...games, {id: +response.identifiers[0].id, ...game}]))
   }
 
   /**

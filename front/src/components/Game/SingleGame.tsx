@@ -30,8 +30,8 @@ export const SingleGame = ({ game, actions, displayFullDescription}: GameProp) =
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
     const [showFullDescriptionModal, setShowFullDescriptionModal] = useState(false);
     const [isGamesPage, setIsGamesPage] = useState(false)
-    const [showFullDescription, setShowFullDescription] = useState(false);
     const [ error, setError ] = useState<string>()
+    const descriptionMaxLength = 255;
 
     useEffect(() => {
         setIsGamesPage(window.location.pathname === "/games");
@@ -45,28 +45,25 @@ export const SingleGame = ({ game, actions, displayFullDescription}: GameProp) =
     }
 
     /**
-   * Handle error message
-   * @param {string} errorMessage - Error message
-   */
-  const handleError = (errorMessage: string) =>{
-    setError(errorMessage);
-    setTimeout(() => setError(undefined), 5000);
-  }
+     * Handle error message
+     * @param {string} errorMessage - Error message
+     */
+    const handleError = (errorMessage: string) =>{
+        setError(errorMessage);
+        setTimeout(() => setError(undefined), 5000);
+    }
 
     /**
-   * Handle success message
-   * @param {string} successMessage - Success message
-   */
-  const handleSuccess = (successMessage: string) =>{
-    setShowRentalModal(false)
-  }
-
-    const descriptionText = game.description || "";
-    const descriptionMaxLength = 255;
+     * Handle success message
+     * @param {string} successMessage - Success message
+     */
+    const handleSuccess = () =>{
+        setShowRentalModal(false)
+    }
 
     return (
         <>
-            <div key={game.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden relative">
+            <div key={game.id} className={`bg-white dark:bg-gray-800 rounded-lg ${displayFullDescription ? '' : 'shadow-md'} overflow-hidden relative`}>
                 <div className="relative h-48 z-0">
                     <Image
                         loader={imageLoader}
@@ -93,11 +90,11 @@ export const SingleGame = ({ game, actions, displayFullDescription}: GameProp) =
                     </div>
 
                     <div className="mt-2 mb-2 text-sm text-gray-600 dark:text-gray-300 min-h-[3em]">
-                        {displayFullDescription || descriptionText.length <= descriptionMaxLength
-                            ? descriptionText
-                            : `${descriptionText.slice(0, descriptionMaxLength)}...`}
+                        {displayFullDescription || game.description.length <= descriptionMaxLength
+                            ? game.description
+                            : `${game.description.slice(0, descriptionMaxLength)}...`}
 
-                        {!displayFullDescription && !showFullDescriptionModal && (descriptionText.length > descriptionMaxLength && (
+                        {!displayFullDescription && !showFullDescriptionModal && (game.description.length > descriptionMaxLength && (
                             <button
                                 onClick={() => setShowFullDescriptionModal(true)}
                                 className="ml-2 text-blue-600 dark:text-blue-400 underline text-xs"
@@ -106,11 +103,12 @@ export const SingleGame = ({ game, actions, displayFullDescription}: GameProp) =
                             </button>
                         ))}
                     </div>
-
-                    <span className="mt-4 p-1 text-sm border-2 rounded-md border-gray-500 text-gray-500 dark:text-gray-400 dark:border-gray-400">{game.category}</span>
-                    {game.ages && <span className="ml-2 mt-4 p-1 text-sm border-2 rounded-md border-gray-500 text-gray-500 dark:text-gray-400 dark:border-gray-400">{game.ages}</span>}
-                    {game.players && <span className="ml-2 mt-4 p-1 text-sm border-2 rounded-md border-gray-500 text-gray-500 dark:text-gray-400 dark:border-gray-400">{game.players}</span>}
-                    {game.time && <span className="ml-2 mt-4 p-1 text-sm border-2 rounded-md border-gray-500 text-gray-500 dark:text-gray-400 dark:border-gray-400">{game.time}</span>}
+                    <div className="inline-flex flex-wrap w-full">
+                        <span className="mt-4 p-1 ml-1 mr-1 text-sm border-2 rounded-md border-gray-500 text-gray-500 dark:text-gray-400 dark:border-gray-400">{game.category}</span>
+                        {game.ages && <span className="ml-1 mr-1 mt-4 p-1 text-sm border-2 rounded-md border-gray-500 text-gray-500 dark:text-gray-400 dark:border-gray-400">{game.ages}</span>}
+                        {game.players && <span className="ml-1 mr-1 mt-4 p-1 text-sm border-2 rounded-md border-gray-500 text-gray-500 dark:text-gray-400 dark:border-gray-400">{game.players}</span>}
+                        {game.time && <span className="ml-1 mr-1 mt-4 p-1 text-sm border-2 rounded-md border-gray-500 text-gray-500 dark:text-gray-400 dark:border-gray-400">{game.time}</span>}
+                    </div>
 
                     <div className="inline-flex w-full">
                         {!isGamesPage && (permissions === Perms.R || permissions === Perms.A) && (
@@ -141,7 +139,7 @@ export const SingleGame = ({ game, actions, displayFullDescription}: GameProp) =
             </div>
             
             <DialogModal show={showFullDescriptionModal} title={game.title} onClose={() => setShowFullDescriptionModal(false)}>
-                <div className="prose dark:prose-invert max-w-none p-4">
+                <div className="">
                     <SingleGame game={game} displayFullDescription={true} actions={false} /> 
                 </div>
             </DialogModal>
@@ -149,6 +147,7 @@ export const SingleGame = ({ game, actions, displayFullDescription}: GameProp) =
             <DialogModal show={editingGame} title={language.editGame} onClose={() => setEditingGame(false)}>
                 <GameForm game={game} onClose={() => setEditingGame(false)}/>
             </DialogModal>
+
             <DeleteDialog
                 isOpen={showDeleteConfirm}
                 onClose={() => setShowDeleteConfirm(false)}
