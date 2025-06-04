@@ -14,6 +14,7 @@ type RentalAutocompleteType = {
 export const RentalAutocomplete = ({games, label, placeholder, value, changeHandler}: RentalAutocompleteType) => {
     const [results, setResults] = useState<IGame[]>([]);
     const [gameInfo, setGameInfo] = useState<number | undefined>()
+    const [show, setShow] = useState<boolean>(false)
     const [inputValue, setInputValue] = useState(()=>{
         if(value){
             setGameInfo(value.quantity)
@@ -31,25 +32,15 @@ export const RentalAutocomplete = ({games, label, placeholder, value, changeHand
         search(value);
     };
 
-    const show = () =>{
-        if(listRef.current?.className.includes('h-0'))
-            listRef.current.className = listRef.current.className.replace('h-0', 'h-auto')
-    }
-
-    const hide = () =>{
-        if(listRef.current?.className.includes('h-auto'))
-            listRef.current.className = listRef.current.className.replace('h-auto', 'h-0')
-    }
-
     const handleSelect = (result: IGame) =>{
         setInputValue(result.title)
         setGameInfo(result.quantity)
         changeHandler(result)
-        hide()
+        setShow(false)
     }
 
     const search = (term: string) => {
-        show()
+        setShow(true)
 
         const filteredResults = games.filter((game) =>
           game.title.toLowerCase().includes(term.toLowerCase())
@@ -62,8 +53,8 @@ export const RentalAutocomplete = ({games, label, placeholder, value, changeHand
 
     return (
         <div className="relative">
-            <CustomFormInput type="text" placeholder={placeholder} name="gameId" value={inputValue} label={label} changeHandler={handleInputChange} focusHandler={handleInputChange} blurHandler={() => setTimeout(()=>{hide()}, 150)} />
-            <ul ref={listRef} className="absolute transition-all z-10 mt-2 w-full rounded-md border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white overflow-hidden max-h-52 overflow-y-auto h-0">
+            <CustomFormInput type="text" placeholder={placeholder} name="gameId" value={inputValue} label={label} changeHandler={handleInputChange} focusHandler={handleInputChange} blurHandler={() => setTimeout(()=>{setShow(false)}, 150)} />
+            <ul ref={listRef} className={`absolute transition-all duration-100 ease-in-out ${show ? 'max-h-52' : 'max-h-0 invisible'} h-auto z-10 mt-2 w-full rounded-md border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white overflow-hidden overflow-y-auto`}>
                 {results.map((result) => (
                     <li className={result.quantity > 0 ? "hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 cursor-pointer" : "text-gray-400 hover:bg-gray-500 cursor-not-allowed"} onClick={()=>{if(result.quantity > 0) handleSelect(result)}} key={result.id}>
                         <div className="p-3">
