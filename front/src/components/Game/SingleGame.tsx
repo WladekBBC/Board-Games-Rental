@@ -31,6 +31,7 @@ export const SingleGame = ({ game, actions, displayFullDescription}: GameProp) =
     const [showFullDescriptionModal, setShowFullDescriptionModal] = useState(false);
     const [isGamesPage, setIsGamesPage] = useState(false)
     const [ error, setError ] = useState<string>()
+    const { games } = useGames();
     const descriptionMaxLength = 255;
 
     useEffect(() => {
@@ -115,7 +116,8 @@ export const SingleGame = ({ game, actions, displayFullDescription}: GameProp) =
                             <div className="mt-3 ml-auto space-x-2 inline-flex flex-wrap justify-end">
                                 <button
                                     onClick={() => setShowRentalModal(true)}
-                                    className="px-3 py-1 bg-green-100 text-green-600 rounded hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800"
+                                    disabled={games.find((g)=>g.id == game.id)!.quantity < 1}
+                                    className="px-3 py-1 bg-green-100 text-green-600 rounded hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800 disabled:opacity-50"
                                 >{language.rentMainPage}
                                 </button>
                             </div>
