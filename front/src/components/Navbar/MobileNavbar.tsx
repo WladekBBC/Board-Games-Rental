@@ -16,10 +16,9 @@ export const MobileNav = ({ onLinkClick }: MobileNavProps) => {
     const { language } = useLang()
     
     return (
-        <AnimatePresence>
-                         
+        <AnimatePresence>   
                 <DisclosurePanel className="min-[950px]:hidden dark:bg-gray-800 light:bg-white">
-                    <div className="space-y-1 px-2 pt-2 pb-3">
+                    <div className="space-y-1">
                         <motion.div
                             initial={{ opacity: 0, scaleY: 0.8, height: 0 }}
                             animate={{ opacity: 1, scaleY: 1, height: 'auto' }}

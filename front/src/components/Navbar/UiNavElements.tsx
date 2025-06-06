@@ -3,36 +3,14 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext"
 import { UserButton } from "./UserButton";
 import { RouterLink } from "./RouterLink";
-import { MenuButton } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { LanguageDropdown } from "./LanguageDropdown";
 
 
 
 export const UiNavElements = ()=>{
     const { theme, toggleTheme } = useTheme()
-    const { currentLang, setLanguage, language } = useLang()
+    const { language } = useLang()
     const { user, signOut } = useAuth()
-
-    const getNextLanguage = (current: string) => {
-        switch(current) {
-            case 'pl': return 'ua';
-            case 'ua': return 'en';
-            case 'en': return 'ja';
-            case 'ja': return 'pl';
-            default: return 'pl';
-        }
-    }
-
-    const getLanguageLabel = (lang: string) => {
-        switch(lang) {
-            case 'pl': return 'PL';
-            case 'ua': return 'UA';
-            case 'en': return 'EN';
-            case 'ja': return '日本語';
-            default: return 'PL';
-        }
-    }
 
     return (
         <>

@@ -1,13 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { useTheme } from '@/contexts/ThemeContext'
 import { useLang } from '@/contexts/LanguageContext'
 import { RouterLink } from './RouterLink'
-import { UserButton } from './UserButton'
 import { useAuth } from '@/contexts/AuthContext'
 import { Perms } from '@/interfaces/perms'
-import { Disclosure } from '@headlessui/react'
+import { Disclosure, DisclosureButton } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { MobileNav } from './MobileNavbar'
 import { UiNavElements } from './UiNavElements'
@@ -18,8 +16,7 @@ import { UiNavElements } from './UiNavElements'
  */
 export function Navbar() {
   const { user, permissions } = useAuth()
-  const { theme, toggleTheme } = useTheme()
-  const { currentLang, setLanguage, language } = useLang()
+  const { language } = useLang()
 
   return (
     <Disclosure as="nav" className="bg-white dark:bg-gray-800 light:bg-white sticky top-0 z-50">
@@ -29,7 +26,7 @@ export function Navbar() {
             <div className="relative flex h-16 items-center justify-between w-full">
               {/* Mobile menu button */}
               <div className="absolute inset-y-0 left-0 flex items-center min-[950px]:hidden">
-                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-min-[950px] p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                <DisclosureButton  className="relative inline-flex items-center justify-center rounded-min-[950px] p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open main menu</span>
                   {open ? (
@@ -37,7 +34,7 @@ export function Navbar() {
                   ) : (
                     <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
                   )}
-                </Disclosure.Button>
+                </DisclosureButton >
               </div>
 
               {/* Logo and desktop navigation */}
