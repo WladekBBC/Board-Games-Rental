@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, IsNull, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Game {
@@ -8,7 +8,7 @@ export class Game {
     @Column({unique: true})
     title: string;
 
-    @Column()
+    @Column({length: 500})
     description: string;
 
     @Column()
@@ -22,4 +22,13 @@ export class Game {
 
     @Column()
     quantity: number;
+
+    @Column({ nullable: true })
+    ages: string;
+
+    @Column({ nullable: true })
+    time: string;
+
+    @Column({ nullable: true })
+    players: string;
 }

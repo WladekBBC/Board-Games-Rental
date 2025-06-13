@@ -30,7 +30,6 @@ export function SearchBar({
 
   const selectedOption = options.find(opt => opt.value === selected);
 
-  // Zamknięcie dropdownu po kliknięciu poza komponent
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -51,11 +50,11 @@ export function SearchBar({
       <div className="relative flex-shrink-0">
         <button
           type="button"
-          className="flex items-center px-3 py-2 h-full text-gray-700 dark:text-white bg-gray-100 dark:bg-gray-800 border-r border-gray-300 dark:border-gray-600 focus:outline-none min-w-[110px]"
+          className="overflow-hidden border border-gray-300 dark:border-gray-600 rounded-md shadow-sm flex items-center px-3 py-2 h-full text-gray-700 dark:text-white bg-gray-100 dark:bg-gray-800 border-r border-gray-300 dark:border-gray-600 focus:outline-none min-w-[110px]"
           onClick={() => setDropdownOpen(prev => !prev)}
           tabIndex={0}
         >
-          <span className=" mr-2">Search</span>
+          <div className=" mr-2">Search</div>
           <svg
             className={`w-4 h-4 transform transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : 'rotate-0'}`}
             fill="none"
@@ -67,7 +66,6 @@ export function SearchBar({
           </svg>
         </button>
 
-        {/* Animowany dropdown */}
         <AnimatePresence>
           {dropdownOpen && (
             <motion.div

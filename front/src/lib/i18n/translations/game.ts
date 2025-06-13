@@ -6,6 +6,9 @@ export const gameTranslations = {
     gameImageUrl: 'Link do Obrazka',
     gameCategory: 'Kategoria',
     gameNumber: 'Ilość Sztuk',
+    gameAges: "Wiek graczy",
+    gamePlayers: "Liczba graczy",
+    gameTime: "Czas gry",
     enterTitle: 'Proszę wprowadzić tytuł gry',
     enterDesc: 'Proszę wprowadzić opis gry',
     enterImageUrl: 'Proszę dodać link do obrazka',
@@ -43,6 +46,8 @@ export const gameTranslations = {
     unknownGame: 'Nieznana gra',
     inStock: 'Dostępne',
     pcs: 'szt.',
+    showMore: 'Więcej',
+    showLess: 'Mniej',
     
     // Statystyki
     totalGames: 'Wszystkich Gier',
@@ -64,7 +69,10 @@ export const gameTranslations = {
     gameImageUrl: 'Посилання на Зображення',
     gameCategory: 'Категорія',
     gameNumber: 'Кількість',
-    enterTitle: 'Будь ласка, введіть назву гри',
+    gameAges: "Вік",
+    gamePlayers: "Гравців",
+    gameTime: "Час гри",
+    enterTitle: 'Будь ласка, введіть назву ',
     enterDesc: 'Будь ласка, введіть опис гри',
     enterImageUrl: 'Будь ласка, додайте посилання на зображення',
     invalidImageUrl: 'Неправильне посилання на зображення або розмір перевищує 5MB',
@@ -92,6 +100,8 @@ export const gameTranslations = {
     editGame: 'Редагувати',
     deleteGame: 'Видалити',
     gameAdding: 'Додавання...',
+    showLess: 'Meнше',
+    showMore: 'Більше',
     
     // Статус та Інформація
     gameAvailable: 'Доступна',
@@ -122,6 +132,9 @@ export const gameTranslations = {
     gameImageUrl: 'Image URL',
     gameCategory: 'Category',
     gameNumber: 'Quantity',
+    gameAges: "Age",
+    gamePlayers: "Players",
+    gameTime: "Game time",
     enterTitle: 'Please enter game title',
     enterDesc: 'Please enter game description',
     enterImageUrl: 'Please add image URL',
@@ -144,6 +157,8 @@ export const gameTranslations = {
     return: 'Return',
     renting: 'Renting...',
     delete: 'Delete',
+    showLess: 'Less',
+    showMore: 'More',
 
     // Buttons and Actions
     addGame: 'Add Game',
@@ -180,6 +195,9 @@ export const gameTranslations = {
     gameImageUrl: '画像URL',
     gameCategory: 'カテゴリー',
     gameNumber: '数量',
+    gameAges: "年齢",
+    gamePlayers: "プレイヤー数",
+    gameTime: "ゲーム時間",
     enterTitle: 'ゲームタイトルを入力してください',
     enterDesc: 'ゲームの説明を入力してください',
     enterImageUrl: '画像URLを追加してください',
@@ -208,6 +226,8 @@ export const gameTranslations = {
     editGame: '編集',
     deleteGame: '削除',
     gameAdding: '追加中...',
+    showLess: '少ない',
+    showMore: 'もっと',
     
     // ステータスと情報
     gameAvailable: '利用可能',

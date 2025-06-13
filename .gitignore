@@ -8,7 +8,8 @@ front/.yarn/install-state.gz
 
 # testing
 front/coverage
-
+rental-api/env
+front/env
 # next.js
 front/.next/
 front/out/
@@ -52,3 +53,9 @@ rental-api/src/env.ts
 rental-api/.env
 front/env.ts
 rental-api/src/.env.ts
+rental-api/.dev.env
+env.ts
+dev.env
+front/src/components/.DS_Store
+front/src/.DS_Store
+.DS_Store

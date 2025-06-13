@@ -3,10 +3,10 @@ import { useLang } from "@/contexts/LanguageContext"
 import { IGame } from "@/interfaces/game"
 import { validateImageUrl } from "@/lib/utils/imageUrlValidator"
 import { useEffect, useState } from "react"
-import { GameInput } from "./GameInput"
 import { imageLoader } from "@/lib/utils/imageLoader"
 import Image from 'next/image'
 import ErrorField from "../Messages/ErrorField"
+import { CustomFormInput } from "../Helpers/FormInput"
 
 type GameFormType = {
     game?: IGame
@@ -20,7 +20,9 @@ const defaultGame: Omit<IGame, 'id'> = {
     amount: 1,
     quantity: 1, 
     category: "",
-    isAvailable: true
+    ages: "",
+    players: "",
+    time: ""
 };
 
 export const GameForm = ({ game, onClose }: GameFormType) => {
@@ -92,9 +94,9 @@ export const GameForm = ({ game, onClose }: GameFormType) => {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <GameInput name="title" label={language.gameTitle} type="text" value={formData.title} changeHandler={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))} />
-            <GameInput name="description" label={language.gameDesc} type="textarea" value={formData.description} changeHandler={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} />
-            <GameInput name="imageUrl" label={language.gameImageUrl} type="url" value={formData.imageUrl} changeHandler={(e) => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))} />
+            <CustomFormInput name="title" label={language.gameTitle} type="text" value={formData.title} changeHandler={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))} />
+            <CustomFormInput name="description" label={language.gameDesc} lenght={500} type="textarea" value={formData.description} changeHandler={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} />
+            <CustomFormInput name="imageUrl" label={language.gameImageUrl} type="url" value={formData.imageUrl} changeHandler={(e) => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))} />
             {formData.imageUrl && isImageValid && (
                 <div className="mt-2 relative h-48 w-full">
                     <Image
@@ -116,13 +118,21 @@ export const GameForm = ({ game, onClose }: GameFormType) => {
                 {language.invalidImageUrl} 
               </p>
             )}
-            <GameInput name="category" label={language.gameCategory} type="text" value={formData.category} changeHandler={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))} />
+            <CustomFormInput name="category" label={language.gameCategory} type="text" value={formData.category} changeHandler={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))} />
             
-            <GameInput name="amount" label={language.gameNumber} type="number" min={1} value={formData.amount} changeHandler={handleAmountChange} />
+            <CustomFormInput name="amount" label={language.gameNumber} type="number" min={1} value={formData.amount} changeHandler={handleAmountChange} />
             
             {game && (
-                <GameInput name="quantity" label={language.gameAvailableNumber} type="number" min={0} max={formData.amount} value={formData.quantity} changeHandler={(e) => setFormData(prev => ({ ...prev, quantity: +e.target.value }))} />
+                <CustomFormInput name="quantity" label={language.gameAvailableNumber} type="number" min={0} max={formData.amount} value={formData.quantity} changeHandler={(e) => setFormData(prev => ({ ...prev, quantity: +e.target.value }))} />
             )}
+
+            <div className="w-100 flex flex-row flex-wrap justify-evenly">
+                <CustomFormInput name="ages" label={language.gameAges} type="string" value={formData.ages} changeHandler={(e) => setFormData(prev => ({ ...prev, ages: e.target.value }))} required={false}/>
+
+                <CustomFormInput name="players" label={language.gamePlayers} type="string" value={formData.players} changeHandler={(e) => setFormData(prev => ({ ...prev, players: e.target.value }))} required={false}/>
+
+                <CustomFormInput name="time" label={language.gameTime} type="string" value={formData.time} changeHandler={(e) => setFormData(prev => ({ ...prev, time: e.target.value }))} required={false}/>
+            </div>
 
             <ErrorField error={error} />
 

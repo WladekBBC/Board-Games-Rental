@@ -33,6 +33,11 @@ export class RentalController {
     return this.rentalService.findOne(id);
   }
 
+  @Get('/history/:id')
+  findHistory(@Param('id') gameId: number) {
+    return this.rentalService.findByGame(gameId);
+  }
+
   @Patch('/return/:id')
   update(@Param('id') id: number) {
     return this.rentalService.return(id);

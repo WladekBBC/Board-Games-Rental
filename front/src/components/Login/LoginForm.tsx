@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useLang } from "@/contexts/LanguageContext";
-import { FormEvent, useEffect, useState } from "react";
+import { useState } from "react";
 import ErrorField from "../Messages/ErrorField";
 
 type LoginFormType = {
@@ -10,12 +10,12 @@ type LoginFormType = {
 export const LoginForm = ({isRegister}: LoginFormType) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
 
   const { signIn, register } = useAuth();
   const { language } = useLang();
-  
+
   const validate = () =>{
     setError('');
 
@@ -47,9 +47,7 @@ export const LoginForm = ({isRegister}: LoginFormType) => {
         .catch((err: Error)=>setError(err.cause == 400 ? language.userAlreadyExists : language.serverError))
     else
       signIn({email: email, password: password})
-        .catch((err: Error)=>{
-          setError(err.cause == 400 ? language.loginError : language.serverError)
-        })
+        .catch((err: Error)=>setError(err.cause == 400 ? language.loginError : language.serverError))
 
     setLoading(false)
   }

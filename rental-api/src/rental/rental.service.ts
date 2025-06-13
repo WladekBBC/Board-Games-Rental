@@ -1,4 +1,4 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateRentalDto } from './dto/create-rental.dto';
 import { Rental } from './entities/rental.entity';
 import { Repository } from 'typeorm';
@@ -17,15 +17,21 @@ export class RentalService {
 
   async create(createRentalDto: CreateRentalDto) {
     const game = await this.gameRepo.findOneBy({id: createRentalDto.game.id});
-    if(game && game?.quantity > 0){
-      this.gameRepo.update(game.id, {quantity: game.quantity-1});
-      return this.rentalRepo.save(createRentalDto);
+    if(game && game.quantity > 0){
+      return this.gameRepo.save({...game, quantity: game.quantity-1}).then((res)=>(this.rentalRepo.save({...createRentalDto, game: res})));
     }
     throw new NotAcceptableException;
   }
 
   findAll() {
     return this.rentalRepo.find();
+  }
+
+  async findByGame(gameId: number){
+    const game = await this.gameRepo.findOneBy({id: gameId})
+    if(game)
+      return this.rentalRepo.findBy({ game:game })
+    throw new BadRequestException
   }
 
   findOne(id: number) {
@@ -39,7 +45,7 @@ export class RentalService {
   async return(id: number) {
     const rental = await this.findOne(id)
     if(rental && !rental.returnedAt && rental.game.quantity != rental.game.amount){
-      this.gameRepo.update(rental.game.id, {quantity: rental.game.quantity+1});
+      await this.gameRepo.update(rental.game.id, {quantity: rental.game.quantity+1});
       return this.rentalRepo.update(id, {returnedAt: new Date(Date.now())});
     }
     throw new NotAcceptableException;

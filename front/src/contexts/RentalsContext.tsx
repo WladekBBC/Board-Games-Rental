@@ -25,23 +25,19 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'rentedAt', direction: 'desc' })
   const [searchQuery, setSearchQuery] = useState('')
-  const [searchType, setSearchType] = useState<SearchType>('index')
+  const [searchType, setSearchType] = useState<SearchType>('title')
 
   const { JWT } = useAuth()
 
   useEffect(() => {
-    getRentals();
+    setLoading(true)
+    const getRentals = () =>{
+      if(JWT)
+        stream('rental/stream-rentals', setRentals)
+    }
+    getRentals()
     setLoading(false);
   }, [JWT])
-
-  const getRentals = async () =>{
-    let connection = () => {};
-    if(await chechCookie('Authorization'))
-      connection = stream('rental/stream-rentals', setRentals);
-    else
-      connection()
-      setRentals([])
-  }
 
   const filteredAndSortedRentals = [...rentals]
     .filter(rental => {
@@ -81,15 +77,19 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
     });
 
   const addRental = async (rental: Partial<IRental>) =>{
-    return request<null>('rental/add', Method.POST, JSON.stringify(rental))
+    return request<IRental>('rental/add', Method.POST, JSON.stringify(rental)).then((newRental)=>{setRentals([...rentals, newRental])})
   }
 
   const returnGame = async (id: number) =>{
-    return request('rental/return/'+id, Method.PATCH)
+    return request('rental/return/'+id, Method.PATCH).then(()=>{setRentals(rentals.map<IRental>((rental)=>{
+      if(rental.id == id)
+        rental.returnedAt = new Date(Date.now());
+      return rental
+    }))})
   }
 
   const removeRental = async (id: number) =>{
-    return request('rental/delete/'+id, Method.DELETE)
+    return request('rental/delete/'+id, Method.DELETE).then(()=>setRentals(rentals.filter((rental)=> rental.id !== id)))
   }
 
   return (
