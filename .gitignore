@@ -59,3 +59,6 @@ rental-api/.DS_Store
 .DS_Store
 rental-api/.DS_Store
 
+rental-api/.env
+env.ts
+dev.env
