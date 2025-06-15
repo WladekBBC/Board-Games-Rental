@@ -9,7 +9,6 @@ import { CreateOrderDto } from "./dto/create-order.dto";
 
 @Injectable()
 export class OrderService{
-
   constructor(
       @InjectRepository(Order)
       private readonly orderRepo: Repository<Order>,
