@@ -14,9 +14,6 @@ import * as QRCode from 'qrcode'
 @Injectable()
 export class OrderService{
   constructor(
-    @InjectQueue('order') 
-    private readonly orderQueue: Queue, 
-
     @InjectRepository(Order)
     private readonly orderRepo: Repository<Order>,
 
@@ -46,11 +43,6 @@ export class OrderService{
     }
     const newOrder = this.orderRepo.create({ ...createOrderDto, game, user, status: Status.W });
     let savedOrder = newOrder;
-
-    const verificationURL = `${process.env.API_URL}orders/verify/${savedOrder.qrIdentifier}`;
-    const verificationURLBase64 = await QRCode.toDataURL(verificationURL);
-
-    savedOrder.qrCodeImage = verificationURLBase64;
     savedOrder = await this.orderRepo.save(savedOrder);
     return savedOrder;
   }
@@ -98,12 +90,12 @@ export class OrderService{
       where: { game: { id: gameId } } });
   }
 
-  async findOrderByQR(qrCodeImage: string): Promise<Order[]>{
-    const order = await this.orderRepo.findOneBy({qrCodeImage: qrCodeImage});
+  async findOrderByQRID(qrIdentifier: string): Promise<Order[]>{
+    const order = await this.orderRepo.findOneBy({qrIdentifier: qrIdentifier});
     if(!order){
       throw new NotFoundException;
     }
-    return this.orderRepo.find({where : {qrCodeImage: qrCodeImage}})
+    return this.orderRepo.find({where : {qrIdentifier: qrIdentifier}})
   }
   async findByUser(userId: number) {
     const user = await this.userRepo.findOneBy({ id: userId });

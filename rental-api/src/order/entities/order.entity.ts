@@ -16,9 +16,6 @@ export class Order{
     if (!this.qrIdentifier) this.qrIdentifier = uuidv4();
     }
 
-    @Column()
-    qrCodeImage: string;
-
     @Column({type: 'enum', enum: Status, default: Status.W})
     status: string;
     

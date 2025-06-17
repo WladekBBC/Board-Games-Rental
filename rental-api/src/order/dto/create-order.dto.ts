@@ -5,6 +5,4 @@ export class CreateOrderDto {
     createdAt: Date;
     user: User;
     game: Game;
-    qrIdentifier: string;
-    qrCodeImage: string;
 }

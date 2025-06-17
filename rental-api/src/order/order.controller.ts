@@ -7,7 +7,7 @@ import { AuthGuard } from "src/guards/auth.guard";
 
 // @UseGuards(AuthGuard)
 // @Permission([Perms.A, Perms.R])
-@Controller('rental')
+@Controller('order')
 export class OrderController {
     constructor(private readonly orderService: OrderService) {}
     
@@ -21,32 +21,32 @@ export class OrderController {
         return this.orderService.findAll();
     }
 
-    @Get('/orders/:id')
+    @Get(':id')
     getOrdersByID(@Param('id') id: number){
         return this.orderService.findOne(id);
     }
 
-    @Get('/history/:id')
+    @Get('/history/game/:id')
     findHistoryGame(@Param('id') gameId: number) {
         return this.orderService.findByGame(gameId);
     }
 
-    @Get('/history/:id')
+    @Get('/history/user/:id')
     findHistoryUser(@Param('id') userID: number) {
         return this.orderService.findByUser(userID);
     }
 
-    @Get('/verify/:qrCodeImageURL')
-    async findOrderByQR(@Param('qrCodeImage') qrCodeImage: string){
-        return this.orderService.findOrderByQR(qrCodeImage)
+    @Get('/verify/:qrIdentifier')
+    async findOrderByQR(@Param('qrIdentifier') qrIdentifier: string){
+        return this.orderService.findOrderByQRID(qrIdentifier)
     }
     
-    @Patch('/accept')
+    @Patch('/accept/:id')
     accept(@Param('id') id: number){
         return this.orderService.accept(id)
     }
 
-    @Patch('/cancel')
+    @Patch('/cancel/:id')
     cancel(@Param('id') id: number){
         return this.orderService.cancel(id)
     }

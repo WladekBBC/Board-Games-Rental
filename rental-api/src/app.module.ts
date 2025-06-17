@@ -11,6 +11,8 @@ import { Game } from './game/entities/game.entity';
 import { Rental } from './rental/entities/rental.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { PermsGuard } from './guards/perms.guard';
+import { OrderModule } from './order/order.module';
+import { Order } from './order/entities/order.entity';
 
 @Module({
   imports: [
@@ -22,14 +24,15 @@ import { PermsGuard } from './guards/perms.guard';
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      entities: [User, Game, Rental],
+      entities: [User, Game, Rental, Order],
       synchronize: true,
       autoLoadEntities: true,
   }),
     UserModule,
     AuthModule,
     GameModule,
-    RentalModule],
+    RentalModule,
+    OrderModule],
   controllers: [],
   providers: [{provide: APP_GUARD, useClass: PermsGuard}],
 })
