@@ -1,3 +1,4 @@
+import { BadRequestException } from "@nestjs/common"
 
 export enum Status{
     W = "Waiting",
@@ -16,5 +17,18 @@ export const convertStatus = (status: string): Status => {
             return Status.C
         default:
             return Status.W
+    }
+}
+
+export const checkStatus = (status: Status)=>{
+    switch(status){
+        case(Status.A):
+            throw new BadRequestException("Order already accepted");
+        case(Status.C):
+            throw new BadRequestException("Order already canceled");
+        case(Status.E):
+            throw new BadRequestException("Order already expired");
+        default:
+            return
     }
 }

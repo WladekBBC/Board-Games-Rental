@@ -13,8 +13,6 @@ export class User {
     @Column()
     password: string;
 
-    @Column({default: "User"})
+    @Column({type: 'enum', enum: Perms, default: Perms.U})
     permissions: Perms
-
-    
 }

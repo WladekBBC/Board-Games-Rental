@@ -5,7 +5,7 @@ import { Repository } from "typeorm";
 import { Order } from "./entities/order.entity";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { User } from "src/user/entities/user.entity";
-import { Status } from "src/enums/status.enum";
+import { checkStatus, Status } from "src/enums/status.enum";
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import * as QRCode from 'qrcode'
@@ -49,18 +49,18 @@ export class OrderService{
 
   async accept(id: number){
     const order =  await this.findOneOrThrow(id);
-    if(order?.status !== Status.W){
-      throw new BadRequestException;
-    }
+    
+    checkStatus(order.status)
+
     await this.orderRepo.update(id, {status: Status.A});
     return this.findOneOrThrow(id);
   }
 
   async cancel(id: number): Promise<Order> {
     const order = await this.findOneOrThrow(id);
-    if((order.status !== Status.W) && order.status !== Status.A){
-      throw new BadRequestException;
-    }
+
+    checkStatus(order.status)
+
     await this.orderRepo.update(id, {status: Status.C});
     return this.findOneOrThrow(id);
   }

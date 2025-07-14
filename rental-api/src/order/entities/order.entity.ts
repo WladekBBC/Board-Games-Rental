@@ -17,7 +17,7 @@ export class Order{
     }
 
     @Column({type: 'enum', enum: Status, default: Status.W})
-    status: string;
+    status: Status;
     
     @CreateDateColumn({ type: "timestamp"})
     createdAt: Date;
