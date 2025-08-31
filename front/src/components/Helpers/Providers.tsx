@@ -1,16 +1,17 @@
-'use client'
+"use client";
 
-import { ReactNode } from 'react'
-import { AuthProvider } from '@/contexts/AuthContext'
-import { GamesProvider } from '@/contexts/GamesContext'
-import { RentalsProvider } from '@/contexts/RentalsContext'
-import { ThemeProvider } from '@/contexts/ThemeContext'
-import { LanguageProvider } from '@/contexts/LanguageContext'
-import { UsersProvider } from '@/contexts/UsersContext'
-import { LoadingProvider } from '@/contexts/LoadingContext'
+import { ReactNode } from "react";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { GamesProvider } from "@/contexts/GamesContext";
+import { RentalsProvider } from "@/contexts/RentalsContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import { UsersProvider } from "@/contexts/UsersContext";
+import { LoadingProvider } from "@/contexts/LoadingContext";
+import { OrdersProvider } from "@/contexts/OrdersContext";
 
 interface ProvidersProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export function Providers({ children }: ProvidersProps) {
@@ -21,14 +22,14 @@ export function Providers({ children }: ProvidersProps) {
           <AuthProvider>
             <RentalsProvider>
               <UsersProvider>
-                <LoadingProvider>
-                  {children}
-                </LoadingProvider>
+                <OrdersProvider>
+                  <LoadingProvider>{children}</LoadingProvider>
+                </OrdersProvider>
               </UsersProvider>
             </RentalsProvider>
           </AuthProvider>
         </GamesProvider>
       </LanguageProvider>
     </ThemeProvider>
-  )
-} 
+  );
+}
