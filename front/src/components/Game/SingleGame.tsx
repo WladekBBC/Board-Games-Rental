@@ -13,6 +13,7 @@ import { RentalForm } from "../Rental/RentalForm";
 import { DialogModal } from "../Helpers/DialogModal";
 import ErrorField from "../Messages/ErrorField";
 import { GameForm } from "./GameForm";
+import { OrderForm } from "../Order/OrderForm";
 
 type GameProp = {
   game: IGame;
@@ -35,17 +36,14 @@ export const SingleGame = ({
   const [showFullDescriptionModal, setShowFullDescriptionModal] =
     useState(false);
   const [isGamesPage, setIsGamesPage] = useState(false);
-  const [isHomePage, setIsHomePage] = useState(false);
+  const [showOrderModal, setShowOrderModal] = useState(false);
   const [error, setError] = useState<string>();
   const { games } = useGames();
+  const { user } = useAuth();
   const descriptionMaxLength = 255;
 
   useEffect(() => {
     setIsGamesPage(window.location.pathname === "/games");
-  }, []);
-
-  useEffect(() => {
-    setIsHomePage(window.location.pathname === "/");
   }, []);
 
   const handleDeleteGame = async (id: number) => {
@@ -70,6 +68,7 @@ export const SingleGame = ({
    */
   const handleSuccess = () => {
     setShowRentalModal(false);
+    setShowOrderModal(false);
   };
 
   return (
@@ -154,31 +153,32 @@ export const SingleGame = ({
           </div>
 
           <div className="inline-flex w-full">
-            {!isGamesPage &&
-              (permissions === Perms.R || permissions === Perms.A) && (
-                <div className="mt-3 ml-auto space-x-2 inline-flex flex-wrap justify-end">
+            <div className="mt-3 ml-auto space-x-2 inline-flex flex-wrap justify-end">
+              {!isGamesPage &&
+                user &&
+                (permissions === Perms.R || permissions === Perms.A) && (
                   <button
                     onClick={() => setShowRentalModal(true)}
                     disabled={games.find((g) => g.id == game.id)!.quantity < 1}
-                    className="px-3 py-1 bg-green-100 text-green-600 rounded hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800 disabled:opacity-50"
+                    className="px-3 py-1 bg-green-100 text-green-600 rounded hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800 disabled:opacity-50 mb-2"
                   >
                     {language.rentMainPage}
                   </button>
-                </div>
-              )}
-
-            {!isHomePage &&
-              (permissions === Perms.R || permissions === Perms.A) && (
-                <div className="mt-3 ml-auto space-x-2 inline-flex flex-wrap justify-end">
+                )}
+              {!isGamesPage &&
+                user &&
+                (permissions === Perms.R ||
+                  permissions === Perms.A ||
+                  permissions === Perms.U) && (
                   <button
-                    onClick={() => setShowRentalModal(true)}
+                    onClick={() => setShowOrderModal(true)}
                     disabled={games.find((g) => g.id == game.id)!.quantity < 1}
-                    className="px-3 py-1 bg-green-100 text-green-600 rounded hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800 disabled:opacity-50"
+                    className="px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 disabled:opacity-50 mb-2"
                   >
-                    {language.rentMainPage}
+                    {language.order}
                   </button>
-                </div>
-              )}
+                )}
+            </div>
 
             {actions && (
               <div className="mt-3 ml-auto space-x-2 inline-flex flex-wrap justify-end">
@@ -240,6 +240,18 @@ export const SingleGame = ({
       >
         <ErrorField error={error} />
         <RentalForm
+          gameId={game.id}
+          handleError={handleError}
+          handleSuccess={handleSuccess}
+        />
+      </DialogModal>
+      <DialogModal
+        show={showOrderModal}
+        title={language.reservation}
+        onClose={() => setShowOrderModal(false)}
+      >
+        <ErrorField error={error} />
+        <OrderForm
           gameId={game.id}
           handleError={handleError}
           handleSuccess={handleSuccess}
