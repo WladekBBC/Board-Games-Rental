@@ -1,7 +1,7 @@
 export const rentalTranslations = {
   pl: {
     // Wypożyczenia
-    reservation: "Rezerwacja",
+    reservation: "Rezerwacje",
     manageRent: "Zarządzanie Wypożyczeniami",
     addRent: "Dodaj Wypożyczenie",
     indexNumber: "Numer Indeksu",
@@ -32,7 +32,7 @@ export const rentalTranslations = {
   },
   ua: {
     // Оренда
-    reservation: "Резервація",
+    reservation: "Резервації",
     manageRent: "Управління Орендою",
     addRent: "Додати Оренду",
     indexNumber: "Номер Індексу",
@@ -63,7 +63,7 @@ export const rentalTranslations = {
   },
   en: {
     // Rentals
-    reservation: "Reservation",
+    reservation: "Reservations",
     manageRent: "Manage Rentals",
     addRent: "Add Rental",
     indexNumber: "Index Number",
