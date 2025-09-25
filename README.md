@@ -9,7 +9,7 @@ Aplikacja do zarządzania wypożyczalnią gier planszowych.
 - [Technologie](#technologie)
 - [Uruchamianie projektu](#uruchamianie-projektu)
 - [Struktura katalogów](#struktura-katalogów)
-- [Autor](#autor)
+- [Autorzy](#autor)
 
 ## Opis
 
@@ -83,7 +83,7 @@ npm run dev
 └── README.md
 ```
 
-## Autors
+## Autorzy
 
 - [Vladys Berezhnyi](https://github.com/WladekBBC)
 - [Tymoteusz Huszcza](https://github.com/TymoteuszMH)
