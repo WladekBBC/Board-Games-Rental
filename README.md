@@ -41,7 +41,22 @@ Board Games Rental to aplikacja webowa umożliwiająca zarządzanie bazą gier p
 
 ### Szybki start (Docker Compose)
 
-1. Skopiuj pliki `.env` i `dev.env` oraz uzupełnij wymagane zmienne środowiskowe.
+1. Stwórz pliki `.env` i `dev.env` oraz uzupełnij wymagane zmienne środowiskowe.<br>
+   `dev.env`
+   ```sh
+   DB_PASS =
+   DB_NAME =
+   DB_HOST =
+   DB_USER =
+   DB_PORT =
+   AD_EMAIL =
+   AD_PASS =
+   JWT_SEC =
+   ```
+   `env.ts`
+   ```sh
+   export const API_URL = 'http://localhost:3001/'
+   ```
 2. Uruchom w katalogu głównym:
 
    ```sh
