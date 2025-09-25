@@ -15,12 +15,19 @@ import ErrorField from "../Messages/ErrorField";
 import { GameForm } from "./GameForm";
 import { OrderForm } from "../Order/OrderForm";
 
+/**
+ * Props for the SingleGame component
+ */
 type GameProp = {
   game: IGame;
   actions?: boolean;
   displayFullDescription?: boolean;
 };
 
+/**
+ * @param param - Game component props
+ * @returns A component that displays a single game's details, with options to rent, order, edit, or delete the game based on user permissions.
+ */
 export const SingleGame = ({
   game,
   actions,

@@ -7,10 +7,16 @@ import { UiNavElements } from "./UiNavElements";
 import { LogoutButton } from "./LogoutButton";
 import { AnimatePresence, motion } from "framer-motion";
 
+/**
+ * Props for the MobileNav component.
+ */
 interface MobileNavProps {
   onLinkClick?: () => void;
 }
 
+/**
+ * @returns A mobile navigation component that displays different links based on user authentication and permissions.
+ */
 export const MobileNav = ({ onLinkClick }: MobileNavProps) => {
   const { user, permissions } = useAuth();
   const { language } = useLang();

@@ -9,6 +9,11 @@ import { IOrder } from "@/interfaces/order";
 import React, { useEffect, useState } from "react";
 import { Status } from "@/interfaces/statuses";
 
+/**
+ * A page component that displays and manages user orders.
+ * It allows accepting or cancelling orders and shows their status.
+ * @returns A page that displays and manages user orders.
+ */
 export default function OrdersPage() {
   const { language } = useLang();
   const { orders, acceptOrder, cancelOrder, fetchOrders } = useOrders();

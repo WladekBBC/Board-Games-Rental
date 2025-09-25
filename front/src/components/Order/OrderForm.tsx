@@ -8,12 +8,23 @@ import { Status } from "@/interfaces/statuses";
 import { useState } from "react";
 import { IUser } from "@/interfaces/user";
 
+/**
+ * Props for the OrderForm component.
+ * @property handleError - Function to handle error messages.
+ * @property handleSuccess - Function to handle success messages.
+ * @property gameId - ID of the game to be ordered.
+ */
 type OrderFormType = {
   handleError: (message: string) => any;
   handleSuccess: (message: string) => any;
   gameId: number;
 };
 
+/**
+ *  OrderForm component for placing an order/reservation for a game.
+ * @param param0 - Props for the OrderForm component.
+ * @returns {JSX.Element}A React component that renders a form for ordering a game.
+ */
 export const OrderForm = ({
   handleError,
   handleSuccess,
