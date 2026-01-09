@@ -24,7 +24,7 @@ export default function RentalsPage() {
   const { loading } = useLoading()
   const [ error, setError ] = useState<string | null>('')
   const [ success, setSuccess ] = useState<string | null>(null)
-  const { language } = useLang()
+  const { language } = useLang();
   
   /**
    * Handle success message

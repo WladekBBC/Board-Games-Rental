@@ -11,9 +11,7 @@ export type SearchType = 'index' | 'title' | 'date';
  * Rentals context type
  * @param {IRental[]} rentals - Rentals
  * @param {boolean} loading - Loading
- * @param {function} addRental - Add rental
- * @param {function} returnGame - Return game
- * @param {function} removeRental - Remove rental
+ * @param {function} rentalAction - Action on Rental, "add", "return" and "delete", with data, and success and error handlers
  * @param {SortConfig} sortConfig - Sort config
  * @param {function} setSortConfig - Set sort config
  * @param {string} searchQuery - Search query
@@ -25,9 +23,7 @@ export type SearchType = 'index' | 'title' | 'date';
 export type RentalsContextType = {
     rentals: IRental[]
     loading: boolean
-    addRental: (rental: Rent) => Promise<any>
-    returnGame: (id: number) => Promise<any>
-    removeRental: (id: number) => Promise<any>
+    rentalAction: (action: "add" | "return" | "delete", data: Partial<IRental>, handleSuccess: () => any, handleError: (val: Error) => any) => void
     sortConfig: SortConfig
     setSortConfig: (config: SortConfig) => void
     searchQuery: string

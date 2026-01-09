@@ -3,9 +3,9 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { IRental } from '@/interfaces/rental'
 import { RentalsContextType, SortConfig, SearchType } from '@/types/rentalContext'
-import { Method, request, stream } from '@/interfaces/api'
+import { Method, request } from '@/interfaces/api'
 import { useAuth } from './AuthContext'
-import { chechCookie } from '@/app/actions'
+import { Socket, io } from 'socket.io-client'
 
 /**
  * Rentals context type
@@ -21,24 +21,15 @@ const RentalsContext = createContext<RentalsContextType | undefined>(undefined)
  * @returns {JSX.Element} Rentals context provider
  */
 export function RentalsProvider({ children }: { children: ReactNode }) {
+  const [socket, setSocket] = useState<Socket>();
   const [rentals, setRentals] = useState<IRental[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'rentedAt', direction: 'desc' })
   const [searchQuery, setSearchQuery] = useState('')
   const [searchType, setSearchType] = useState<SearchType>('title')
 
   const { JWT } = useAuth()
-
-  useEffect(() => {
-    setLoading(true)
-    const getRentals = () =>{
-      if(JWT)
-        stream('rental/stream-rentals', setRentals)
-    }
-    getRentals()
-    setLoading(false);
-  }, [JWT])
-
+  
   const filteredAndSortedRentals = [...rentals]
     .filter(rental => {
       if (!searchQuery) return true;
@@ -76,29 +67,63 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
         : b.index.localeCompare(a.index);
     });
 
-  const addRental = async (rental: Partial<IRental>) =>{
-    return request<IRental>('rental/add', Method.POST, JSON.stringify(rental)).then((newRental)=>{setRentals([...rentals, newRental])})
+  useEffect(() => {
+    if(JWT){
+      setSocket(
+        io(process.env.NEXT_PUBLIC_API_URL + "rentals", {
+          transports: ["websocket"],
+          autoConnect: true,
+          reconnectionDelay: 2500,
+          reconnectionAttempts: 10,
+          auth: {
+            token: JWT,
+          }
+        })
+        .on("connect", getAllRentals)
+        .on("reconnect", getAllRentals)
+        .on("error", (error) => {})
+        .on('rentalCreated', (rental: IRental) => {
+          setRentals((prev) => [...prev, rental])
+        })
+        .on('rentalStatusChanged', (rental: IRental) => {
+          setRentals((prev) => prev.map((r) => r.id === rental.id ? rental : r))
+        })
+        .on('rentalDeleted', (id: number) => {
+          setRentals((prev) => prev.filter((r) => r.id !== id))
+        })
+      )
+  
+      return () => {
+        if(socket){
+          setSocket((prev) => (
+            prev ? prev.removeAllListeners() : undefined
+          ))
+        }
+      };
+    }
+  }, [JWT]);
+
+  const getAllRentals = () => {
+    setLoading(true)
+    request<IRental[]>("rental", Method.GET).then((res) => setRentals(res))
+    setLoading(false)
   }
 
-  const returnGame = async (id: number) =>{
-    return request('rental/return/'+id, Method.PATCH).then(()=>{setRentals(rentals.map<IRental>((rental)=>{
-      if(rental.id == id)
-        rental.returnedAt = new Date(Date.now());
-      return rental
-    }))})
-  }
-
-  const removeRental = async (id: number) =>{
-    return request('rental/delete/'+id, Method.DELETE).then(()=>setRentals(rentals.filter((rental)=> rental.id !== id)))
+  const rentalAction = (action: "add" | "return" | "delete", data: Partial<IRental>, handleSuccess: () => any, handleError: (error: Error) => any) => {
+    socket!.emit(action, data)
+      .once(`${action}Status`, (res: any) => {
+        if(res?.status && res.status === 200)
+          handleSuccess();
+        else
+          handleError(res)
+      })
   }
 
   return (
     <RentalsContext.Provider value={{ 
       rentals, 
       loading, 
-      addRental, 
-      returnGame, 
-      removeRental,
+      rentalAction,
       sortConfig,
       setSortConfig,
       searchQuery,

@@ -1,7 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
-import { EventSource } from 'eventsource'
 import { getCookie } from "@/app/actions";
-import { API_URL } from '@/../../env';
 
 export interface IUserApi{
   token: string,
@@ -15,7 +12,7 @@ export enum Method{
 }
 
 export const request = async <T> (url: string, method: Method, body?: string, headers?: {[x:string]: string}): Promise<T> =>{
-  return fetch(API_URL + url, {
+  return fetch( process.env.NEXT_PUBLIC_API_URL + url, {
     method: method, 
     headers: {
         "Content-Type": "application/json",
@@ -29,23 +26,4 @@ export const request = async <T> (url: string, method: Method, body?: string, he
       return res.json();
     throw new Error(res.statusText, {cause: res.status})
   })
-}
-
-export const stream = (url: string, setter: Dispatch<SetStateAction<any>>, headers?: {[x:string]: string}) =>{
-  const event = new EventSource(API_URL + url, {
-    fetch: async (input, init) =>
-      fetch(input, {
-        ...init,
-        headers: {
-          "Authorization": `${(await getCookie('Authorization'))?.value}`,
-          ...init.headers,
-          ...headers
-        },
-      })
-  })
-  event.onmessage = ({ data }) =>{
-    setter(JSON.parse(data))
-  }
-
-  return () => event.close();
 }

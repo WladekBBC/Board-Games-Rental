@@ -14,8 +14,8 @@ type RentalFormType = {
 }
 
 export const RentalForm = ({handleError, handleSuccess, gameId}: RentalFormType) => {
-    const { addRental } = useRentals()
-    const { games, changeQuantity } = useGames()
+    const { rentalAction } = useRentals()
+    const { games } = useGames()
     const { language } = useLang()
 
     const [isProcessing, setIsProcessing] = useState(false)
@@ -51,12 +51,12 @@ export const RentalForm = ({handleError, handleSuccess, gameId}: RentalFormType)
             rentedAt: new Date(Date.now())
         }
 
-        addRental(data).then(()=>{
-            handleSuccess(language.gameRented)
-            changeQuantity(game.id, games.find((g)=>g.id == game.id)!.quantity - 1)
-        }).catch((err: Error)=>{
-            handleError(err.cause == 406 ? language.rentGameError : language.serverError)
-        })
+        rentalAction(
+            "add", 
+            data, 
+            () => handleSuccess(language.gameRented),
+            (err: Error) => handleError(err.cause == 406 ? language.rentGameError : language.serverError)
+        )
         
         setIsProcessing(false)
     }

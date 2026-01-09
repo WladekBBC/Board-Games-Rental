@@ -12,7 +12,7 @@ type SingleRentalType = {
 }
 
 export const SingleRental = ({handleSuccess, handleError, rental}: SingleRentalType) =>{
-    const { returnGame, removeRental } = useRentals()
+    const { rentalAction } = useRentals()
     const { games, changeQuantity } = useGames()
     const { language } = useLang()
     const { permissions } = useAuth()
@@ -22,12 +22,12 @@ export const SingleRental = ({handleSuccess, handleError, rental}: SingleRentalT
      * @param {IRental} rental - Rental
      */
     const handleReturnGame = async (rental: IRental) => {
-        returnGame(rental.id).then(()=>{
-            changeQuantity(rental.game.id, games.find((g)=>g.id == rental.game.id)!.quantity + 1)
-            handleSuccess(language.gameReturned)
-        }).catch((err: Error)=>{
-            handleError(err.cause == 406 ? language.returnGameError : language.fetchError)
-        })
+        rentalAction(
+            "return", 
+            {id: rental.id}, 
+            () => handleSuccess(language.gameReturned), 
+            (err: Error) => handleError(err.cause == 406 ? language.returnGameError : language.fetchError)
+        )
     }
 
     /**
@@ -35,13 +35,12 @@ export const SingleRental = ({handleSuccess, handleError, rental}: SingleRentalT
      * @param {IRental} rental - Rental
      */
     const handleDeleteRental = async (rental: IRental) => {
-        if(!rental.returnedAt)
-            handleReturnGame(rental)
-        removeRental(rental.id).then(()=>{
-            handleSuccess(language.deletedGame)
-        }).catch((err: Error)=>{
-            handleError(err.cause == 406 ? language.deleteGameError : language.serverError)
-        })
+        rentalAction(
+            "delete", 
+            {id: rental.id}, 
+            () => handleSuccess(language.deletedGame), 
+            (err: Error) => handleError(err.cause == 406 ? language.deleteGameError : language.serverError)
+        )
     }
 
     return (

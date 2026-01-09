@@ -1,4 +1,4 @@
-import { createRef, useState } from "react";
+import { createRef, useMemo, useState } from "react";
 import { IGame } from "@/interfaces/game";
 import { CustomFormInput } from "../Helpers/FormInput";
 import { useLang } from "@/contexts/LanguageContext";
@@ -13,16 +13,12 @@ type RentalAutocompleteType = {
 
 export const RentalAutocomplete = ({games, label, placeholder, value, changeHandler}: RentalAutocompleteType) => {
     const [results, setResults] = useState<IGame[]>([]);
-    const [gameInfo, setGameInfo] = useState<number | undefined>()
     const [show, setShow] = useState<boolean>(false)
     const [inputValue, setInputValue] = useState(()=>{
-        if(value){
-            setGameInfo(value.quantity)
-            changeHandler(value)
-        }
         return value?.title || ""
     })
 
+    const numberOfGames = games.find((g) => (g.title === inputValue))?.quantity;
     const listRef = createRef<HTMLUListElement>()
     const {language} = useLang()
     
@@ -34,7 +30,6 @@ export const RentalAutocomplete = ({games, label, placeholder, value, changeHand
 
     const handleSelect = (result: IGame) =>{
         setInputValue(result.title)
-        setGameInfo(result.quantity)
         changeHandler(result)
         setShow(false)
     }
@@ -48,7 +43,6 @@ export const RentalAutocomplete = ({games, label, placeholder, value, changeHand
 
         setResults(filteredResults);
         changeHandler(undefined)
-        setGameInfo(undefined)
     };
 
     return (
@@ -63,7 +57,7 @@ export const RentalAutocomplete = ({games, label, placeholder, value, changeHand
                     </li>
                 ))}
             </ul>
-            {gameInfo && <p id="helper-text-explanation" className="mt-2 text-sm text-gray-500 dark:text-gray-400">{games.find((g)=>(g.title === inputValue))?.quantity == 0 ? language.gameUnavailable : `(${language.gameAvailable}: ${gameInfo} ${language.piece}.)`}</p>}
+            {numberOfGames && <p id="helper-text-explanation" className="mt-2 text-sm text-gray-500 dark:text-gray-400">{games.find((g)=>(g.title === inputValue))?.quantity == 0 ? language.gameUnavailable : `(${language.gameAvailable}: ${numberOfGames} ${language.piece}.)`}</p>}
         </div>
       );
 }
