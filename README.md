@@ -53,9 +53,9 @@ Board Games Rental to aplikacja webowa umożliwiająca zarządzanie bazą gier p
    AD_PASS = 
    JWT_SEC = 
    ```
-   `env.ts`
+   `.env`
    ```sh
-   export const API_URL = 'http://localhost:3001/'
+   API_URL = 'http://localhost:3001/'
    ```
 3. Uruchom w katalogu głównym:
 
