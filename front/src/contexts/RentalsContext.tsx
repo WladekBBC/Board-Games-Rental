@@ -70,7 +70,7 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if(JWT){
       setSocket(
-        io(process.env.NEXT_PUBLIC_API_URL + "rentals", {
+        io(process.env.NEXT_PUBLIC_WS_URL + "rentals", {
           transports: ["websocket"],
           autoConnect: true,
           reconnectionDelay: 2500,
@@ -83,7 +83,8 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
         .on("reconnect", getAllRentals)
         .on("error", (error) => {})
         .on('rentalCreated', (rental: IRental) => {
-          setRentals((prev) => [...prev, rental])
+          if(!rentals.some(r => r.id === rental.id))
+            setRentals((prev) => [...prev, rental])
         })
         .on('rentalStatusChanged', (rental: IRental) => {
           setRentals((prev) => prev.map((r) => r.id === rental.id ? rental : r))

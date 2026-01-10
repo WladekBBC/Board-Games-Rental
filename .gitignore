@@ -37,6 +37,7 @@ front/*.tsbuildinfo
 front/next-env.d.ts
 
 front/.env
+front/.env*
 
 #api
 rental-api/node_modules

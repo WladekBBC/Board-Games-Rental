@@ -12,7 +12,6 @@ import { Spinner } from '../Messages/Spinner'
  * @returns {React.ReactNode}
  */
 export default function GameList(){
-
     const { games, loading } = useGames()
     const { language } = useLang()
     const [searchType, setSearchType] = useState<SearchType>('title')
@@ -39,27 +38,27 @@ export default function GameList(){
 
     return (
         <>
-        <SearchBar
-          options={[
-            { value: 'title', label: language.searchByTitle },
-            { value: 'category', label: language.searchByCategory }
-          ]}
-          value={searchQuery}
-          onValueChange={setSearchQuery}
-          selected={searchType}
-          onSelectChange={val => setSearchType(val as SearchType)}
-          placeholder={searchType === 'title' ? language.searchByTitle : language.searchByCategory}
-          className="mb-4"
-        />
-        <h2 className="text-2xl font-bold mb-6">{language.gameList}</h2>
-        {loading ? 
-            <Spinner full={false}/> : 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {SearchedGames.map(game => (
-                    <SingleGame game={game} key={game.id}/>
-                ))}
-            </div>
-        }
+            <SearchBar
+            options={[
+                { value: 'title', label: language.searchByTitle },
+                { value: 'category', label: language.searchByCategory }
+            ]}
+            value={searchQuery}
+            onValueChange={setSearchQuery}
+            selected={searchType}
+            onSelectChange={val => setSearchType(val as SearchType)}
+            placeholder={searchType === 'title' ? language.searchByTitle : language.searchByCategory}
+            className="mb-4"
+            />
+            <h2 className="text-2xl font-bold mb-6">{language.gameList}</h2>
+            {loading ? 
+                <Spinner full={false}/> : 
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {SearchedGames.map(game => (
+                        <SingleGame game={game} key={game.id}/>
+                    ))}
+                </div>
+            }
         </>
     )
 }

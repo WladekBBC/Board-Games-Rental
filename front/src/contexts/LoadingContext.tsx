@@ -11,10 +11,12 @@ export function LoadingProvider({ children }: { children: ReactNode }) {
     const { loading: authLoading } = useAuth()
     const { loading: gamesLoading } = useGames()
     const { loading: rentalsLoading } = useRentals()
+    const { JWT } = useAuth();
+
     const [ loading, setLoading ] = useState(false)
 
     useEffect(() => {
-        setLoading(authLoading || gamesLoading || rentalsLoading)
+      setLoading(authLoading || gamesLoading || (rentalsLoading && !!JWT))
     }, [authLoading, gamesLoading, rentalsLoading])
 
     return (

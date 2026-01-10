@@ -13,7 +13,7 @@ type SingleRentalType = {
 
 export const SingleRental = ({handleSuccess, handleError, rental}: SingleRentalType) =>{
     const { rentalAction } = useRentals()
-    const { games, changeQuantity } = useGames()
+    const { games } = useGames()
     const { language } = useLang()
     const { permissions } = useAuth()
 

@@ -1,4 +1,19 @@
 services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app
+
   frontend:
     restart: always
     build:
@@ -6,7 +21,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    env_file: ./docker-envs/front.env
     depends_on:
       - backend
     networks:
@@ -17,9 +31,9 @@ services:
     build:
       context: ./rental-api
       dockerfile: Dockerfile
-    services:
-      - DB_PASS=root
-      - DB_NAME=rental
+    ports:
+      - "8080:3001"
+    env_file: ./docker-envs/back.env
     depends_on:
       - db
     networks:
@@ -41,9 +55,7 @@ services:
     restart: always
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: rental
+    env_file: ./docker-envs/mysql.env
     volumes:
        - mysql_data:/var/lib/mysql
     networks:
@@ -53,3 +65,4 @@ networks:
   app:
 
 volumes:
+  mysql_data:

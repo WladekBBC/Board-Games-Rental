@@ -8,13 +8,13 @@ RUN npm ci
 
 COPY . .
 
+ENV NODE_ENV=production
+
 RUN npm run build
 
 FROM node:20-alpine AS runner
 
 WORKDIR /app
-
-ENV NODE_ENV=production
 
 COPY package*.json ./
 

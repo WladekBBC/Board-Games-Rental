@@ -55,7 +55,8 @@ Board Games Rental to aplikacja webowa umożliwiająca zarządzanie bazą gier p
    ```
    `.env`
    ```sh
-   API_URL = 'http://localhost:3001/'
+   NEXT_PUBLIC_API_URL = http://localhost/api/
+   NEXT_PUBLIC_WS_URL = http://localhost:8080/
    ```
 3. Uruchom w katalogu głównym:
 

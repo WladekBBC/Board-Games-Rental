@@ -12,7 +12,6 @@ export type GamesContextType = {
     addGame: (game: Omit<IGame, 'id'>) => Promise<void>
     updateGame: (game: IGame) => Promise<void>
     deleteGame: (id: number) => void
-    changeQuantity: (id: number, quantity: number) => void
     setSearchType: (type: SearchType) => void
     setSearchQuery: (query: string) => void
 }
