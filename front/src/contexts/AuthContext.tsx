@@ -1,14 +1,25 @@
-"use client";
-
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+'use client';
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
+import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
-import { IUserApi, Method, request } from '@/interfaces/api';
-import { Perms, toPerms } from '@/interfaces/perms';
-import { AuthContextType, LoggedUserType, LoginDataType } from '@/types/authContext';
-import { chechCookie, deleteCookie, getCookie, setCookie } from '@/app/actions';
+import { IUserApi, Method, request } from "@/interfaces/api";
+import { Perms, toPerms } from "@/interfaces/perms";
+import {
+  AuthContextType,
+  LoggedUserType,
+  LoginDataType,
+} from "@/types/authContext";
+import { chechCookie, deleteCookie, getCookie, setCookie } from "@/app/actions";
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined,
+);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState<boolean>(true);
@@ -19,36 +30,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    setLoading(true)
-    getLocalUser()    
-    setLoading(false)
+    setLoading(true);
+    getLocalUser();
+    setLoading(false);
   }, []);
 
-  const getLocalUser = async () =>{
-    if(await chechCookie('Authorization')){
-      await handleAuthSuccess(`${(await getCookie('Authorization'))?.value}`)
+  const getLocalUser = async () => {
+    if (await chechCookie("Authorization")) {
+      await handleAuthSuccess(`${(await getCookie("Authorization"))?.value}`);
     }
-  }
+  };
 
-  const saveLocalUser = async (token: string, exp: number) =>{
-    await setCookie('Authorization', token, exp)
-  }
+  const saveLocalUser = async (token: string, exp: number) => {
+    await setCookie("Authorization", token, exp);
+  };
 
-  const clearLocalUser = async () =>{
-    await deleteCookie('Authorization')
-  }
+  const clearLocalUser = async () => {
+    await deleteCookie("Authorization");
+  };
 
   const handleAuthSuccess = async (token: string) => {
-    const loggedUser = jwtDecode<LoggedUserType>(token)
+    const loggedUser = jwtDecode<LoggedUserType>(token);
     const perms = toPerms(loggedUser.permissions);
 
-    if(Date.now() > loggedUser.exp * 1000){
+    if (Date.now() > loggedUser.exp * 1000) {
       signOut();
-      return
+      return;
     }
 
-    if(!(await chechCookie('Authorization'))){
-      await saveLocalUser(token, loggedUser.exp)
+    if (!(await chechCookie("Authorization"))) {
+      await saveLocalUser(token, loggedUser.exp);
     }
 
     setUser(loggedUser);
@@ -57,22 +68,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register = async (data: LoginDataType) => {
-    return request<IUserApi>('auth/register', Method.POST, JSON.stringify(data))
-      .then(({token})=>{handleAuthSuccess(token)})
+    return request<IUserApi>(
+      "auth/register",
+      Method.POST,
+      JSON.stringify(data),
+    ).then(({ token }) => {
+      handleAuthSuccess(token);
+    });
   };
-  
+
   const signIn = async (data: LoginDataType) => {
-    return request<IUserApi>('auth/login', Method.POST, JSON.stringify(data))
-      .then(({token})=>{handleAuthSuccess(token)})
+    return request<IUserApi>(
+      "auth/login",
+      Method.POST,
+      JSON.stringify(data),
+    ).then(({ token }) => {
+      handleAuthSuccess(token);
+    });
   };
 
   const signOut = async () => {
-    setLoading(true)
+    setLoading(true);
     await clearLocalUser();
     setUser(null);
     setJWT(null);
-    setLoading(false)
-    router.push('/')
+    setLoading(false);
+    router.push("/");
   };
 
   const contextValue = {
@@ -82,20 +103,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     permissions,
     register,
     signIn,
-    signOut
+    signOut,
   };
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }
 
-export function useAuth() :AuthContextType {
+export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }
