@@ -1,14 +1,14 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import { Method, request } from '@/interfaces/api';
 import { useLang } from './LanguageContext';
 import { UsersContextType, User, UserUpdate, SearchType } from '@/types/usersContext';
-import { chechCookie } from '@/app/actions';
+import { checkCookie } from '@/app/actions';
  
 const UsersContext = createContext<UsersContextType | undefined>(undefined);
 
 export function UsersProvider({ children }: { children: ReactNode }) {
-  const { JWT, permissions } = useAuth();
+  const { JWT } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [editing, setEditing] = useState<{ [key: number]: UserUpdate }>({});
   const [loading, setLoading] = useState(true);
@@ -19,9 +19,32 @@ export function UsersProvider({ children }: { children: ReactNode }) {
   const [searchType, setSearchType] = useState<SearchType>('email');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const handleError = useCallback((errorMessage: string) => {
+    setError(errorMessage);
+    setTimeout(() => setError(null), 3000);
+  }, []);
+
+  const fetchUsers = useCallback(async () => {
+    if (!JWT || !(await checkCookie('Authorization'))) {
+      setUsers([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const data = await request<User[]>('auth/users', Method.GET);
+      setUsers(data);
+    } catch (err) {
+      handleError(err instanceof Error ? err.message : language.serverError);
+    } finally {
+      setLoading(false);
+    }
+  }, [JWT, handleError, language.serverError]);
+
   useEffect(() => {
-    fetchUsers();
-  }, [JWT]);
+    void fetchUsers();
+  }, [fetchUsers]);
 
   const SearchedUsers = [...users]
     .filter(user => {
@@ -34,31 +57,15 @@ export function UsersProvider({ children }: { children: ReactNode }) {
         return user.email.toLowerCase().includes(searchLower)
       case 'permissions':
         return user.permissions.toLowerCase().includes(searchLower)
+      default:
+        return true;
     }
   })
 
-  const fetchUsers = async () => {
-    if(await chechCookie('Authorization')){
-      request<User[]>('auth/users', Method.GET).then((data: User[])=>{
-        setUsers(data);
-        setLoading(false);
-      }).catch((err: Error)=>{
-        handleError(err.message);
-      })
-    }else{
-      setUsers([])
-    }
-  };
-
   const handleSuccess = (successMessage: string) =>{
-    fetchUsers();
+    void fetchUsers();
     setSuccess(successMessage);
     setTimeout(() => setSuccess(null), 3000);
-  }
-
-  const handleError = (errorMessage: string) =>{
-    setError(errorMessage);
-    setTimeout(() => setError(null), 3000);
   }
 
   const handleUpdateUser = async (id: number) => {
@@ -70,52 +77,52 @@ export function UsersProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    setLoading(true);
     const updates = editing[id];
     const updateData: UserUpdate = {};
 
-    if (updates.email && updates.email !== user.email) {
+    if (updates?.email && updates.email !== user.email) {
       updateData.email = updates.email;
     }
-    if (updates.permissions && updates.permissions !== user.permissions) {
+    if (updates?.permissions && updates.permissions !== user.permissions) {
       updateData.permissions = updates.permissions;
     }
-    if (updates.password) {
+    if (updates?.password) {
       updateData.password = updates.password;
     }
 
     if (Object.keys(updateData).length === 0) {
-      setLoading(false);
       return;
     }
 
-    request(`auth/update/${id}`, Method.PATCH, JSON.stringify(updateData)).then(()=>{
+    setLoading(true);
+    try {
+      await request(`auth/update/${id}`, Method.PATCH, JSON.stringify(updateData));
       handleSuccess(language.userUpdated);
       setEditing((prev) => {
         const newState = { ...prev };
         delete newState[id];
         return newState;
       });
-    }).catch((err: Error)=>{
-      handleError(err.message);
-    })
-
-    setLoading(false);
+    } catch (err) {
+      handleError(err instanceof Error ? err.message : language.serverError);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDeleteUser = async () => {
     if (!userToDelete) return;
 
     setLoading(true);
-
-    request(`auth/delete/${userToDelete.id}`, Method.DELETE).then(()=>{
+    try {
+      await request(`auth/delete/${userToDelete.id}`, Method.DELETE);
       handleSuccess(language.userDeleted);
       setUserToDelete(null);
-    }).catch((err:Error)=>{
-      handleError(err.message);
-    })
-
-    setLoading(false);
+    } catch (err) {
+      handleError(err instanceof Error ? err.message : language.serverError);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const value: UsersContextType = {
@@ -147,4 +154,4 @@ export function useUsers() {
     throw new Error('useUsers must be used within a UsersProvider');
   }
   return context;
-} 
+}

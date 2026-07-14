@@ -5,6 +5,7 @@ import {
   useState,
   ReactNode,
   useEffect,
+  useCallback,
 } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
@@ -15,7 +16,7 @@ import {
   LoggedUserType,
   LoginDataType,
 } from "@/types/authContext";
-import { chechCookie, deleteCookie, getCookie, setCookie } from "@/app/actions";
+import { checkCookie, deleteCookie, getCookie, setCookie } from "@/app/actions";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined,
@@ -29,71 +30,80 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const router = useRouter();
 
-  useEffect(() => {
-    setLoading(true);
-    getLocalUser();
-    setLoading(false);
+  const clearLocalUser = useCallback(async () => {
+    await deleteCookie("Authorization");
   }, []);
 
-  const getLocalUser = async () => {
-    if (await chechCookie("Authorization")) {
-      await handleAuthSuccess(`${(await getCookie("Authorization"))?.value}`);
-    }
-  };
-
-  const saveLocalUser = async (token: string, exp: number) => {
+  const saveLocalUser = useCallback(async (token: string, exp: number) => {
     await setCookie("Authorization", token, exp);
-  };
+  }, []);
 
-  const clearLocalUser = async () => {
-    await deleteCookie("Authorization");
-  };
-
-  const handleAuthSuccess = async (token: string) => {
-    const loggedUser = jwtDecode<LoggedUserType>(token);
-    const perms = toPerms(loggedUser.permissions);
-
-    if (Date.now() > loggedUser.exp * 1000) {
-      signOut();
-      return;
-    }
-
-    if (!(await chechCookie("Authorization"))) {
-      await saveLocalUser(token, loggedUser.exp);
-    }
-
-    setUser(loggedUser);
-    setJWT(token);
-    setPermissions(perms);
-  };
-
-  const register = async (data: LoginDataType) => {
-    return request<IUserApi>(
-      "auth/register",
-      Method.POST,
-      JSON.stringify(data),
-    ).then(({ token }) => {
-      handleAuthSuccess(token);
-    });
-  };
-
-  const signIn = async (data: LoginDataType) => {
-    return request<IUserApi>(
-      "auth/login",
-      Method.POST,
-      JSON.stringify(data),
-    ).then(({ token }) => {
-      handleAuthSuccess(token);
-    });
-  };
-
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     setLoading(true);
     await clearLocalUser();
     setUser(null);
     setJWT(null);
+    setPermissions(Perms.U);
     setLoading(false);
     router.push("/");
+  }, [clearLocalUser, router]);
+
+  const handleAuthSuccess = useCallback(async (token: string) => {
+    try {
+      const loggedUser = jwtDecode<LoggedUserType>(token);
+      const perms = toPerms(loggedUser.permissions);
+
+      if (!loggedUser.exp || Date.now() > loggedUser.exp * 1000) {
+        await signOut();
+        return;
+      }
+
+      if (!(await checkCookie("Authorization"))) {
+        await saveLocalUser(token, loggedUser.exp);
+      }
+
+      setUser(loggedUser);
+      setJWT(token);
+      setPermissions(perms);
+    } catch {
+      await signOut();
+    }
+  }, [saveLocalUser, signOut]);
+
+  useEffect(() => {
+    const bootstrapAuth = async () => {
+      setLoading(true);
+      try {
+        if (await checkCookie("Authorization")) {
+          const cookie = await getCookie("Authorization");
+          if (cookie?.value) {
+            await handleAuthSuccess(cookie.value);
+          }
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void bootstrapAuth();
+  }, [handleAuthSuccess]);
+
+  const register = async (data: LoginDataType) => {
+    const { token } = await request<IUserApi>(
+      "auth/register",
+      Method.POST,
+      JSON.stringify(data),
+    );
+    await handleAuthSuccess(token);
+  };
+
+  const signIn = async (data: LoginDataType) => {
+    const { token } = await request<IUserApi>(
+      "auth/login",
+      Method.POST,
+      JSON.stringify(data),
+    );
+    await handleAuthSuccess(token);
   };
 
   const contextValue = {

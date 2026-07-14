@@ -1,15 +1,29 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Get, Param, Delete, Patch, Headers } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto } from './dto/auth.dto';
-import { AuthGuard } from '../guards/auth.guard';
-import { UserService } from 'src/user/user.service';
-import { Permission } from 'src/decorators/permissions.decorator';
-import { Perms } from 'src/enums/permissions.enum';
-import { UpdateUserDto } from 'src/user/dto/user.dto';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+  Get,
+  Param,
+  Delete,
+  Patch,
+} from "@nestjs/common";
+import { AuthService } from "./auth.service";
+import { LoginDto, RegisterDto } from "./dto/auth.dto";
+import { AuthGuard } from "../guards/auth.guard";
+import { UserService } from "src/user/user.service";
+import { Permission } from "src/decorators/permissions.decorator";
+import { Perms } from "src/enums/permissions.enum";
+import { UpdateUserDto } from "src/user/dto/user.dto";
 
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
-  constructor(private readonly authService: AuthService, private readonly userService: UserService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   /**
    * Signin controller
@@ -17,7 +31,7 @@ export class AuthController {
    * @returns token and permissions of logged user
    */
   @HttpCode(HttpStatus.OK)
-  @Post('login')
+  @Post("login")
   signIn(@Body() signInDto: LoginDto) {
     return this.authService.signIn(signInDto);
   }
@@ -28,7 +42,7 @@ export class AuthController {
    * @returns token and permissions of new user
    */
   @HttpCode(HttpStatus.CREATED)
-  @Post('register')
+  @Post("register")
   register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);
   }
@@ -39,7 +53,7 @@ export class AuthController {
    */
   @UseGuards(AuthGuard)
   @Permission([Perms.A])
-  @Get('users')
+  @Get("users")
   getUsers() {
     return this.userService.findAll();
   }
@@ -50,8 +64,9 @@ export class AuthController {
    * @returns user
    */
   @UseGuards(AuthGuard)
-  @Get('user/:id')
-  getUser(@Param('id') id:number) {
+  @Permission([Perms.A])
+  @Get("user/:id")
+  getUser(@Param("id") id: number) {
     return this.userService.findOneById(id);
   }
 
@@ -62,8 +77,9 @@ export class AuthController {
    * @returns state of edit
    */
   @UseGuards(AuthGuard)
-  @Patch('update/:id')
-  editUser(@Param('id') id:number, @Body() updateUser: UpdateUserDto ) {
+  @Permission([Perms.A])
+  @Patch("update/:id")
+  editUser(@Param("id") id: number, @Body() updateUser: UpdateUserDto) {
     return this.userService.update(id, updateUser);
   }
 
@@ -73,8 +89,9 @@ export class AuthController {
    * @returns state of delete
    */
   @UseGuards(AuthGuard)
-  @Delete('delete/:id')
-  deleteUser(@Param('id') id:number) {
+  @Permission([Perms.A])
+  @Delete("delete/:id")
+  deleteUser(@Param("id") id: number) {
     return this.userService.remove(id);
   }
 }

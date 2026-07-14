@@ -1,20 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
-import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
-import * as bcrypt from 'bcryptjs';
-import { Perms } from '../enums/permissions.enum';
-import { OnModuleInit } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "./entities/user.entity";
+import { Repository } from "typeorm";
+import { CreateUserDto, UpdateUserDto } from "./dto/user.dto";
+import * as bcrypt from "bcryptjs";
+import { Perms } from "../enums/permissions.enum";
+import { OnModuleInit } from "@nestjs/common";
+import { appEnv } from "src/config/env";
 
 @Injectable()
-export class UserService implements OnModuleInit{
+export class UserService implements OnModuleInit {
   constructor(
     @InjectRepository(User)
-    private readonly userRepo: Repository<User>){}
-  
+    private readonly userRepo: Repository<User>,
+  ) {}
+
   async onModuleInit() {
-    await this.createAdminIfNotExists()
+    await this.createAdminIfNotExists();
   }
 
   /**
@@ -23,7 +25,7 @@ export class UserService implements OnModuleInit{
    * @returns new user data
    */
   async create(createUserDto: CreateUserDto) {
-    return this.userRepo.save(createUserDto)
+    return this.userRepo.save(createUserDto);
   }
 
   /**
@@ -31,7 +33,7 @@ export class UserService implements OnModuleInit{
    * @returns user list
    */
   async findAll() {
-    return this.userRepo.find()
+    return this.userRepo.find();
   }
 
   /**
@@ -40,7 +42,7 @@ export class UserService implements OnModuleInit{
    * @returns found user
    */
   async findOne(email: string) {
-    return this.userRepo.findOneBy({ email })
+    return this.userRepo.findOneBy({ email });
   }
 
   /**
@@ -48,8 +50,8 @@ export class UserService implements OnModuleInit{
    * @param id - id number of number
    * @returns found user
    */
-  async findOneById(id:number){
-    return this.userRepo.findOneBy({ id })
+  async findOneById(id: number) {
+    return this.userRepo.findOneBy({ id });
   }
 
   /**
@@ -62,7 +64,7 @@ export class UserService implements OnModuleInit{
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
     }
-    return this.userRepo.update(id, updateUserDto)
+    return this.userRepo.update(id, updateUserDto);
   }
 
   /**
@@ -71,19 +73,25 @@ export class UserService implements OnModuleInit{
    * @returns result of deleting user
    */
   async remove(id: number) {
-    return this.userRepo.delete(id)
+    return this.userRepo.delete(id);
   }
 
-
   async createAdminIfNotExists() {
-    const adminUser = await this.findOne(`${process.env.AD_EMAIL}`);
-    
+    const adminEmail = appEnv.adminEmail;
+    const adminPassword = appEnv.adminPassword;
+
+    if (!adminEmail || !adminPassword) {
+      return;
+    }
+
+    const adminUser = await this.findOne(adminEmail);
+
     if (!adminUser) {
-      const hashedPassword = await bcrypt.hash(`${process.env.AD_PASS}`, 10);
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
       await this.create({
-        email: `${process.env.AD_EMAIL}`,
+        email: adminEmail,
         password: hashedPassword,
-        permissions: Perms.A
+        permissions: Perms.A,
       });
     }
   }

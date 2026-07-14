@@ -1,7 +1,19 @@
-import { Game } from "src/game/entities/game.entity";
+import { Type } from "class-transformer";
+import { IsDateString, IsInt, IsString, ValidateNested } from "class-validator";
+
+class GameReferenceDto {
+  @IsInt()
+  id: number;
+}
 
 export class CreateRentalDto {
-    index: string;
-    rentedAt: Date;
-    game: Game;
+  @IsString()
+  index: string;
+
+  @IsDateString()
+  rentedAt: Date;
+
+  @ValidateNested()
+  @Type(() => GameReferenceDto)
+  game: GameReferenceDto;
 }

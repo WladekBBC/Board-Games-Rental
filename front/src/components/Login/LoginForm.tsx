@@ -33,23 +33,30 @@ export const LoginForm = ({isRegister}: LoginFormType) => {
     return true
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) =>{
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
 
-    if(!validate()){
+    if (!validate()) {
       setLoading(false)
       return;
     }
 
-    if(isRegister)
-      register({email: email, password: password})
-        .catch((err: Error)=>setError(err.cause == 400 ? language.userAlreadyExists : language.serverError))
-    else
-      signIn({email: email, password: password})
-        .catch((err: Error)=>setError(err.cause == 400 ? language.loginError : language.serverError))
-
-    setLoading(false)
+    try {
+      if (isRegister) {
+        await register({ email, password });
+      } else {
+        await signIn({ email, password });
+      }
+    } catch (err) {
+      if (err instanceof Error && err.cause === 400) {
+        setError(isRegister ? language.userAlreadyExists : language.loginError)
+      } else {
+        setError(language.serverError)
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

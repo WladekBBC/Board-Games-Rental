@@ -2,7 +2,7 @@ import { useGames } from "@/contexts/GamesContext"
 import { useLang } from "@/contexts/LanguageContext"
 import { IGame } from "@/interfaces/game"
 import { validateImageUrl } from "@/lib/utils/imageUrlValidator"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { imageLoader } from "@/lib/utils/imageLoader"
 import Image from 'next/image'
 import ErrorField from "../Messages/ErrorField"
@@ -33,6 +33,13 @@ export const GameForm = ({ game, onClose }: GameFormType) => {
     const [isImageValid, setIsImageValid] = useState(true)
     const [error, setError] = useState<string>()
 
+    const validatePhoto = useCallback(() => {
+        void validateImageUrl(formData.imageUrl).then((res) => {
+            setIsImageValid(res.isValid)
+            setError(res.isValid ? undefined : language[res.error as keyof typeof language])
+        })
+    }, [formData.imageUrl, language])
+
     useEffect(() => {
         if (formData.imageUrl) {
             validatePhoto()
@@ -40,37 +47,33 @@ export const GameForm = ({ game, onClose }: GameFormType) => {
             setIsImageValid(true); 
             setError(undefined);
         }
-    }, [formData.imageUrl]) 
-
-    const validatePhoto = () => {
-        validateImageUrl(formData.imageUrl).then((res) => {
-            setIsImageValid(res.isValid)
-            setError(res.isValid ? undefined : language[res.error as keyof typeof language])
-        })
-    }
+    }, [formData.imageUrl, validatePhoto]) 
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setIsProcessing(true)
         setError(undefined); 
 
-        if (game) {
-            updateGame({id: game.id, ...formData}).then(()=>{if (onClose) onClose()}).catch((err: Error)=>{
-                if(err.cause == 400)
-                    setError(language.gameExistError)
-                else
-                    setError(language.editGameError)
-            });
-        } else {
-            formData.quantity = formData.amount
-            addGame(formData).then(()=>setFormData(defaultGame)).catch((err: Error)=>{
-                if(err.cause == 400)
-                    setError(language.gameExistError)
-                else
-                    setError(language.addGameError)
-            });
+        try {
+            if (game) {
+                await updateGame({id: game.id, ...formData});
+                if (onClose) onClose();
+            } else {
+                const nextGame = { ...formData, quantity: formData.amount };
+                await addGame(nextGame);
+                setFormData(defaultGame);
+            }
+        } catch (err) {
+            if (err instanceof Error && err.cause === 400) {
+                setError(language.gameExistError)
+            } else if (game) {
+                setError(language.editGameError)
+            } else {
+                setError(language.addGameError)
+            }
+        } finally {
+            setIsProcessing(false)
         }
-        setIsProcessing(false)
     }
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

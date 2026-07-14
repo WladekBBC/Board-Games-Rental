@@ -19,6 +19,9 @@ services:
     build:
       context: ./front
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost/api
+        NEXT_PUBLIC_WS_URL: http://localhost
     ports:
       - "3000:3000"
     depends_on:
@@ -35,7 +38,8 @@ services:
       - "8080:8080"
     env_file: ./docker-envs/back.env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - app
 
@@ -57,7 +61,13 @@ services:
       - "3306:3306"
     env_file: ./docker-envs/mysql.env
     volumes:
-       - mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
     networks:
       - app
 

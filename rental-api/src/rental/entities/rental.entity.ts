@@ -1,21 +1,33 @@
 import { Game } from "src/game/entities/game.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 @Entity()
 export class Rental {
-    @PrimaryGeneratedColumn()
-    id:number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    index: string;
+  @Column()
+  index: string;
 
-    @CreateDateColumn({ type: "timestamp"})
-    rentedAt: Date;
+  @CreateDateColumn({ type: "timestamp" })
+  rentedAt: Date;
 
-    @Column({ nullable: true, type: 'timestamp' })
-    returnedAt: Date | null;
+  @Column({ nullable: true, type: "timestamp" })
+  returnedAt: Date | null;
 
-    @ManyToOne(()=>Game, {nullable: false, cascade: true, eager: true, onDelete: "CASCADE"})
-    @JoinColumn({ name: 'gameId', referencedColumnName: 'id' })
-    game: Game;
+  @ManyToOne(() => Game, {
+    nullable: false,
+    cascade: true,
+    eager: true,
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "gameId", referencedColumnName: "id" })
+  game: Game;
 }

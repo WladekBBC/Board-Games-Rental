@@ -1,22 +1,29 @@
 "use server"
 import { cookies } from 'next/headers'
- 
 
-export const getCookie = async (name:string) => {
-  const cookieStore = await cookies()
-  return cookieStore.get(name)
-}
+export const getCookie = async (name: string) => {
+  const cookieStore = await cookies();
+  return cookieStore.get(name);
+};
 
 export const setCookie = async (name: string, value: string, exp: number) => {
-  const cookieStore = await cookies()
-  cookieStore.set(name, value, {expires: new Date(exp * 1000)})
-}
+  const cookieStore = await cookies();
+  cookieStore.set(name, value, {
+    expires: new Date(exp * 1000),
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+};
 
 export const deleteCookie = async (name: string) => {
-  const cookieStore = await cookies()
-  cookieStore.delete(name)
-}
-export const chechCookie = async (name: string)=>{
-  const cookieStore = await cookies()
-  return cookieStore.has(name)
-}
+  const cookieStore = await cookies();
+  cookieStore.delete(name);
+};
+
+export const checkCookie = async (name: string) => {
+  const cookieStore = await cookies();
+  return cookieStore.has(name);
+};
+
+export const chechCookie = checkCookie;

@@ -22,7 +22,7 @@ export default function RegisterPage (){
   useEffect(()=>{
     if(JWT && !loading)
       router.push('/')
-  }, [JWT, loading])
+  }, [JWT, loading, router])
   
   if(!JWT && !loading)
     return (

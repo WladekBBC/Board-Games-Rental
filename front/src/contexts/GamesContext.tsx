@@ -4,7 +4,12 @@ import { createContext, useContext, useState, useEffect, ReactNode, useCallback 
 import { GamesContextType, SearchType } from '@/types/gameContext';
 import { IGame } from '@/interfaces/game';
 import { Method, request } from '@/interfaces/api';
+import { getWsUrl } from '@/lib/env';
 import { io } from 'socket.io-client';
+
+interface InsertResult {
+  identifiers: Array<{ id: number }>;
+}
 
 const GamesContext = createContext<GamesContextType | undefined>(undefined)
 
@@ -15,13 +20,14 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('')
 
   const getGames = useCallback(() => {
+    setLoading(true)
     request<IGame[]>("games", Method.GET)
       .then((res) => setGames(res))
       .finally(() => setLoading(false))
   }, []);
 
   useEffect(() => {
-    const socket = io(process.env.NEXT_PUBLIC_WS_URL + "games", {
+    const socket = io(`${getWsUrl()}/games`, {
       transports: ["websocket"],
       reconnectionDelay: 2500,
       reconnectionAttempts: 10,
@@ -35,7 +41,8 @@ export function GamesProvider({ children }: { children: ReactNode }) {
     });
   
     return () => {
-      socket.off();
+      socket.off("connect", getGames);
+      socket.off("gameQuantityChange");
       socket.disconnect();
     };
   }, [getGames]);
@@ -51,24 +58,29 @@ export function GamesProvider({ children }: { children: ReactNode }) {
         return game.title.toLowerCase().includes(searchLower)
       case 'category':
         return game.category.toLowerCase().includes(searchLower)
+      default:
+        return true;
     }
   })
   
   const addGame = async (game: Omit<IGame, 'id'>) => {
-    return request('game', Method.POST, JSON.stringify(game)).then((response: any)=>setGames([...games, {id: +response.identifiers[0].id, ...game}]))
+    const response = await request<InsertResult>('games', Method.POST, JSON.stringify(game))
+    const id = response.identifiers[0]?.id
+    if (id) {
+      setGames((prev) => [...prev, { id, ...game }])
+    } else {
+      getGames()
+    }
   }
 
-  /**
-   * Updates game data
-   * @param {string} id - ID game to update
-   * @param {Partial<Game>} updates - Partial data to update
-   */
   const updateGame = async (game: IGame) => {
-    return request<void>(`game/${game.id}`, Method.PATCH, JSON.stringify(game)).then(()=>setGames(games.map<IGame>((Oldgame)=>Oldgame.id == game.id ? game : Oldgame)))
+    await request<void>(`games/${game.id}`, Method.PATCH, JSON.stringify(game))
+    setGames((prev) => prev.map((existing) => existing.id === game.id ? game : existing))
   }
 
-  const deleteGame = (id: number) => {
-    return request<void>(`game/${id}`, Method.DELETE).then(()=>setGames(games.filter((game)=> game.id !== id)))
+  const deleteGame = async (id: number) => {
+    await request<void>(`games/${id}`, Method.DELETE)
+    setGames((prev) => prev.filter((game) => game.id !== id))
   }
 
   return (
@@ -78,15 +90,10 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   )
 }
 
-/**
- * Hook to use the games context
- * @returns {GamesContextType} Games context
- * @throws {Error} If hook is used outside of GamesProvider
- */
 export function useGames() {
   const context = useContext(GamesContext)
   if (context === undefined) {
     throw new Error('useGames must be used within a GamesProvider')
   }
   return context
-} 
+}
