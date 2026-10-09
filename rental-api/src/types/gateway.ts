@@ -5,6 +5,9 @@ export interface RentalEvents {
   rentalCreated: (rental: Rental) => void;
   rentalStatusChanged: (rental: Rental) => void;
   rentalDeleted: (id: number) => void;
+  queueJoined: (data: { position: number; gameId: number }) => void;
+  queueUpdated: (data: { position: number; gameId: number }) => void;
+  autoRented: (rental: Rental) => void;
 }
 
 export interface GamesEvents {

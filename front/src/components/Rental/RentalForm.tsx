@@ -5,6 +5,7 @@ import { Rent } from "@/types/rentalContext"
 import { useState } from "react"
 import { CustomFormInput } from "../Helpers/FormInput"
 import { RentalAutocomplete } from "./RentalAutocomplete"
+import { QueueButton } from "./QueueButton"
 import { IGame } from "@/interfaces/game"
 
 type RentalFormType = {
@@ -66,6 +67,10 @@ export const RentalForm = ({handleError, handleSuccess, gameId}: RentalFormType)
             <CustomFormInput name="personId" label={language.indexNumber} value={person} type="text" changeHandler={(e) => setPerson(e.target.value)} placeholder={language.indexNumber}/>
 
             <RentalAutocomplete games={games} label={language.gameTitle} value={game} changeHandler={setGame} placeholder={language.gameTitle}/>
+
+            {game && game.quantity < 1 && (
+                <QueueButton gameId={game.id} quantity={game.quantity} />
+            )}
 
             <button
                 type="submit"

@@ -1,9 +1,10 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
+import { Injectable, BadRequestException, ConflictException } from "@nestjs/common";
 import { CreateGameDto } from "./dto/create-game.dto";
 import { UpdateGameDto } from "./dto/update-game.dto";
 import { Repository } from "typeorm";
 import { Game } from "./entities/game.entity";
 import { InjectRepository } from "@nestjs/typeorm";
+import { QueryFailedError } from "typeorm";
 
 @Injectable()
 export class GameService {
@@ -12,7 +13,11 @@ export class GameService {
     private readonly gameRepo: Repository<Game>,
   ) {}
   create(createGameDto: CreateGameDto) {
-    return this.gameRepo.insert(createGameDto).catch(() => {
+    return this.gameRepo.insert(createGameDto).catch((error: QueryFailedError) => {
+      const driverError = (error as any).driverError;
+      if (driverError?.code === 'ER_DUP_ENTRY' || driverError?.code === '23505') {
+        throw new ConflictException("Game already exists!");
+      }
       throw new BadRequestException();
     });
   }
@@ -26,7 +31,11 @@ export class GameService {
   }
 
   update(id: number, updateGameDto: UpdateGameDto) {
-    return this.gameRepo.update(id, updateGameDto).catch(() => {
+    return this.gameRepo.update(id, updateGameDto).catch((error: QueryFailedError) => {
+      const driverError = (error as any).driverError;
+      if (driverError?.code === 'ER_DUP_ENTRY' || driverError?.code === '23505') {
+        throw new ConflictException("Game already exists!");
+      }
       throw new BadRequestException();
     });
   }

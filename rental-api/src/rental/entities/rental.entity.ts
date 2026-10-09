@@ -1,4 +1,5 @@
 import { Game } from "src/game/entities/game.entity";
+import { User } from "src/user/entities/user.entity";
 import {
   Column,
   CreateDateColumn,
@@ -11,16 +12,16 @@ import {
 @Entity()
 export class Rental {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  index: string;
+  index!: string;
 
   @CreateDateColumn({ type: "timestamp" })
-  rentedAt: Date;
+  rentedAt!: Date;
 
   @Column({ nullable: true, type: "timestamp" })
-  returnedAt: Date | null;
+  returnedAt!: Date | null;
 
   @ManyToOne(() => Game, {
     nullable: false,
@@ -29,5 +30,9 @@ export class Rental {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "gameId", referencedColumnName: "id" })
-  game: Game;
+  game!: Game;
+
+  @ManyToOne(() => User, { nullable: true, onDelete: "SET NULL" })
+  @JoinColumn({ name: "userId", referencedColumnName: "id" })
+  user!: User | null;
 }

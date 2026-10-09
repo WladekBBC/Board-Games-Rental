@@ -9,11 +9,11 @@ import { Perms } from "src/enums/permissions.enum";
 
 export class CreateUserDto {
   @IsEmail()
-  readonly email: string;
+  readonly email!: string;
 
   @IsString()
   @MinLength(6)
-  readonly password: string;
+  readonly password!: string;
 
   @IsOptional()
   @IsEnum(Perms)
@@ -36,6 +36,6 @@ export class UpdateUserDto {
 }
 
 export class UserDto {
-  readonly email: string;
-  readonly permissions: Perms;
+  readonly email!: string;
+  readonly permissions!: Perms;
 }

@@ -3,17 +3,17 @@ import { IsDateString, IsInt, IsString, ValidateNested } from "class-validator";
 
 class GameReferenceDto {
   @IsInt()
-  id: number;
+  id!: number;
 }
 
 export class CreateRentalDto {
   @IsString()
-  index: string;
+  index!: string;
 
   @IsDateString()
-  rentedAt: Date;
+  rentedAt!: Date;
 
   @ValidateNested()
   @Type(() => GameReferenceDto)
-  game: GameReferenceDto;
+  game!: GameReferenceDto;
 }

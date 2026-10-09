@@ -9,21 +9,21 @@ import {
 
 export class CreateGameDto {
   @IsString()
-  title: string;
+  title!: string;
 
   @IsString()
   @MaxLength(500)
-  description: string;
+  description!: string;
 
   @IsString()
-  category: string;
+  category!: string;
 
   @IsUrl()
-  imageUrl: string;
+  imageUrl!: string;
 
   @IsInt()
   @Min(1)
-  amount: number;
+  amount!: number;
 
   @IsOptional()
   @IsInt()

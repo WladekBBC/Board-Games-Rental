@@ -26,13 +26,13 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
       .then((res) => setRentals(res))
       .finally(() => setLoading(false))
   }, [])
-  
+
   const filteredAndSortedRentals = [...rentals]
     .filter(rental => {
       if (!searchQuery) return true;
-      
+
       const searchLower = searchQuery.toLowerCase();
-      
+
       switch (searchType) {
         case 'index':
           return rental.index.toLowerCase().includes(searchLower);
@@ -49,17 +49,17 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
     })
     .sort((a: IRental, b) => {
       if (sortConfig.key === 'title') {
-        return sortConfig.direction === 'asc' 
+        return sortConfig.direction === 'asc'
           ? a.game.title.localeCompare(b.game.title)
           : b.game.title.localeCompare(a.game.title);
       }
-      
+
       if (sortConfig.key === 'rentedAt') {
         return sortConfig.direction === 'asc'
           ? new Date(a.rentedAt).getTime() - new Date(b.rentedAt).getTime()
           : new Date(b.rentedAt).getTime() - new Date(a.rentedAt).getTime();
       }
-      
+
       return sortConfig.direction === 'asc'
         ? a.index.localeCompare(b.index)
         : b.index.localeCompare(a.index);
@@ -133,11 +133,71 @@ export function RentalsProvider({ children }: { children: ReactNode }) {
     })
   }
 
+  const queueAction = (
+    action: "getQueueStatus" | "joinQueue" | "leaveQueue",
+    data: { gameId: number },
+    handleSuccess: (res: any) => void,
+    handleError?: (error: Error) => void,
+  ) => {
+    const socket = socketRef.current
+    if (!socket) {
+      handleError?.(new Error("Socket not connected"))
+      return
+    }
+
+    const statusEvent =
+      action === "joinQueue" ? "joinQueueStatus" :
+      action === "leaveQueue" ? "leaveQueueStatus" :
+      "queueStatus"
+
+    socket.emit(action, data)
+    socket.once(statusEvent, (res: any) => {
+      handleSuccess(res)
+    })
+  }
+
+  const onQueueJoined = useCallback((gameId: number, handler: (data: { position: number }) => void) => {
+    const socket = socketRef.current
+    if (!socket) return () => {}
+
+    const listener = (data: { position: number; gameId: number }) => {
+      if (data.gameId === gameId) handler(data)
+    }
+    socket.on('queueJoined', listener)
+    return () => { socket.off('queueJoined', listener) }
+  }, [])
+
+  const onQueueUpdated = useCallback((gameId: number, handler: (data: { position: number }) => void) => {
+    const socket = socketRef.current
+    if (!socket) return () => {}
+
+    const listener = (data: { position: number; gameId: number }) => {
+      if (data.gameId === gameId) handler(data)
+    }
+    socket.on('queueUpdated', listener)
+    return () => { socket.off('queueUpdated', listener) }
+  }, [])
+
+  const onAutoRented = useCallback((gameId: number, handler: () => void) => {
+    const socket = socketRef.current
+    if (!socket) return () => {}
+
+    const listener = (rental: any) => {
+      if (rental.game?.id === gameId) handler()
+    }
+    socket.on('autoRented', listener)
+    return () => { socket.off('autoRented', listener) }
+  }, [])
+
   return (
-    <RentalsContext.Provider value={{ 
-      rentals, 
-      loading, 
+    <RentalsContext.Provider value={{
+      rentals,
+      loading,
       rentalAction,
+      queueAction,
+      onQueueJoined,
+      onQueueUpdated,
+      onAutoRented,
       sortConfig,
       setSortConfig,
       searchQuery,

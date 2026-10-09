@@ -7,7 +7,7 @@ import { corsOption } from "src/cors";
 @WebSocketGateway({ namespace: "games", cors: corsOption })
 export class GamesGateway {
   @WebSocketServer()
-  server: Server<any, GamesEvents>;
+  server!: Server<any, GamesEvents>;
 
   sendGameChanges(game: Game) {
     this.server.emit("gameQuantityChange", game);

@@ -10,6 +10,7 @@ import DeleteDialog from '@/components/Helpers/DeleteDialog'
 import { useAuth } from '@/contexts/AuthContext'
 import { Perms } from '@/interfaces/perms'
 import { RentalForm } from "../Rental/RentalForm"
+import { QueueButton } from "../Rental/QueueButton"
 import { DialogModal } from "../Helpers/DialogModal"
 import ErrorField from "../Messages/ErrorField"
 import { GameForm } from "./GameForm"
@@ -120,6 +121,7 @@ export const SingleGame = ({ game, actions, displayFullDescription}: GameProp) =
                                     className="px-3 py-1 bg-green-100 text-green-600 rounded hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800 disabled:opacity-50"
                                 >{language.rentMainPage}
                                 </button>
+                                <QueueButton gameId={game.id} quantity={game.quantity} />
                             </div>
                         )}
 

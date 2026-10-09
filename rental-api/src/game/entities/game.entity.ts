@@ -3,32 +3,32 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 export class Game {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ unique: true })
-  title: string;
+  title!: string;
 
   @Column({ length: 500 })
-  description: string;
+  description!: string;
 
   @Column()
-  category: string;
+  category!: string;
 
   @Column()
-  imageUrl: string;
+  imageUrl!: string;
 
   @Column()
-  amount: number;
+  amount!: number;
 
   @Column()
-  quantity: number;
+  quantity!: number;
 
   @Column({ nullable: true })
-  ages: string;
+  ages!: string;
 
   @Column({ nullable: true })
-  time: string;
+  time!: string;
 
   @Column({ nullable: true })
-  players: string;
+  players!: string;
 }

@@ -25,5 +25,3 @@ export const checkCookie = async (name: string) => {
   const cookieStore = await cookies();
   return cookieStore.has(name);
 };
-
-export const chechCookie = checkCookie;
