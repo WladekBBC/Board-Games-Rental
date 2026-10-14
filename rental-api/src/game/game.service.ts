@@ -30,12 +30,18 @@ export class GameService {
     return this.gameRepo.findOneBy({ id });
   }
 
-  update(id: number, updateGameDto: UpdateGameDto) {
-    return this.gameRepo.update(id, updateGameDto).catch((error: QueryFailedError) => {
-      const driverError = (error as any).driverError;
-      if (driverError?.code === 'ER_DUP_ENTRY' || driverError?.code === '23505') {
-        throw new ConflictException("Game already exists!");
+  async update(id: number, updateGameDto: UpdateGameDto) {
+    // If title is being updated, check if it already exists (excluding current game)
+    if (updateGameDto.title) {
+      const existingGame = await this.gameRepo.findOne({
+        where: { title: updateGameDto.title },
+      });
+      if (existingGame && existingGame.id !== id) {
+        throw new ConflictException("Game with this title already exists!");
       }
+    }
+
+    return this.gameRepo.update(id, updateGameDto).catch((error: QueryFailedError) => {
       throw new BadRequestException();
     });
   }

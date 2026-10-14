@@ -74,8 +74,9 @@ export function GamesProvider({ children }: { children: ReactNode }) {
   }
 
   const updateGame = async (game: IGame) => {
-    await request<void>(`games/${game.id}`, Method.PATCH, JSON.stringify(game))
-    setGames((prev) => prev.map((existing) => existing.id === game.id ? game : existing))
+    const { id, ...gameData } = game;
+    await request<void>(`games/${id}`, Method.PATCH, JSON.stringify(gameData))
+    setGames((prev) => prev.map((existing) => existing.id === id ? game : existing))
   }
 
   const deleteGame = async (id: number) => {
